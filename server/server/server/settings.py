@@ -28,8 +28,11 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'api.User'
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> b65ac71ba61114a4681bc5c5965f8d8bcd541007
 # Application definition
 
 INSTALLED_APPS = [
