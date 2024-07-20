@@ -23,10 +23,13 @@ class HospitalSerializer(serializers.ModelSerializer):
             'hospital_tel', 'hospital_ratings', 'hospital_open'
         ]
 
+
 class InsuranceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Insurance
-        fields = ['id', 'user', 'insurance_type', 'insturance_name', 'insurance_call']
+        fields = ['id', 'user', 'insurance_type',
+                  'insturance_name', 'insurance_call']
+
 
 class MediCardSerializer(serializers.ModelSerializer):
     class Meta:
@@ -48,4 +51,3 @@ class BasicInfoSerializer(serializers.ModelSerializer):
             'medicard', 'name', 'sex', 'nationality', 'name_eng',
             'birthdate', 'height', 'weight', 'bloodtype', 'pregnant'
         ]
-

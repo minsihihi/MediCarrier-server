@@ -15,7 +15,10 @@ class Trip(models.Model):
 
 
 class Assist(models.Model):
+<<<<<<< HEAD
     # default=1은 임시 기본 값입니다.
+=======
+>>>>>>> 2a78fb1403210baaa7cc084b8d29ff8466d7c0c1
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
     facility = models.CharField(max_length=20)
