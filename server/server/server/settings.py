@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'api.User'
 
+
 # Application definition
 
 INSTALLED_APPS = [
