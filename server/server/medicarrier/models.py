@@ -17,27 +17,147 @@ class Trip(models.Model):
 class Assist(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
-    facility = models.CharField(max_length=20)
-    hospital_type = models.CharField(max_length=20)
-    symptom_type = models.CharField(max_length=20)
-    symptom_etc = models.CharField(max_length=20)
-    illness_etc = models.CharField(max_length=20)
-    medicine_etc = models.CharField(max_length=20)
-    etc = models.CharField(max_length=20)
-    ins_req1 = models.CharField(max_length=20)
-    ins_req2 = models.CharField(max_length=20)
-    hospital_fee = models.CharField(max_length=20)
-    document = models.CharField(max_length=20)
+    FACILITY = [
+        ('약국', '약국'),
+        ('병원', '병원'),
+        ]
+    
+    facility = models.CharField(
+        max_length=20,
+        choices=FACILITY,
+        default='',
+        )
+    
+    HOSPITAL_TYPES = [
+        ('내과', '내과'),
+        ('외과', '외과'),
+        ('정형외과', '정형외과'),
+        ('이비인후과', '이비인후과'),
+        ('응급실', '응급실'),
+        ('산부인과', '산부인과'),
+        ('피부과', '피부과'),
+        ('치과', '치과'),
+        ('안과', '안과'),
+        ('비뇨기과', '비뇨기과'),
+        ('신경외과', '신경외과'),
+        ('항문외과', '항문외과'),
+        ('성형외과', '성형외과'),
+        ('정신건강의학과', '정신건강의학과'),
+    ]
+
+    hospital_type = models.CharField(
+        max_length=20,
+        choices=HOSPITAL_TYPES,
+        default='',
+    )
+
+    recommended_hospitals = models.ManyToManyField('Hospital', related_name='recommended_by_assists', blank=True)
+
+    SYMPTOM_TYPE = [
+        ('콧물이 나요', '콧물이 나요'),
+        ('열이 나요', '열이 나요'),
+        ('인후통이 있어요', '인후통이 있어요'),
+        ('귀가 아파요', '귀가 아파요'),
+        ('기침을 해요', '기침을 해요'),
+        ]
+    symptom_type = models.CharField(
+        max_length=20,
+        choices=SYMPTOM_TYPE,
+        default='')
+    
+    symptom_etc = models.CharField(max_length=20, null=True, blank=True)
+
+    SYMPTOM_START = [
+        ('오늘', '오늘'),
+        ('1일 전', '1일 전'),
+        ('2-3일 전', '2-3일 전'),
+        ('일주일 전', '일주일 전'),
+        ('일주일 이상', '일주일 이상'),
+        ]
+    
+    symptom_start = models.CharField(
+        max_length=20, 
+        choices=SYMPTOM_START,
+        default='',
+        )
+    
+    SYMPTOM_FREQ = [
+        ('지속적', '지속적'),
+        ('간헐적', '간헐적'),
+        ('특정 시간에만', '특정 시간에만'),
+        ]
+    
+    symptom_freq = models.CharField(
+        max_length=20, 
+        choices=SYMPTOM_FREQ,
+        default='',
+        )
+    
+    illness_etc = models.CharField(max_length=20, default='없')
+    medicine_etc = models.CharField(max_length=20, default='없습')
+    etc = models.CharField(max_length=20, null=True, blank=True)
+
+    INS_REQ1 = [
+        ('질병', '질병'),
+        ('상해', '상해'),
+        ]
+    
+    ins_req1 = models.CharField(
+        max_length=20,
+        choices=INS_REQ1,
+        default='',
+        )
+    
+    INS_REQ2 = [
+        ('입원', '입원'),
+        ('통원', '통원'),
+        ('후유장해', '후유장해'),
+        ('수술', '수술'),
+        ('진단','진단'),
+        ]
+    
+    ins_req2 = models.CharField(
+        max_length=20,
+        choices=INS_REQ2,
+        default='',
+        )
+    
+    HOSPITAL_FEE = [
+        ('3만원 미만', '3만원 미만'),
+        ('3만원 이상 ~ 10만원 미만', '3만원 이상 ~ 10만원 미만'),
+        ('10만원 이상', '10만원 이상'),
+        ]
+    
+    hospital_fee = models.CharField(
+        max_length=20,
+        choices=HOSPITAL_FEE,
+        default='')
+
+    DISEASE_DETAIL = [
+        ('암', '암'),
+        ('뇌질환', '뇌질환'),
+        ('심질환', '심질환'),
+        ('기타', '기타'),
+    ]
+    
+    disease_detail = models.CharField(
+        max_length=20,
+        choices=DISEASE_DETAIL,
+        default='',
+        )
+
+    document = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return self.facility
+        # user 모델의 nickname 속성을 포함하여 문자열 반환
+        return f"Assist: {self.user.nickname}"
 
 
 class Hospital(models.Model):
-    assist = models.ForeignKey(Assist, on_delete=models.CASCADE)
+    hospital_distance = models.CharField(max_length=20, default='')
     hospital_name = models.CharField(max_length=20)
     hospital_category = models.CharField(max_length=20)
-    hospital_tel = models.IntegerField()
+    hospital_tel = models.CharField(max_length=15)
     hospital_ratings = models.CharField(max_length=20)
     hospital_open = models.BooleanField()
 

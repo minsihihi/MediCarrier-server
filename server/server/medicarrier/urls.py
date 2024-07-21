@@ -5,4 +5,5 @@ app_name = 'medicarrier'
 
 urlpatterns = [
     path('trip/', TripListCreateAPIView.as_view(), name='trip-list-create'),
+    path('assist', AssistView.as_view()),
 ]
