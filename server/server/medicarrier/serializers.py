@@ -9,11 +9,7 @@ class TripSerializer(serializers.ModelSerializer):
 class AssistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assist
-        fields = [
-            'id', 'user', 'facility', 'hospital_type', 'symptom_type',
-            'symptom_etc', 'illness_etc', 'medicine_etc', 'etc',
-            'ins_req1', 'ins_req2', 'hospital_fee', 'document'
-        ]
+        fields = '__all__'
 
 class HospitalSerializer(serializers.ModelSerializer):
     class Meta:
