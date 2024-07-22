@@ -19,6 +19,7 @@ function Home() {
     const start = new Date(startDate);
     daysSinceStart = Math.ceil((currentDate - start) / (1000 * 60 * 60 * 24));
   }
+
   // startDate와 endDate를 문자열 형식으로 변환합니다.
   const formattedStartDate = startDate
     ? new Date(startDate).toLocaleDateString()
@@ -27,13 +28,55 @@ function Home() {
     ? new Date(endDate).toLocaleDateString()
     : null;
 
+  // 여행이 종료되었는지 확인합니다.
+  const isTripEnded = endDate ? currentDate > new Date(endDate) : false;
+
   return (
     <>
       <Logo>Medi Carrier</Logo>
       <Banner>
         <img src="./img/Group 33274.svg" alt="Banner" />
         <BannerText>
-          {country && startDate && endDate ? (
+          {isTripEnded ? (
+            <>
+              <span
+                style={{
+                  fontFamily: "Pretendard",
+                  fontSize: 19.5,
+                  fontWeight: "400",
+                  wordWrap: "break-word",
+                  lineHeight: "1.1",
+                  color: "#fff", // 텍스트 색상
+                }}
+              >
+                여행은 만족스러우셨나요? <br />
+                <span
+                  style={{
+                    color: "white",
+                    fontSize: 19.5,
+                    fontFamily: "Pretendard",
+                    fontWeight: "700",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  보험 청구
+                </span>{" "}
+                잊지 마세요!
+              </span>
+              <div
+                style={{
+                  color: "white",
+                  fontSize: 10,
+                  fontFamily: "Pretendard",
+                  fontWeight: "400",
+                  wordWrap: "break-word",
+                  paddingTop: "4.5px",
+                }}
+              >
+                여행 상태를 변경하려면 클릭해주세요
+              </div>
+            </>
+          ) : country && startDate && endDate ? (
             <>
               <span
                 style={{
@@ -116,23 +159,70 @@ function Home() {
           </MyCountry>
           <MyDate>
             여행 일정
-            <InnerDiv>
-              {startDate ? (
-                <>
-                  출발일
-                  <br /> {formattedStartDate}
+            {isTripEnded ? (
+              <div
+                style={{
+                  width: 353,
+                  height: 147,
+                  position: "absolute",
+                  left: "21px",
+                  top: "240px",
+                  background: "rgba(74.04, 124.71, 255, 0.85)",
+                  borderRadius: 8,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{
+                    textAlign: "center",
+                    color: "white",
+                    fontSize: 20.5,
+                    fontFamily: "Pretendard",
+                    fontWeight: "600",
+                    wordWrap: "break-word",
+                    paddingBottom: "10px",
+                    textShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
+                  }}
+                >
+                  여행이 종료되었어요
                   <br />
-                  <br /> 도착일
-                  <br /> {formattedEndDate}
-                </>
-              ) : (
-                <>
-                  여행 일정을
-                  <br />
-                  설정해주세요
-                </>
-              )}
-            </InnerDiv>
+                  새로운 여행을 등록해주세요
+                </div>
+                <div
+                  style={{
+                    textAlign: "center",
+                    color: "white",
+                    fontSize: 14,
+                    fontFamily: "Pretendard",
+                    fontWeight: "500",
+                    wordWrap: "break-word",
+                    letterSpacing: "-0.7px",
+                    wordSpacing: "-0.7px",
+                    textShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
+                  }}
+                >
+                  새로운 여행 등록 시 <br />
+                  기존 여행 정보 및 트리피 어시스트 정보가 초기화돼요!
+                </div>
+              </div>
+            ) : (
+              <InnerDiv>
+                {startDate && endDate ? (
+                  <>
+                    출발일 {formattedStartDate} <br /> 도착일 {formattedEndDate}
+                  </>
+                ) : (
+                  <>
+                    여행 일정을
+                    <br />
+                    설정해주세요
+                  </>
+                )}
+              </InnerDiv>
+            )}
           </MyDate>
           <button
             onClick={navigateToSetCountry}
