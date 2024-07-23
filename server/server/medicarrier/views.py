@@ -1,16 +1,27 @@
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated  # 인증된 사용자만 접근 가능
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render , get_object_or_404
 from rest_framework import views
 from rest_framework import status
 from rest_framework.response import Response
 from django.http import Http404
 from .models import *
 from .serializers import *
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated  # 인증된 사용자만 접근 가능
 
-# Create your views here.
+class AssistView(views.APIView):
+    def post(self, request, format=None):
+        serializer = AssistSerializer(data=request.data)
+        if serializer.is_valid():
+            assist_instance = serializer.save()
+            response_serializer = AssistSerializer(assist_instance)
+            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, format=None):
+        assist = Assist.objects.all()
+        serializer = AssistSerializer(assist, many=True)
+        return Response(serializer.data)
 
 
 class TripListCreateAPIView(APIView):
