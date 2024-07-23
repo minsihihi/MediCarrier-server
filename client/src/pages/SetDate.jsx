@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "../components/CustomDatePicker.css"; // 커스텀 CSS 파일 임포트
+import "../styles/CustomDatePicker.css"; // 커스텀 CSS 파일 임포트
 import useTripStore from "../assets/tripStore";
 
 const SetDate = () => {

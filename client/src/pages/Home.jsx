@@ -1,15 +1,22 @@
-import React from "react";
+import React, { useState } from "react"; // useState 추가
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import useTripStore from "../assets/tripStore";
+import useInsuranceStore from "../assets/insuranceStore";
+import InsuranceModal from "../components/InsuranceModal"; // InsuranceModal 컴포넌트 임포트
 
 function Home() {
   const navigate = useNavigate();
   const navigateToSetCountry = () => {
     navigate("/register.trip");
   };
-  const { country, startDate, endDate } = useTripStore(); // 상태를 가져옵니다.
-  console.log("Current tripStore state:", { country, startDate, endDate }); // 상태를 콘솔에 출력합니다.
+  const { country, startDate, endDate } = useTripStore();
+  const { insuranceType } = useInsuranceStore();
+  const [isInsuranceModalOpen, setIsInsuranceModalOpen] = useState(false); // 모달 상태 추가
+
+  const handleInsuranceBoxClick = () => {
+    setIsInsuranceModalOpen(true);
+  };
 
   // 현재 날짜를 가져옵니다.
   const currentDate = new Date();
@@ -30,6 +37,9 @@ function Home() {
 
   // 여행이 종료되었는지 확인합니다.
   const isTripEnded = endDate ? currentDate > new Date(endDate) : false;
+
+  console.log("Current tripStore state:", { country, startDate, endDate }); // 상태를 콘솔에 출력합니다.
+  console.log("Current insuranceStore state:", { insuranceType }); // 상태를 콘솔에 출력합니다.
 
   return (
     <>
@@ -212,7 +222,10 @@ function Home() {
               <InnerDiv>
                 {startDate && endDate ? (
                   <>
-                    출발일 {formattedStartDate} <br /> 도착일 {formattedEndDate}
+                    출발일 <br />
+                    {formattedStartDate} <br />
+                    <br /> 도착일 <br />
+                    {formattedEndDate}
                   </>
                 ) : (
                   <>
@@ -242,7 +255,7 @@ function Home() {
       </MyTrip>
       <MyInsurance>
         내 보험
-        <MyInsuranceBox>
+        <MyInsuranceBox onClick={handleInsuranceBoxClick}>
           <div>
             <div
               style={{
@@ -274,13 +287,9 @@ function Home() {
           <img src="./img/Component 130.svg" alt="Banner" />
         </MyInsuranceBox>
       </MyInsurance>
-      {/*<AboutInsurance>
-        보험 알아보기
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </AboutInsurance> */}
+      {isInsuranceModalOpen && (
+        <InsuranceModal onClose={() => setIsInsuranceModalOpen(false)} />
+      )}
     </>
   );
 }
