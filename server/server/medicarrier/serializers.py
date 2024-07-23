@@ -11,6 +11,100 @@ class AssistSerializer(serializers.ModelSerializer):
         model = Assist
         fields = '__all__'
 
+    def create(self, validated_data):
+        assist_instance = Assist.objects.create(**validated_data)
+        self.update_document(assist_instance)
+        return assist_instance
+
+    def update_document(self, assist_instance):
+        ins_req1 = assist_instance.ins_req1
+        ins_req2 = assist_instance.ins_req2
+        hospital_fee = assist_instance.hospital_fee
+        disease_detail = assist_instance.disease_detail
+        
+        documents = [
+            '보험금 청구서',
+            '개인(신용)정보처리동의서',
+            '신분증사본'
+        ]
+
+        if ins_req1 == '상해':
+            if ins_req2 == '입원':
+                documents.extend([
+                    '진단서',
+                    '진료비 계산서(영수증)',
+                    '진료비 세부 내역서'
+                ])
+            elif ins_req2 == '통원':
+                if hospital_fee == '3만원 미만':
+                    documents.extend([
+                        '진료비 계산서(영수증)',
+                        '진료비 세부 내역서'
+                    ])
+                elif hospital_fee == '3만원 이상 ~ 10만원 미만':
+                    documents.extend([
+                        '진료비 계산서(영수증)',
+                        '진료비 세부 내역서',
+                        '처방전'
+                    ])
+                elif hospital_fee == '10만원 이상':
+                    documents.extend([
+                        '진료비계산서(영수증)',
+                        '진료비세부내역서',
+                        '진단명이 포함된 서류'
+                    ])
+            elif ins_req2 == '후유장해':
+                documents.append('후유장해진단서')
+            elif ins_req2 == '수술':
+                documents.append('진단명/수술명/수술일자가 포함된 서류')
+
+        elif ins_req1 == '질병':
+            if ins_req2 == '입원':
+                documents.extend([
+                    '진단서',
+                    '진료비 계산서(영수증)',
+                    '진료비 세부 내역서'
+                ])
+            elif ins_req2 == '통원':
+                if hospital_fee == '3만원 미만':
+                    documents.extend([
+                        '진료비 계산서(영수증)',
+                        '진료비 세부 내역서'
+                    ])
+                elif hospital_fee == '3만원 이상 ~ 10만원 미만':
+                    documents.extend([
+                        '진료비 계산서(영수증)',
+                        '진료비 세부 내역서',
+                        '처방전'
+                    ])
+                elif hospital_fee == '10만원 이상':
+                    documents.extend([
+                        '진료비계산서(영수증)',
+                        '진료비세부내역서',
+                        '진단명이 포함된 서류'
+                    ])
+            elif ins_req2 == '후유장해':
+                documents.append('후유장해진단서')
+            elif ins_req2 == '수술':
+                documents.append('진단명/수술명/수술일자가 포함된 서류')
+            elif ins_req2 == '진단':
+                if disease_detail == '암':
+                    documents.extend(['진단서',
+                                      '조직검사결과지'])
+                elif disease_detail == '뇌질환':
+                    documents.extend(['진단서',
+                                      'CT, MRI등 방사선 판독결과지'])
+                elif disease_detail == '심질환':
+                    documents.extend(['진단서',
+                                      '각종 검사결과지'])
+                elif disease_detail == '기타':
+                    documents.extend(['진단서',
+                                      '진단사실 확인서류'])
+
+        assist_instance.document = ', '.join(documents)  # ', '로 각 문서를 구분하여 저장
+        assist_instance.save()
+    
+
 class HospitalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hospital
