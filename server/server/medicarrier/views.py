@@ -1,4 +1,4 @@
-from django.shortcuts import render , get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from rest_framework import views
 from rest_framework import status
 from rest_framework.response import Response
@@ -8,6 +8,10 @@ from .serializers import *
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated  # 인증된 사용자만 접근 가능
 
+# libertranslate api를 위해 추가됨
+import requests
+
+
 class AssistView(views.APIView):
     def post(self, request, format=None):
         serializer = AssistSerializer(data=request.data)
@@ -15,7 +19,7 @@ class AssistView(views.APIView):
             assist_instance = serializer.save()
             response_serializer = AssistSerializer(assist_instance)
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, format=None):
@@ -43,6 +47,104 @@ class TripListCreateAPIView(APIView):
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TranslateText:    # 번역 메소드
+    def __init__(self):
+        self.api_url = "https://libretranslate.com/translate"
+
+    def translate_text(self, text, target_language):
+        # 번역할 텍스트와 번역 대상 언어를 요청 데이터에 포함
+        payload = {
+            'q': text,
+            'source': 'auto',  # 자동 언어 감지
+            'target': target_language,
+            'format': 'text'
+        }
+        headers = {
+            'accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+        response = requests.post(self.api_url, data=payload, headers=headers)
+        result = response.json()
+        return result['translatedText']
+
+
+class MediCardView(APIView):    # 로그인된 사용자의 메디카드 정보 생성/반환
+    def get(self, request, format=None):
+        medicard = get_object_or_404(MediCard, user=request.user)
+        serializer = MediCardSerializer(medicard)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = MediCardSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TranslateMediInfoView(APIView):
+    def get(self, request, format=None):    # 로그인된 사용자의 인포를 가져와 en/여행국의 언어로 번역
+        # 로그인된 사용자의 MediCard, MediInfo, BasicInfo를 가져옴
+        medicard = get_object_or_404(MediCard, user=request.user)
+        mediinfo = get_object_or_404(MediInfo, medicard=medicard)
+        basicinfo = get_object_or_404(BasicInfo, medicard=medicard)
+
+        translator = TranslateText()
+
+        # MediInfo의 각 필드를 영어로 번역
+        translated_mediinfo_en = {
+            'condition': translator.translate_text(mediinfo.condition, target_language='en'),
+            'illness': translator.translate_text(mediinfo.illness, target_language='en'),
+            'allergy': translator.translate_text(mediinfo.allergy, target_language='en'),
+            'diagnosis': translator.translate_text(mediinfo.diagnosis, target_language='en'),
+            'surgery': translator.translate_text(mediinfo.surgery, target_language='en'),
+        }
+
+        # MediInfo의 각 필드를 여행 국가의 언어로 번역
+        target_language = medicard.trip.country.lower()[
+            :2]  # 예: "korea" -> "ko"
+        translated_mediinfo_country = {
+            'condition': translator.translate_text(mediinfo.condition, target_language=target_language),
+            'illness': translator.translate_text(mediinfo.illness, target_language=target_language),
+            'allergy': translator.translate_text(mediinfo.allergy, target_language=target_language),
+            'diagnosis': translator.translate_text(mediinfo.diagnosis, target_language=target_language),
+            'surgery': translator.translate_text(mediinfo.surgery, target_language=target_language),
+        }
+
+        # BasicInfo의 각 필드를 영어로 번역
+        translated_basicinfo_en = {
+            'name': translator.translate_text(basicinfo.name, target_language='en'),
+            'sex': translator.translate_text(basicinfo.sex, target_language='en'),
+            'nationality': translator.translate_text(basicinfo.nationality, target_language='en'),
+            'name_eng': translator.translate_text(basicinfo.name_eng, target_language='en'),
+            'birthdate': str(basicinfo.birthdate),  # 날짜 필드는 그대로 유지
+            'height': translator.translate_text(basicinfo.height, target_language='en'),
+            'weight': translator.translate_text(basicinfo.weight, target_language='en'),
+            'bloodtype': translator.translate_text(basicinfo.bloodtype, target_language='en'),
+            'pregnant': translator.translate_text(basicinfo.pregnant, target_language='en'),
+        }
+
+        # BasicInfo의 각 필드를 여행 국가의 언어로 번역
+        translated_basicinfo_country = {
+            'name': translator.translate_text(basicinfo.name, target_language=target_language),
+            'sex': translator.translate_text(basicinfo.sex, target_language=target_language),
+            'nationality': translator.translate_text(basicinfo.nationality, target_language=target_language),
+            'name_eng': translator.translate_text(basicinfo.name_eng, target_language=target_language),
+            'birthdate': str(basicinfo.birthdate),  # 날짜 필드는 그대로 유지
+            'height': translator.translate_text(basicinfo.height, target_language=target_language),
+            'weight': translator.translate_text(basicinfo.weight, target_language=target_language),
+            'bloodtype': translator.translate_text(basicinfo.bloodtype, target_language=target_language),
+            'pregnant': translator.translate_text(basicinfo.pregnant, target_language=target_language),
+        }
+
+        return Response({
+            'mediinfo_en': translated_mediinfo_en,
+            'mediinfo_country': translated_mediinfo_country,
+            'basicinfo_en': translated_basicinfo_en,
+            'basicinfo_country': translated_basicinfo_country
+        })
 
 
 class AssistView(APIView):

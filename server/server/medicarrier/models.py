@@ -3,7 +3,7 @@ from django.db import models
 from django.conf import settings
 
 
-class Trip(models.Model):
+class Trip(models.Model):   # 사용자당 하나만 생성되는 여행 모델
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     country = models.CharField(max_length=20)
@@ -14,20 +14,81 @@ class Trip(models.Model):
         return self.country
 
 
+class MediCard(models.Model):   # 사용자당 하나만 생성 & 여행의 국가를 외래키로 가져오고 언어를 정의하는 모델
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    country = models.OneToOneField(Trip, on_delete=models.CASCADE)
+    language = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"{self.user.username}의 의료카드"
+
+
+class MediInfo(models.Model):   # 메디카드당 하나만 생성되는 메디인포 모델
+    medicard = models.OneToOneField(
+        'MediCard', on_delete=models.CASCADE, primary_key=True)
+    condition = models.CharField(max_length=20, default="현재 증상 없음")
+    illness = models.CharField(max_length=20, default="없음")
+    allergy = models.CharField(max_length=20, default="복용하는 약 없음")
+    diagnosis = models.CharField(max_length=20, default="알레르기 없음")
+    surgery = models.CharField(max_length=20, default="근 n개월 이내 없음")
+
+    def __str__(self):
+        return f"{self.medicard.user.username}의 의료 정보"
+
+
+class BasicInfo(models.Model):  # 메디카드당 하나만 생성되는 기본인포 모델
+    medicard = models.OneToOneField(
+        'MediCard', on_delete=models.CASCADE, primary_key=True)
+    name = models.CharField(max_length=20, default="이름")
+
+    SEX_CHOICES = [
+        ('남', '남'),
+        ('여', '여')
+    ]
+
+    sex = models.CharField(max_length=20, choices=SEX_CHOICES)
+    nationallity = models.CharField(max_length=20, default="국적")
+    name_eng = models.CharField(max_length=20, default="영문 이름")
+    birthdate = models.DateField
+    height = models.CharField(max_length=20, default="키")
+    weight = models.CharField(max_length=20, default="몸무게")
+
+    BLOODTYPE_CHOICES = [
+        ('A', 'A'),
+        ('B', 'B'),
+        ('O', 'O'),
+        ('AB', 'AB')
+    ]
+
+    bloodtype = models.CharField(max_length=20, choices=BLOODTYPE_CHOICES)
+
+    PREGNANT_CHOICES = [
+        ('임신중', '임신중'),
+        ('임신 중 아님', '임신 중 아님'),
+        ('가능성 있음', '가능성 있음')
+    ]
+
+    pregnant = models.CharField(max_length=20, choices=PREGNANT_CHOICES)
+
+    def __str__(self):
+        return f"{self.medicard.user.username}의 기본 정보"
+
+
 class Assist(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
     FACILITY = [
         ('약국', '약국'),
         ('병원', '병원'),
-        ]
-    
+    ]
+
     facility = models.CharField(
         max_length=20,
         choices=FACILITY,
         default='',
-        )
-    
+    )
+
     HOSPITAL_TYPES = [
         ('내과', '내과'),
         ('외과', '외과'),
@@ -51,7 +112,8 @@ class Assist(models.Model):
         default='',
     )
 
-    recommended_hospitals = models.ManyToManyField('Hospital', related_name='recommended_by_assists', blank=True)
+    recommended_hospitals = models.ManyToManyField(
+        'Hospital', related_name='recommended_by_assists', blank=True)
 
     SYMPTOM_TYPE = [
         ('콧물이 나요', '콧물이 나요'),
@@ -59,12 +121,12 @@ class Assist(models.Model):
         ('인후통이 있어요', '인후통이 있어요'),
         ('귀가 아파요', '귀가 아파요'),
         ('기침을 해요', '기침을 해요'),
-        ]
+    ]
     symptom_type = models.CharField(
         max_length=20,
         choices=SYMPTOM_TYPE,
         default='')
-    
+
     symptom_etc = models.CharField(max_length=20, null=True, blank=True)
 
     SYMPTOM_START = [
@@ -73,26 +135,26 @@ class Assist(models.Model):
         ('2-3일 전', '2-3일 전'),
         ('일주일 전', '일주일 전'),
         ('일주일 이상', '일주일 이상'),
-        ]
-    
+    ]
+
     symptom_start = models.CharField(
-        max_length=20, 
+        max_length=20,
         choices=SYMPTOM_START,
         default='',
-        )
-    
+    )
+
     SYMPTOM_FREQ = [
         ('지속적', '지속적'),
         ('간헐적', '간헐적'),
         ('특정 시간에만', '특정 시간에만'),
-        ]
-    
+    ]
+
     symptom_freq = models.CharField(
-        max_length=20, 
+        max_length=20,
         choices=SYMPTOM_FREQ,
         default='',
-        )
-    
+    )
+
     illness_etc = models.CharField(max_length=20, default='없')
     medicine_etc = models.CharField(max_length=20, default='없습')
     etc = models.CharField(max_length=20, null=True, blank=True)
@@ -100,34 +162,34 @@ class Assist(models.Model):
     INS_REQ1 = [
         ('질병', '질병'),
         ('상해', '상해'),
-        ]
-    
+    ]
+
     ins_req1 = models.CharField(
         max_length=20,
         choices=INS_REQ1,
         default='',
-        )
-    
+    )
+
     INS_REQ2 = [
         ('입원', '입원'),
         ('통원', '통원'),
         ('후유장해', '후유장해'),
         ('수술', '수술'),
-        ('진단','진단'),
-        ]
-    
+        ('진단', '진단'),
+    ]
+
     ins_req2 = models.CharField(
         max_length=20,
         choices=INS_REQ2,
         default='',
-        )
-    
+    )
+
     HOSPITAL_FEE = [
         ('3만원 미만', '3만원 미만'),
         ('3만원 이상 ~ 10만원 미만', '3만원 이상 ~ 10만원 미만'),
         ('10만원 이상', '10만원 이상'),
-        ]
-    
+    ]
+
     hospital_fee = models.CharField(
         max_length=20,
         choices=HOSPITAL_FEE,
@@ -139,12 +201,12 @@ class Assist(models.Model):
         ('심질환', '심질환'),
         ('기타', '기타'),
     ]
-    
+
     disease_detail = models.CharField(
         max_length=20,
         choices=DISEASE_DETAIL,
         default='',
-        )
+    )
 
     document = models.TextField(null=True, blank=True)
 

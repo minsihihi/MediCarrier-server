@@ -5,7 +5,23 @@ class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
         fields = ['id', 'user', 'country', 'start_date', 'end_date']
-
+class MediCardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MediCard
+        fields= ['user', 'trip', 'language']
+        
+class MediInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=MediInfo
+        fields = ['medicard', 'condition', 'illness', 'allergy', 'diagnosis', 'surgery']
+        
+        
+class BasicInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BasicInfo
+        fields = ['medicard', 'name', 'sex', 'nationality', 'name_eng', 'birthdate', 'height', 'weight', 'bloodtype', 'pregnant']
+        
+        
 class AssistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assist
