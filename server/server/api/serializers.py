@@ -1,7 +1,9 @@
 from rest_framework import serializers
-from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User
+from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+
+User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,7 +25,22 @@ class UserLoginSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=128, write_only=True)
 
     def validate(self, data):
-        user = authenticate(username=data['username'], password=data['password'])
-        if user is None:
-            raise serializers.ValidationError('유효하지 않은 로그인 정보입니다.')
-        return {'user': user}
+        username = data.get('username')
+        password = data.get('password')
+
+        if User.objects.filter(username=username).exists():
+            user = User.objects.get(username=username)
+
+            if not user.check_password(password):
+                raise serializers.ValidationError('잘못된 비밀번호입니다.')
+            else:
+                token = RefreshToken.for_user(user)
+                refresh = str(token)
+                access = str(token.access_token)
+
+                data = {
+                    'id': user.id,
+                    'username': user.username,
+                    'access_token': access
+                }
+                return data 

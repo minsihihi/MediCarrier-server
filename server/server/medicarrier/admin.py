@@ -9,9 +9,21 @@ class TripAdmin(admin.ModelAdmin):
     
 admin.site.register(Hospital)
 admin.site.register(Insurance)
-admin.site.register(MediCard)
-admin.site.register(MediInfo)
-admin.site.register(BasicInfo)
+
+@admin.register(MediCard)
+class MediCardAdmin(admin.ModelAdmin):
+    list_display = ('user', 'country', 'language')
+
+
+@admin.register(MediInfo)
+class MediInfoAdmin(admin.ModelAdmin):
+    list_display = ('medicard', 'condition', 'illness', 'medicine', 'allergy', 'diagnosis', 'surgery')
+    
+
+@admin.register(BasicInfo)
+class BasicInfoAdmin(admin.ModelAdmin):
+    list_display = ('medicard', 'name', 'sex', 'nationality', 'name_eng', 'birthdate', 'height', 'weight', 'bloodtype', 'pregnant')
+    
 
 class AssistAdmin(admin.ModelAdmin):
     list_display = ('id', 'facility', 'hospital_type', 'symptom_type', 'document')

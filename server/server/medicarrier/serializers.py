@@ -1,18 +1,20 @@
 from rest_framework import serializers
 from .models import Trip, Assist, Hospital, Insurance, MediCard, MediInfo, BasicInfo
+from api.models import User
 
 class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
-<<<<<<< HEAD
         fields = '__all__'
 
-=======
-        fields = ['id', 'user', 'country', 'start_date', 'end_date']
 class MediCardSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    country = serializers.PrimaryKeyRelatedField(queryset=Trip.objects.all())
+
     class Meta:
         model = MediCard
-        fields= ['user', 'trip', 'language']
+        fields = ['user', 'country', 'language']  # 'id' 필드 제외
+        
         
 class MediInfoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,7 +28,6 @@ class BasicInfoSerializer(serializers.ModelSerializer):
         fields = ['medicard', 'name', 'sex', 'nationality', 'name_eng', 'birthdate', 'height', 'weight', 'bloodtype', 'pregnant']
         
         
->>>>>>> 509630cef46c1c98014520c20fdbf1552dc307e7
 class AssistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assist
@@ -142,23 +143,4 @@ class InsuranceSerializer(serializers.ModelSerializer):
                   'insturance_name', 'insurance_call']
 
 
-class MediCardSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MediCard
-        fields = ['id', 'user', 'country', 'language']
 
-class MediInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MediInfo
-        fields = [
-            'medicard', 'condition', 'illness', 'medicine',
-            'allergy', 'diagnosis', 'surgery'
-        ]
-
-class BasicInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BasicInfo
-        fields = [
-            'medicard', 'name', 'sex', 'nationality', 'name_eng',
-            'birthdate', 'height', 'weight', 'bloodtype', 'pregnant'
-        ]

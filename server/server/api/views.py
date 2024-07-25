@@ -20,17 +20,5 @@ class LoginView(views.APIView):
         serializer = UserLoginSerializer(data=request.data)
 
         if serializer.is_valid():
-            user = serializer.validated_data['user']
-            refresh = RefreshToken.for_user(user)
-            
-            
-            return Response({
-                'message': '로그인 성공',
-                'data': {
-                    'access': str(refresh.access_token),
-                    'refresh': str(refresh),
-                    'userId' : user.id,
-                }
-            })
-        
-        return Response({'message': '로그인 실패', 'error': serializer.errors})
+            return Response({'message':'로그인 성공', 'data':serializer.validated_data})
+        return Response({'message': '로그인 실패', 'error' : serializer.errors})
