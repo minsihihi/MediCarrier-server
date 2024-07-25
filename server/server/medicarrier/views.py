@@ -43,4 +43,5 @@ class TripListCreateAPIView(APIView):
             # 여행 등록 시 로그인된 사용자를 여행의 사용자로 설정
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

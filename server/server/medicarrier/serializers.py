@@ -4,7 +4,7 @@ from .models import Trip, Assist, Hospital, Insurance, MediCard, MediInfo, Basic
 class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
-        fields = ['id', 'user', 'country', 'start_date', 'end_date']
+        fields = '__all__'
 
 class AssistSerializer(serializers.ModelSerializer):
     class Meta:

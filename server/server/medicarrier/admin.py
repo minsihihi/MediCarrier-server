@@ -2,7 +2,11 @@ from django.contrib import admin
 from .models import *
 
 # Register your models here.
-admin.site.register(Trip)
+@admin.register(Trip)
+class TripAdmin(admin.ModelAdmin):
+    list_display = ('user', 'country', 'start_date', 'end_date')
+    search_fields = ('country', 'user__username')
+    
 admin.site.register(Hospital)
 admin.site.register(Insurance)
 admin.site.register(MediCard)
