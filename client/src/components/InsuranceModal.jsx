@@ -62,21 +62,21 @@ function InsuranceModal({ onClose }) {
         return (
           <>
             <span>김지은님에게 맞는 보험을 추천해드려요!</span>
-            <img src="../img/실속형_결과.png" />
+            <img src="../img/실속형_결과.png" alt="실속형 결과" />
           </>
         );
       case "표준형":
         return (
           <>
             <span>김지은님에게 맞는 보험을 추천해드려요!</span>
-            <img src="../img/표준형_결과.png" />
+            <img src="../img/표준형_결과.png" alt="표준형_결과" />
           </>
         );
       case "고급형":
         return (
           <>
             <span>김지은님에게 맞는 보험을 추천해드려요!</span>
-            <img src="../img/고급형_결과.png" />
+            <img src="../img/고급형_결과.png" alt="고급형_결과" />
           </>
         );
       default:
@@ -110,6 +110,9 @@ function InsuranceModal({ onClose }) {
   return (
     <ModalOverlay>
       <ModalContent>
+        <CloseButton onClick={onClose}>
+          <img src="../img/ph_x.svg" alt="취소" />
+        </CloseButton>
         {!showRecommendation ? (
           <>
             {step === 1 && (
@@ -269,6 +272,17 @@ function InsuranceModal({ onClose }) {
 
 export default InsuranceModal;
 
+const CloseButton = styled.div`
+  img {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 21px;
+    height: 21px;
+    cursor: pointer;
+  }
+`;
+
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -282,6 +296,7 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
+  position: relative; /* 내부 요소들이 모달 내부에서 배치되도록 설정 */
   width: 100%;
   max-height: 80%;
   background: white;
