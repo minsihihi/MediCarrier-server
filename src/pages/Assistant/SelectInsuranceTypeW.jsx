@@ -108,7 +108,7 @@ function SelectInsuranceTypeW() {
 
   const handleNext = () => {
     if (selected) {
-      navigate("/next-page"); // Replace with the actual next page route
+      navigate("/next-page"); /* 경로 수정하기! */
     }
   };
 

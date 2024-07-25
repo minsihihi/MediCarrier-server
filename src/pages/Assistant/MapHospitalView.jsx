@@ -66,6 +66,7 @@ const Button = styled.button`
   border-radius: 16px;
   cursor: pointer;
   margin-top: 50px; /* 버튼 상단 여백 추가 */
+  margin-bottom: 25px;
 `;
 
 const MapContainer = styled.div`
