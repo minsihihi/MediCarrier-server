@@ -14,7 +14,7 @@ function Home() {
   const { insuranceType } = useInsuranceStore();
   const [isInsuranceModalOpen, setIsInsuranceModalOpen] = useState(false); // 모달 상태 추가
 
-  const handleInsuranceBoxClick = () => {
+  const handleInsuranceBox = () => {
     setIsInsuranceModalOpen(true);
   };
 
@@ -255,35 +255,78 @@ function Home() {
       </MyTrip>
       <MyInsurance>
         내 보험
-        <MyInsuranceBox onClick={handleInsuranceBoxClick}>
-          <div>
-            <div
-              style={{
-                color: "black",
-                fontSize: "14px",
-                fontFamily: "Pretendard",
-                fontWeight: "700",
-                lineHeight: "18.73px",
-                wordWrap: "break-word",
-                paddingBottom: "9px",
-              }}
-            >
-              아직 보험이 등록되지 않았어요
-            </div>
-            <div
-              style={{
-                color: "#494949",
-                fontSize: "14px",
-                fontFamily: "Pretendard",
-                fontWeight: "400",
-                lineHeight: "18.73px",
-                wordWrap: "break-word",
-              }}
-            >
-              클릭해서 <br />
-              보험을 등록해보세요
-            </div>
-          </div>
+        <MyInsuranceBox onClick={handleInsuranceBox}>
+          {insuranceType ? (
+            <>
+              <div>
+                <div
+                  style={{
+                    color: "black",
+                    fontSize: "14px",
+                    fontFamily: "Pretendard",
+                    fontWeight: "700",
+                    lineHeight: "18.73px",
+                    wordWrap: "break-word",
+                    paddingBottom: "9px",
+                  }}
+                >
+                  DB 손해보험 - {insuranceType}
+                </div>
+                <div
+                  style={{
+                    color: "#494949",
+                    fontSize: "14px",
+                    fontFamily: "Pretendard",
+                    fontWeight: "400",
+                    lineHeight: "18.73px",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  {insuranceType === "실속형" ? (
+                    <>
+                      가성비 요금 내고
+                      <br /> 기본적으로 충분한 보장을!
+                    </>
+                  ) : insuranceType === "표준형" ? (
+                    "가장 안정적이고 합리적인 선택!"
+                  ) : insuranceType === "고급형" ? (
+                    "최고의 혜택으로 완벽한 여행을!"
+                  ) : null}
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <div
+                  style={{
+                    color: "black",
+                    fontSize: "14px",
+                    fontFamily: "Pretendard",
+                    fontWeight: "700",
+                    lineHeight: "18.73px",
+                    wordWrap: "break-word",
+                    paddingBottom: "9px",
+                  }}
+                >
+                  아직 보험이 등록되지 않았어요
+                </div>
+                <div
+                  style={{
+                    color: "#494949",
+                    fontSize: "14px",
+                    fontFamily: "Pretendard",
+                    fontWeight: "400",
+                    lineHeight: "18.73px",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  클릭해서 <br />
+                  보험을 등록해보세요
+                </div>
+              </div>
+            </>
+          )}
           <img src="./img/Component 130.svg" alt="Banner" />
         </MyInsuranceBox>
       </MyInsurance>
