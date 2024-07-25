@@ -12,7 +12,7 @@ const SetCountry = () => {
   };
   const navigateToSetDate = () => {
     if (country) {
-      navigate("/register.trip.date");
+      navigate("/medicarrier/register.trip.date");
       setCountry(country); // destination을 Zustand 상태로 업데이트
     } else {
       alert("여행지를 설정해주세요.");
@@ -48,7 +48,7 @@ const SetCountry = () => {
           style={{ border: 0, backgroundColor: "transparent" }}
           onClick={navigateToHome}
         >
-          <img src="./img/arrow-left.svg" alt="back" />
+          <img src="/img/arrow-left.svg" alt="back" />
         </button>
         내 여행
       </Header>
@@ -60,7 +60,7 @@ const SetCountry = () => {
             onChange={handleSearch}
             placeholder="어디로 가시나요?"
           />
-          <img src="./img/search-normal.svg" alt="search" />
+          <img src="/img/search-normal.svg" alt="search" />
         </CountrySearchBar>
         {filteredCountries.length > 0 && (
           <CountryList>

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../styles/CustomDatePicker.css"; // 커스텀 CSS 파일 임포트
-import useTripStore from "../assets/tripStore";
+import useTripStore, {onPost} from "../assets/tripStore";
 
 const SetDate = () => {
   const navigate = useNavigate();
@@ -12,13 +12,14 @@ const SetDate = () => {
   const { endDate, setEndDate } = useTripStore();
 
   const navigateToSetCountry = () => {
-    navigate("/register.trip");
+    navigate("/medicarrier/register.trip");
   };
 
   const navigateToHome = () => {
     if (startDate && endDate) {
-      navigate("/");
       setDates(startDate, endDate); // 날짜를 Zustand 상태로 업데이트
+      onPost(); // 데이터 서버에 전송
+      navigate("/"); // 홈 페이지로 이동
     } else {
       alert("여행 기간을 설정해주세요.");
     }
@@ -37,7 +38,7 @@ const SetDate = () => {
           style={{ border: 0, backgroundColor: "transparent" }}
           onClick={navigateToSetCountry}
         >
-          <img src="./img/arrow-left.svg" alt="back" />
+          <img src="/img/arrow-left.svg" alt="back" />
         </button>
         내 여행
       </Header>

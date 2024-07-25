@@ -8,7 +8,7 @@ import InsuranceModal from "../components/InsuranceModal"; // InsuranceModal 컴
 function Home() {
   const navigate = useNavigate();
   const navigateToSetCountry = () => {
-    navigate("/register.trip");
+    navigate("/medicarrier/register.trip");
   };
   const { country, startDate, endDate } = useTripStore();
   const { insuranceType } = useInsuranceStore();
