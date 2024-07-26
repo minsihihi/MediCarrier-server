@@ -1,24 +1,41 @@
-import React, { useState } from "react"; // useState 추가
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import useTripStore from "../assets/tripStore";
 import useInsuranceStore from "../assets/insuranceStore";
-import InsuranceModal from "../components/InsuranceModal"; // InsuranceModal 컴포넌트 임포트
+import InsuranceModal from "../components/InsuranceModal";
+import ChecklisteModal from "../components/ChecklisteModal";
 
 function Home() {
   const navigate = useNavigate();
   const navigateToSetCountry = () => {
     navigate("/register.trip");
   };
+
+  const navigateToInsFeature = () => {
+    navigate("/insurance.feature");
+  };
+  const navigateToInsStep = () => {
+    navigate("/insurance.step");
+  };
   const navigateToInsContact = () => {
     navigate("/insurance.contact");
   };
+
+  const navigateToAssistRecord = () => {
+    navigate("/assist.record");
+  };
+
   const { country, startDate, endDate } = useTripStore();
-  const { insuranceType, insuranceName, insuranceCall } = useInsuranceStore();
-  const [isInsuranceModalOpen, setIsInsuranceModalOpen] = useState(false); // 모달 상태 추가
+  const { insuranceType, insuranceName } = useInsuranceStore();
+  const [isInsuranceModalOpen, setIsInsuranceModalOpen] = useState(false);
+  const [isChecklistModalOpen, setIsChecklistModalOpen] = useState(false); // 모달 상태 추가
 
   const handleInsuranceBox = () => {
     setIsInsuranceModalOpen(true);
+  };
+  const handleChecklistBox = () => {
+    setIsChecklistModalOpen(true);
   };
 
   // 현재 날짜를 가져옵니다.
@@ -336,10 +353,28 @@ function Home() {
       {isInsuranceModalOpen && (
         <InsuranceModal onClose={() => setIsInsuranceModalOpen(false)} />
       )}
+
+      {isTripEnded && (
+        <>
+          <AssistRecord>
+            어시스트 이용 기록
+            <AssistRecordBox onClick={navigateToAssistRecord}>
+              <div>
+                <h2>{new Date(endDate).toLocaleDateString()}</h2>
+                <p>
+                  어시스트 이용 기록 <br /> 확인하러 가기
+                </p>
+              </div>
+              <img src="../img/icon0.svg" alt="assist record icon" />
+            </AssistRecordBox>
+          </AssistRecord>
+        </>
+      )}
+
       <AboutInsurance>
         보험 알아보기
         <AboutInsuranceBoxes>
-          <div>
+          <div onClick={navigateToInsFeature}>
             <span>
               <h1>보장 범위와 특징</h1>
               <h2>
@@ -350,7 +385,7 @@ function Home() {
             </span>
             <img src="../img/icon1.svg" />
           </div>
-          <div>
+          <div onClick={navigateToInsStep}>
             <span>
               <h1>보험 처리 절차 안내</h1>
               <h2>
@@ -361,7 +396,7 @@ function Home() {
             </span>
             <img src="../img/icon2.svg" />
           </div>
-          <div>
+          <div onClick={handleChecklistBox}>
             <span>
               <h1>보험 청구시 필요 서류</h1>
               <h2>
@@ -372,6 +407,9 @@ function Home() {
             </span>
             <img src="../img/icon3.svg" />
           </div>
+          {isChecklistModalOpen && (
+            <ChecklisteModal onClose={() => setIsChecklistModalOpen(false)} />
+          )}
           <div onClick={navigateToInsContact}>
             <span>
               <h1>보험사 연락</h1>
@@ -394,6 +432,54 @@ function Home() {
 }
 
 export default Home;
+
+const AssistRecord = styled.div`
+  color: var(--black, #000);
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin: 0 20px 24px 20px;
+  width: 353px;
+`;
+
+const AssistRecordBox = styled.div`
+  border-radius: 8px;
+  border: 1px solid #f5f5f5;
+  background: #fff;
+  width: 323px;
+  height: 66px;
+  padding: 17px 15px;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  img {
+    width: 74px;
+    height: 71px;
+  }
+  h2 {
+    margin: 0;
+    color: var(--black, #000);
+    font-family: Pretendard;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 133.8%; /* 18.732px */
+    padding-bottom: 9px;
+  }
+  p {
+    margin: 0;
+    color: #a7a7a7;
+    font-family: Pretendard;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 133.8%; /* 18.732px */
+  }
+`;
 
 const Chatting = styled.div`
   margin: 0 0 30px 20px;

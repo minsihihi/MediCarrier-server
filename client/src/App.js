@@ -3,7 +3,11 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import SetCountry from "./pages/SetCountry";
 import SetDate from "./pages/SetDate";
+import InsFeature from "./pages/InsFeature";
+import InsStep from "./pages/InsStep";
+import InsChecklist from "./pages/InsChecklist";
 import InsContact from "./pages/InsContact";
+import AssistRecord from "./pages/AssistRecord";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -25,7 +29,13 @@ function App() {
         <Route path="/register.trip" element={<SetCountry />} />
         <Route path="/register.trip.date" element={<SetDate />} />
 
+        {/* 어시스트 이용 기록 */}
+        <Route path="/assist.record" element={<AssistRecord />} />
+
         {/* 보험 알아보기 */}
+        <Route path="/insurance.feature" element={<InsFeature />} />
+        <Route path="/insurance.step" element={<InsStep />} />
+        <Route path="/insurance.checklist" element={<InsChecklist />} />
         <Route path="/insurance.contact" element={<InsContact />} />
       </Routes>
     </BrowserRouter>
