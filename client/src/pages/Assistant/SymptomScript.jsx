@@ -106,7 +106,9 @@ function SymptomScript() {
   const chronicDiseasesText = chronicDiseases ? chronicDiseases : "없고";
   const medicationsText = medications ? medications : "없습니다";
   const symptomsText =
-    symptoms.length > 0
+    symptoms.length > 0 && customSymptom
+      ? `${symptoms.join(", ")} 및 ${customSymptom}`
+      : symptoms.length > 0
       ? symptoms.join(", ")
       : customSymptom
       ? customSymptom
