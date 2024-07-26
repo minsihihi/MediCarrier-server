@@ -24,6 +24,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
+  font-family: "Pretendard";
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 10px;
@@ -31,12 +32,12 @@ const Title = styled.h1`
   line-height: 1.5;
   align-self: flex-start;
   margin-left: 20px;
-  margin-top: 150px;
+  margin-top: 51px;
 `;
 
 const Subtitle = styled.p`
   color: #000;
-  font-family: Pretendard;
+  font-family: "Pretendard";
   font-size: 14px;
   font-style: normal;
   font-weight: 300;
@@ -44,6 +45,7 @@ const Subtitle = styled.p`
   letter-spacing: -0.439px;
   margin-bottom: 40px;
   margin-left: 20px;
+  align-self: flex-start;
 `;
 
 const SpecialtyContainer = styled.div`
@@ -57,6 +59,7 @@ const SpecialtyContainer = styled.div`
 `;
 
 const Specialty = styled.button`
+  font-family: "Pretendard";
   padding: 10px 20px;
   font-size: 14px;
   font-weight: ${(props) => (props.selected ? "bold" : "normal")};
@@ -76,9 +79,12 @@ const ButtonContainer = styled.div`
   gap: 11px;
   width: 100%;
   padding: 0 20px;
+  position: absolute;
+  bottom: 150px;
 `;
 
 const Button = styled.button`
+  font-family: "Pretendard";
   width: 171px;
   height: 51px;
   padding: 10px 20px;
@@ -91,12 +97,7 @@ const Button = styled.button`
   margin-top: 266px;
 `;
 
-const MoreButton = styled(Specialty)`
-  border: 1px solid rgba(226, 124, 61, 0.3);
-  background: rgba(226, 124, 61, 0.09);
-`;
-
-const insuranceTypes = ["입원", "통원", "사망", "후유장애", "수술"];
+const insuranceTypes = ["입원", "통원", "후유장애", "수술"];
 
 function SelectInsuranceTypeW() {
   const navigate = useNavigate();
@@ -108,7 +109,17 @@ function SelectInsuranceTypeW() {
 
   const handleNext = () => {
     if (selected) {
-      navigate("/next-page"); /* 경로 수정하기! */
+      switch (selected) {
+        case "입원":
+        case "후유장애":
+        case "수술":
+          navigate("/document-guide");
+        case "통원":
+          navigate("/select-paid");
+          break;
+        default:
+          break;
+      }
     }
   };
 
@@ -121,7 +132,18 @@ function SelectInsuranceTypeW() {
           조건을 선택해주시면 청구 시 필요한 서류를 안내해드릴게요
         </Subtitle>
         <SpecialtyContainer>
-          {insuranceTypes.map((type, index) => (
+          {insuranceTypes.slice(0, 2).map((type, index) => (
+            <Specialty
+              key={index}
+              selected={selected === type}
+              onClick={() => handleSelect(type)}
+            >
+              {type}
+            </Specialty>
+          ))}
+        </SpecialtyContainer>
+        <SpecialtyContainer>
+          {insuranceTypes.slice(2).map((type, index) => (
             <Specialty
               key={index}
               selected={selected === type}

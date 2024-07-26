@@ -32,7 +32,7 @@ const Title = styled.h1`
   line-height: 1.5;
   align-self: flex-start;
   margin-left: 20px;
-  margin-top: 150px;
+  margin-top: 51px;
 `;
 
 const Subtitle = styled.p`
@@ -54,15 +54,16 @@ const ButtonContainer = styled.div`
   gap: 11px;
   width: 100%;
   padding: 0 20px;
-  margin-top: auto;
-  margin-bottom: 25px;
+  position: absolute;
+  bottom: 100px;
 `;
 
 const Button = styled.button`
+  font-family: Pretendard;
   width: 171px;
   height: 51px;
   padding: 10px 20px;
-  font-size: 18px;
+  font-size: 16px;
   color: ${(props) => (props.primary ? "#FFFFFF" : "#000000")};
   background-color: ${(props) => (props.primary ? "#4A7DFF" : "#F8F8F8")};
   border: none;
@@ -74,13 +75,13 @@ function LocalScript() {
   const navigate = useNavigate();
 
   const handleNext = () => {
-    navigate("/select-condition"); // SelectCondition 페이지로 이동
+    navigate("/select-condition");
   };
 
   return (
     <PageContainer>
       <Container>
-        <ProgressIndicator step={3} />
+        <ProgressIndicator step={2} />
         <Title>
           현지어 버전의
           <br />

@@ -26,14 +26,15 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
+  font-family: "Pretendard";
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 8px;
   text-align: left;
   line-height: 1.5;
   align-self: flex-start;
-  margin-left: 12px;
-  margin-top: 150px;
+  margin-left: 20px;
+  margin-top: 51px;
 `;
 
 const Subtitle = styled.p`
@@ -45,8 +46,9 @@ const Subtitle = styled.p`
   line-height: normal;
   letter-spacing: -0.439px;
   margin-bottom: 40px;
+  margin-left: 20px;
+  align-self: flex-start;
 `;
-
 const Options = styled.div`
   display: flex;
   justify-content: center;
@@ -84,8 +86,8 @@ const ButtonContainer = styled.div`
   gap: 11px;
   width: 100%;
   padding: 0 20px;
-  margin-top: auto; /* 버튼을 하단으로 */
-  margin-bottom: 25px;
+  position: absolute;
+  bottom: 100px;
 `;
 
 const Button = styled.button`
@@ -98,7 +100,6 @@ const Button = styled.button`
   border: none;
   border-radius: 16px;
   cursor: pointer;
-  margin-top: 50px; /* 버튼 상단 여백 추가 */
 `;
 
 function SelectCondition() {

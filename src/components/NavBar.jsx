@@ -57,6 +57,7 @@ const NavItem = styled(Link)`
   text-decoration: none;
   color: #000000;
   font-size: 12px;
+  font-family: Pretendard;
 
   img {
     width: 24px;

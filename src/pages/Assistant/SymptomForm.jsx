@@ -9,7 +9,7 @@ const PageContainer = styled.div`
   align-items: flex-start;
   height: 100vh;
   background: #fafafa;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 const Container = styled.div`
@@ -32,7 +32,7 @@ const Title = styled.h1`
   line-height: 1.5;
   align-self: flex-start;
   margin-left: 20px;
-  margin-top: 100px;
+  margin-top: 51px;
 `;
 
 const Subtitle = styled.p`
@@ -51,8 +51,7 @@ const Subtitle = styled.p`
 const Section = styled.div`
   width: 100%;
   padding: 0 20px;
-  margin-bottom: 20px;
-  margin-left: 30px;
+  margin-bottom: 12px;
 `;
 
 const SectionTitle = styled.h2`
@@ -64,12 +63,15 @@ const SectionTitle = styled.h2`
   line-height: normal;
   letter-spacing: -0.14px;
   margin-bottom: 10px;
+  margin-left: 18px;
 `;
 
 const SymptomButtons = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  margin-left: 18px;
+  margin-top: 15px;
 `;
 
 const SymptomButton = styled.button`
@@ -90,6 +92,7 @@ const Input = styled.input`
   width: 314px;
   padding: 20px;
   margin-top: 10px;
+  margin-left: 18px;
   border: 1px solid #ccc;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
@@ -106,10 +109,11 @@ const ButtonContainer = styled.div`
 `;
 
 const Button = styled.button`
+  font-family: Pretendard;
   width: 171px;
   height: 51px;
   padding: 10px 20px;
-  font-size: 18px;
+  font-size: 16px;
   color: ${(props) => (props.primary ? "#FFFFFF" : "#000000")};
   background-color: ${(props) => (props.primary ? "#4A7DFF" : "#F8F8F8")};
   border: none;
@@ -141,7 +145,22 @@ function SymptomForm() {
   };
 
   const handleNext = () => {
-    navigate("/symptom-script");
+    if (symptoms.length === 0 && !customSymptom) {
+      alert("증상을 입력해주세요.");
+      return;
+    }
+
+    navigate("/symptom-script", {
+      state: {
+        symptoms,
+        customSymptom,
+        startDate,
+        frequency,
+        chronicDiseases,
+        medications,
+        additionalInfo,
+      },
+    });
   };
 
   return (
@@ -192,17 +211,26 @@ function SymptomForm() {
         <Section>
           <SectionTitle>2-1. 증상은 언제 시작됐나요?</SectionTitle>
           <SymptomButtons>
-            {["오늘", "1일 전", "2-3일 전", "일주일 전", "일주일 이상"].map(
-              (date, index) => (
-                <SymptomButton
-                  key={index}
-                  selected={startDate === date}
-                  onClick={() => setStartDate(date)}
-                >
-                  {date}
-                </SymptomButton>
-              )
-            )}
+            {["오늘", "1일 전", "2-3일 전"].map((date, index) => (
+              <SymptomButton
+                key={index}
+                selected={startDate === date}
+                onClick={() => setStartDate(date)}
+              >
+                {date}
+              </SymptomButton>
+            ))}
+          </SymptomButtons>
+          <SymptomButtons>
+            {["일주일 전", "일주일 이상"].map((date, index) => (
+              <SymptomButton
+                key={index}
+                selected={startDate === date}
+                onClick={() => setStartDate(date)}
+              >
+                {date}
+              </SymptomButton>
+            ))}
           </SymptomButtons>
         </Section>
         <Section>
@@ -254,7 +282,11 @@ function SymptomForm() {
           <Button onClick={() => navigate(-1)} primary={false}>
             이전
           </Button>
-          <Button onClick={handleNext} primary={true}>
+          <Button
+            onClick={handleNext}
+            primary={true}
+            disabled={!startDate || !frequency}
+          >
             다음
           </Button>
         </ButtonContainer>
