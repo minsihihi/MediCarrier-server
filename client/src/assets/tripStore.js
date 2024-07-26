@@ -12,7 +12,13 @@ const useTripStore = create((set) => ({
   setEndDate: (endDate) => set({ endDate }),
   setDates: (startDate, endDate) => set({ startDate, endDate }),
 }));
-
+  //const handleSubmit = async (event) => {
+    //event.preventDefault();
+    //try {
+      //  const response = await axios.post('http://127.0.0.1:8000/api/login', {
+        //    username,
+          //  password,
+        //});
 // 백 api 연결
 const onPost = async () => {
   // Zustand에서 상태 가져오기

@@ -92,7 +92,11 @@ DATABASES = {
     }
 }
 
+from corsheaders.defaults import default_headers
 
+CORS_ALLOW_HEADERS = default_headers + (
+    'authorization',
+)
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 

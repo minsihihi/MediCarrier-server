@@ -7,9 +7,10 @@ from .models import *
 from .serializers import *
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated  # 인증된 사용자만 접근 가능
-
+from requests.exceptions import HTTPError
 # libertranslate api를 위해 추가됨
 import requests
+import time
 
 
 class AssistView(views.APIView):
