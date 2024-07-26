@@ -1,21 +1,41 @@
-import React, { useState } from "react"; // useState 추가
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import useTripStore from "../assets/tripStore";
 import useInsuranceStore from "../assets/insuranceStore";
-import InsuranceModal from "../components/InsuranceModal"; // InsuranceModal 컴포넌트 임포트
+import InsuranceModal from "../components/InsuranceModal";
+import ChecklisteModal from "../components/ChecklisteModal";
 
 function Home() {
   const navigate = useNavigate();
   const navigateToSetCountry = () => {
     navigate("/medicarrier/register.trip");
   };
-  const { country, startDate, endDate } = useTripStore();
-  const { insuranceType } = useInsuranceStore();
-  const [isInsuranceModalOpen, setIsInsuranceModalOpen] = useState(false); // 모달 상태 추가
 
-  const handleInsuranceBoxClick = () => {
+  const navigateToInsFeature = () => {
+    navigate("/insurance.feature");
+  };
+  const navigateToInsStep = () => {
+    navigate("/insurance.step");
+  };
+  const navigateToInsContact = () => {
+    navigate("/insurance.contact");
+  };
+
+  const navigateToAssistRecord = () => {
+    navigate("/assist.record");
+  };
+
+  const { country, startDate, endDate } = useTripStore();
+  const { insuranceType, insuranceName } = useInsuranceStore();
+  const [isInsuranceModalOpen, setIsInsuranceModalOpen] = useState(false);
+  const [isChecklistModalOpen, setIsChecklistModalOpen] = useState(false); // 모달 상태 추가
+
+  const handleInsuranceBox = () => {
     setIsInsuranceModalOpen(true);
+  };
+  const handleChecklistBox = () => {
+    setIsChecklistModalOpen(true);
   };
 
   // 현재 날짜를 가져옵니다.
@@ -255,46 +275,282 @@ function Home() {
       </MyTrip>
       <MyInsurance>
         내 보험
-        <MyInsuranceBox onClick={handleInsuranceBoxClick}>
-          <div>
-            <div
-              style={{
-                color: "black",
-                fontSize: "14px",
-                fontFamily: "Pretendard",
-                fontWeight: "700",
-                lineHeight: "18.73px",
-                wordWrap: "break-word",
-                paddingBottom: "9px",
-              }}
-            >
-              아직 보험이 등록되지 않았어요
-            </div>
-            <div
-              style={{
-                color: "#494949",
-                fontSize: "14px",
-                fontFamily: "Pretendard",
-                fontWeight: "400",
-                lineHeight: "18.73px",
-                wordWrap: "break-word",
-              }}
-            >
-              클릭해서 <br />
-              보험을 등록해보세요
-            </div>
-          </div>
-          <img src="./img/Component 130.svg" alt="Banner" />
+        <MyInsuranceBox onClick={handleInsuranceBox}>
+          {insuranceType ? (
+            <>
+              <div>
+                <div
+                  style={{
+                    color: "black",
+                    fontSize: "14px",
+                    fontFamily: "Pretendard",
+                    fontWeight: "700",
+                    lineHeight: "18.73px",
+                    wordWrap: "break-word",
+                    paddingBottom: "9px",
+                  }}
+                >
+                  {insuranceName} - {insuranceType}
+                </div>
+                <div
+                  style={{
+                    color: "#494949",
+                    fontSize: "14px",
+                    fontFamily: "Pretendard",
+                    fontWeight: "400",
+                    lineHeight: "18.73px",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  {insuranceType === "실속형" ? (
+                    <>
+                      가성비 요금 내고
+                      <br /> 기본적으로 충분한 보장을!
+                    </>
+                  ) : insuranceType === "표준형" ? (
+                    "가장 안정적이고 합리적인 선택!"
+                  ) : insuranceType === "고급형" ? (
+                    "최고의 혜택으로 완벽한 여행을!"
+                  ) : null}
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <div
+                  style={{
+                    color: "black",
+                    fontSize: "14px",
+                    fontFamily: "Pretendard",
+                    fontWeight: "700",
+                    lineHeight: "18.73px",
+                    wordWrap: "break-word",
+                    paddingBottom: "9px",
+                  }}
+                >
+                  아직 보험이 등록되지 않았어요
+                </div>
+                <div
+                  style={{
+                    color: "#494949",
+                    fontSize: "14px",
+                    fontFamily: "Pretendard",
+                    fontWeight: "400",
+                    lineHeight: "18.73px",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  클릭해서 <br />
+                  보험을 등록해보세요
+                </div>
+              </div>
+            </>
+          )}
+          <img src="../img/Component 130.svg" alt="MyInsuranceBox icon" />
         </MyInsuranceBox>
       </MyInsurance>
       {isInsuranceModalOpen && (
         <InsuranceModal onClose={() => setIsInsuranceModalOpen(false)} />
       )}
+
+      {isTripEnded && (
+        <>
+          <AssistRecord>
+            어시스트 이용 기록
+            <AssistRecordBox onClick={navigateToAssistRecord}>
+              <div>
+                <h2>{new Date(endDate).toLocaleDateString()}</h2>
+                <p>
+                  어시스트 이용 기록 <br /> 확인하러 가기
+                </p>
+              </div>
+              <img src="../img/icon0.svg" alt="assist record icon" />
+            </AssistRecordBox>
+          </AssistRecord>
+        </>
+      )}
+
+      <AboutInsurance>
+        보험 알아보기
+        <AboutInsuranceBoxes>
+          <div onClick={navigateToInsFeature}>
+            <span>
+              <h1>보장 범위와 특징</h1>
+              <h2>
+                여행자 보험의 보장 범위와 특징을
+                <br />
+                정확히 알아보세요!
+              </h2>
+            </span>
+            <img src="../img/icon1.svg" />
+          </div>
+          <div onClick={navigateToInsStep}>
+            <span>
+              <h1>보험 처리 절차 안내</h1>
+              <h2>
+                복잡한 보험 처리 절차를
+                <br />
+                자세히 알아보세요!
+              </h2>
+            </span>
+            <img src="../img/icon2.svg" />
+          </div>
+          <div onClick={handleChecklistBox}>
+            <span>
+              <h1>보험 청구시 필요 서류</h1>
+              <h2>
+                보험금을 받기 위해 꼭 필요한
+                <br />
+                서류 리스트를 확인해보세요!
+              </h2>
+            </span>
+            <img src="../img/icon3.svg" />
+          </div>
+          {isChecklistModalOpen && (
+            <ChecklisteModal onClose={() => setIsChecklistModalOpen(false)} />
+          )}
+          <div onClick={navigateToInsContact}>
+            <span>
+              <h1>보험사 연락</h1>
+              <h2>
+                평일 오전 10시부터 오후 6시까지
+                <br />
+                친절한 상담원이 보험 처리를 도와드려요!
+              </h2>
+            </span>
+            <img src="../img/icon4.svg" />
+          </div>
+        </AboutInsuranceBoxes>
+      </AboutInsurance>
+      <Chatting>
+        진행 중인 채팅 상황
+        <img src="../img/arrow-right-white.svg" />
+      </Chatting>
     </>
   );
 }
 
 export default Home;
+
+const AssistRecord = styled.div`
+  color: var(--black, #000);
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin: 0 20px 24px 20px;
+  width: 353px;
+`;
+
+const AssistRecordBox = styled.div`
+  border-radius: 8px;
+  border: 1px solid #f5f5f5;
+  background: #fff;
+  width: 323px;
+  height: 66px;
+  padding: 17px 15px;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  img {
+    width: 74px;
+    height: 71px;
+  }
+  h2 {
+    margin: 0;
+    color: var(--black, #000);
+    font-family: Pretendard;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 133.8%; /* 18.732px */
+    padding-bottom: 9px;
+  }
+  p {
+    margin: 0;
+    color: #a7a7a7;
+    font-family: Pretendard;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 133.8%; /* 18.732px */
+  }
+`;
+
+const Chatting = styled.div`
+  margin: 0 0 30px 20px;
+  display: flex;
+  width: 321px;
+  padding: 13px 16px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border-radius: 68px;
+  background: linear-gradient(90deg, #2e68ff 0%, #4a7dff 55%);
+  color: #fff;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  img {
+    width: 24px;
+    height: 24px;
+  }
+`;
+
+const AboutInsurance = styled.div`
+  color: var(--black, #000);
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin: 0 20px 24px 20px;
+  width: 353px;
+`;
+const AboutInsuranceBoxes = styled.div`
+  div {
+    border-radius: 8px;
+    border: 1px solid #f5f5f5;
+    background: #fff;
+    width: 323px;
+    height: 66px;
+    padding: 17px 15px;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  span {
+    h1 {
+      color: var(--black, #000);
+      font-family: Pretendard;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 133.8%; /* 18.732px */
+      margin: 0;
+      padding-bottom: 9px;
+    }
+    h2 {
+      color: #a7a7a7;
+      font-family: Pretendard;
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 133.8%; /* 18.732px */
+      letter-spacing: -0.5px;
+      margin: 0;
+    }
+  }
+`;
 
 const MyInsurance = styled.div`
   color: var(--black, #000);
