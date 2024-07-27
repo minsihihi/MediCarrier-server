@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import useInsuranceStore from "../assets/insuranceStore";
+import useInsuranceStore from "../../assets/insuranceStore";
 import { useNavigate } from "react-router-dom";
 
 const InsContact = () => {

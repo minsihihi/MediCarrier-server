@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "../styles/CustomDatePicker.css"; // 커스텀 CSS 파일 임포트
-import useTripStore, { onPost } from "../assets/tripStore";
+import "../../styles/CustomDatePicker.css"; // 커스텀 CSS 파일 임포트
+import useTripStore, { onPost } from "../../assets/tripStore";
 
 const SetDate = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const SetDate = () => {
     if (startDate && endDate) {
       setDates(startDate, endDate); // 날짜를 Zustand 상태로 업데이트
       onPost(); // 데이터 서버에 전송
-      navigate("/"); // 홈 페이지로 이동
+      navigate("/home"); // 홈 페이지로 이동
     } else {
       alert("여행 기간을 설정해주세요.");
     }

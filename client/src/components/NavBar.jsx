@@ -10,7 +10,7 @@ import MyIcon from "../assets/icons/user.svg";
 const NavBar = () => {
   return (
     <NavBarContainer>
-      <NavItem to="/">
+      <NavItem to="/home">
         <img src={HomeIcon} alt="Home" />
         <span>홈</span>
       </NavItem>
@@ -18,7 +18,7 @@ const NavBar = () => {
         <img src={MedicalCardIcon} alt="Medical Card" />
         <span>의료 카드</span>
       </NavItem>
-      <NavItem to="/" className="main-icon">
+      <NavItem to="/home" className="main-icon">
         <img src={MainIcon} alt="Main" />
       </NavItem>
       <NavItem to="/search-medical">
