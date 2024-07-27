@@ -1,23 +1,17 @@
 import React, { useEffect } from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  useLocation,
-  Router,
-} from "react-router-dom";
-import Home from "./pages/Home";
-import SetCountry from "./pages/SetCountry";
-import SetDate from "./pages/SetDate";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-
-import InsFeature from "./pages/InsFeature";
-import InsStep from "./pages/InsStep";
-import InsChecklist from "./pages/InsChecklist";
-import InsContact from "./pages/InsContact";
-import AssistRecord from "./pages/AssistRecord";
-
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import OnBoarding from "./pages/Onboarding/OnBoarding";
+import Login from "./pages/Onboarding/Login";
+import Signup from "./pages/Onboarding/Signup";
+import SignupSucces from "./pages/Onboarding/SignupSucces";
+import Home from "./pages/Home/Home";
+import SetCountry from "./pages/Home/SetCountry";
+import SetDate from "./pages/Home/SetDate";
+import InsFeature from "./pages/Home/InsFeature";
+import InsStep from "./pages/Home/InsStep";
+import InsChecklist from "./pages/Home/InsChecklist";
+import InsContact from "./pages/Home/InsContact";
+import AssistRecord from "./pages/Home/AssistRecord";
 import SelectFacility from "./pages/Assistant/SelectFacility";
 import MapPharmacyView from "./pages/Assistant/MapPharmacyView";
 import SymptomForm from "./pages/Assistant/SymptomForm";
@@ -30,7 +24,7 @@ import SelectInsuranceTypeD from "./pages/Assistant/SelectInsuranceTypeD";
 import SelectInsuranceTypeW from "./pages/Assistant/SelectInsuranceTypeW";
 import DocumentGuide from "./pages/Assistant/DocumentGuide";
 import SelectPaid from "./pages/Assistant/SelectPaid";
-import SelectClaim from "./pages/Assistant/SelectClaim"; // SelectClaim 추가
+import SelectClaim from "./pages/Assistant/SelectClaim";
 import NavBar from "./components/NavBar";
 import "./App.css";
 
@@ -39,22 +33,28 @@ function ScrollToTop() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [pathname]); // pathname이 변경될 때마다 실행
+  }, [pathname]);
 
-  return null; // 이 컴포넌트는 UI를 렌더링하지 않음
+  return null;
 }
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+  const hideNavBarPaths = ["/", "/login", "/signup", "/signup.succes"];
+
   return (
-    <BrowserRouter>
+    <>
       <ScrollToTop />
       <Routes>
-        {/* 여행 등록 */}
-        <Route path="/" element={<Home />} />
-        <Route path="/medicarrier/register.trip" element={<SetCountry />} />
-        <Route path="/medicarrier/register.trip.date" element={<SetDate />} />
+        {/* 로그인/회원가입 */}
+        <Route path="/" element={<OnBoarding />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/signup.succes" element={<SignupSucces />} />
+        {/* 여행 등록 */}
+        <Route path="/home" element={<Home />} />
+        <Route path="/medicarrier/register.trip" element={<SetCountry />} />
+        <Route path="/medicarrier/register.trip.date" element={<SetDate />} />
         <Route path="/register.trip" element={<SetCountry />} />
         <Route path="/register.trip.date" element={<SetDate />} />
         {/* 어시스트 이용 기록 */}
@@ -64,6 +64,7 @@ function App() {
         <Route path="/insurance.step" element={<InsStep />} />
         <Route path="/insurance.checklist" element={<InsChecklist />} />
         <Route path="/insurance.contact" element={<InsContact />} />
+        {/* 어시스트 */}
         <Route path="/assist" element={<SelectFacility />} />
         <Route path="/map-pharmacy" element={<MapPharmacyView />} />
         <Route path="/symptom-form" element={<SymptomForm />} />
@@ -82,9 +83,17 @@ function App() {
         />
         <Route path="/document-guide" element={<DocumentGuide />} />
         <Route path="/select-paid" element={<SelectPaid />} />
-        <Route path="/select-claim" element={<SelectClaim />} />{" "}
+        <Route path="/select-claim" element={<SelectClaim />} />
       </Routes>
-      <NavBar />
+      {!hideNavBarPaths.includes(location.pathname) && <NavBar />}
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }

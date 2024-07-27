@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import useTripStore from "../assets/tripStore";
+import useTripStore from "../../assets/tripStore";
 
 const SERVICE_COUNTRIES = ["일본"];
 
