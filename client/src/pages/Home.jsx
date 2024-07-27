@@ -9,7 +9,7 @@ import ChecklisteModal from "../components/ChecklisteModal";
 function Home() {
   const navigate = useNavigate();
   const navigateToSetCountry = () => {
-    navigate("/medicarrier/register.trip");
+    navigate("/register.trip");
   };
 
   const navigateToInsFeature = () => {

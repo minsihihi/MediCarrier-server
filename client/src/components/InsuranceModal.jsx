@@ -62,21 +62,21 @@ function InsuranceModal({ onClose }) {
         return (
           <>
             <span>김지은님에게 맞는 보험을 추천해드려요!</span>
-            <img src="../img/실속형_결과.png" alt="실속형 결과" />
+            <img src="./img/실속형_결과.png" alt="실속형 결과" />
           </>
         );
       case "표준형":
         return (
           <>
             <span>김지은님에게 맞는 보험을 추천해드려요!</span>
-            <img src="../img/표준형_결과.png" alt="표준형_결과" />
+            <img src="./img/표준형_결과.png" alt="표준형_결과" />
           </>
         );
       case "고급형":
         return (
           <>
             <span>김지은님에게 맞는 보험을 추천해드려요!</span>
-            <img src="../img/고급형_결과.png" alt="고급형_결과" />
+            <img src="./img/고급형_결과.png" alt="고급형_결과" />
           </>
         );
       default:
@@ -111,7 +111,7 @@ function InsuranceModal({ onClose }) {
     <ModalOverlay>
       <ModalContent>
         <CloseButton onClick={onClose}>
-          <img src="../img/ph_x.svg" alt="취소" />
+          <img src="./img/ph_x.svg" alt="취소" />
         </CloseButton>
         {!showRecommendation ? (
           <>

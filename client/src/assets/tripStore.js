@@ -52,6 +52,29 @@ const onPost = async () => {
   }
 };
 
+const onGet = async () => {
+  try {
+    // 로컬 스토리지에서 사용자 ID 가져오기
+    const userId = localStorage.getItem('userId');
+
+    // GET 요청을 보낼 URL
+    const url = `http://127.0.0.1:8000/medicarrier/register.trip?user=${userId}`;
+
+    const response = await axios({
+      method: 'GET',
+      url: url,
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`, // 인증 토큰
+        'Content-Type': 'application/json', // 데이터 형식 지정
+      },
+    });
+
+    return response.data; // 성공 시 데이터 반환
+  } catch (error) {
+    console.error('오류:', error.response ? error.response.data : error.message);
+    return null; // 오류 발생 시 null 반환
+  }
+};
 export default useTripStore;
-export { onPost };
+export { onPost, onGet };
 
