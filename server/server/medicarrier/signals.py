@@ -2,9 +2,11 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import Trip, MediCard, MediInfo, BasicInfo
+from api.models import User
 import requests
 
 def get_language_from_country(country):
+    # 언어 감지를 위한 API 요청 로직
     api_url = "https://libretranslate.com/translate"
     payload = {
         'q': 'hello',
@@ -23,26 +25,18 @@ def get_language_from_country(country):
     except requests.RequestException:
         return 'en'
 
-def check_and_create_medicard(user, country):
-    # 모든 필수 데이터가 존재하는지 확인
-    if Trip.objects.filter(user=user, country=country).exists() and \
-       MediInfo.objects.filter(medicard__user=user, medicard__country__country=country).exists() and \
-       BasicInfo.objects.filter(medicard__user=user, medicard__country__country=country).exists():
-        
-        language = get_language_from_country(country)
-        MediCard.objects.get_or_create(user=user, country=Trip.objects.get(user=user, country=country), defaults={'language': language})
+def create_medicard(user, country, language):
+    MediCard.objects.get_or_create(user=user, country=country, defaults={'language': language})
+
+@receiver(post_save, sender=User)
+def create_default_medicards(sender, instance, created, **kwargs):
+    if created:
+        # 기본 언어 설정 (한국어와 영어)
+        create_medicard(instance, None, 'ko')
+        create_medicard(instance, None, 'en')
 
 @receiver(post_save, sender=Trip)
-def trip_post_save(sender, instance, created, **kwargs):
+def create_trip_medicard(sender, instance, created, **kwargs):
     if created:
-        check_and_create_medicard(instance.user, instance.country)
-
-@receiver(post_save, sender=MediInfo)
-def mediinfo_post_save(sender, instance, created, **kwargs):
-    if created:
-        check_and_create_medicard(instance.medicard.user, instance.medicard.country.country)
-
-@receiver(post_save, sender=BasicInfo)
-def basicinfo_post_save(sender, instance, created, **kwargs):
-    if created:
-        check_and_create_medicard(instance.medicard.user, instance.medicard.country.country)
+        language = get_language_from_country(instance.country)
+        create_medicard(instance.user, instance, language)
