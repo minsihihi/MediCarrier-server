@@ -53,13 +53,9 @@ class TripListCreateAPIView(APIView):
 
 
 
-<<<<<<< HEAD
-class MediCardView(APIView):    # 로그인된 사용자의 메디카드 정보 생성/반환
-=======
 class MediCardView(views.APIView):
     permission_classes = [IsAuthenticated]
 
->>>>>>> 6ddcfa2b5aee103e14bb6b5ddb6490dd4543737d
     def get(self, request, format=None):
         medicard = get_object_or_404(MediCard, user=request.user)
         serializer = MediCardSerializer(medicard)
@@ -68,12 +64,6 @@ class MediCardView(views.APIView):
     def post(self, request, format=None):
         serializer = MediCardSerializer(data=request.data)
         if serializer.is_valid():
-<<<<<<< HEAD
-            serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-=======
             trip = get_object_or_404(Trip, user=request.user)
             language = self.get_language_from_country(trip.country)
             serializer.save(user=request.user, country=trip, language=language)
@@ -99,7 +89,6 @@ class MediCardView(views.APIView):
         except requests.RequestException as e:
             return 'en'  # 오류 발생 시 기본값은 'en'
 
->>>>>>> 6ddcfa2b5aee103e14bb6b5ddb6490dd4543737d
 class TranslateText:    # 번역 메소드
     def __init__(self):
         self.api_url = "https://libretranslate.com/translate"
