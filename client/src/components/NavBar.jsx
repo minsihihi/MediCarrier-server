@@ -18,7 +18,7 @@ const NavBar = () => {
         <img src={MedicalCardIcon} alt="Medical Card" />
         <span>의료 카드</span>
       </NavItem>
-      <NavItem to="/main" className="main-icon">
+      <NavItem to="/" className="main-icon">
         <img src={MainIcon} alt="Main" />
       </NavItem>
       <NavItem to="/search-medical">
@@ -45,7 +45,7 @@ const NavBarContainer = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  left: 50%;
+  left: 196px;
   transform: translateX(-50%);
   border-top: 1px solid #e0e0e0;
 `;

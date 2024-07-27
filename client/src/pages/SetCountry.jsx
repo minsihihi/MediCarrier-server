@@ -90,7 +90,7 @@ const SetCountry = () => {
           lineHeight: "normal",
           letterSpacing: "-0.5px",
           position: "fixed",
-          top: "600px",
+          top: "550px",
           left: "293px",
         }}
         onClick={navigateToSetDate}

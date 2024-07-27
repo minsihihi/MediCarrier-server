@@ -114,7 +114,7 @@ function Home() {
                   fontSize: "20.5px",
                   fontWeight: "300",
                   wordWrap: "break-word",
-                  lineHeight: "1.3", // 줄 간격 조정
+                  lineHeight: "1.1", // 줄 간격 조정
                 }}
               >
                 메디캐리어와 함께하는 <br /> {country} 여행&nbsp;
@@ -125,7 +125,7 @@ function Home() {
                   fontSize: "20.5px",
                   fontWeight: "600",
                   wordWrap: "break-word",
-                  lineHeight: "1.3", // 줄 간격 조정
+                  lineHeight: "1.1", // 줄 간격 조정
                 }}
               >
                 {daysSinceStart}일차
@@ -138,7 +138,6 @@ function Home() {
                   fontSize: "20.5px",
                   fontWeight: "400",
                   wordWrap: "break-word",
-                  lineHeight: "1.1", // 줄 간격 조정
                 }}
               >
                 여행일정이
@@ -150,7 +149,6 @@ function Home() {
                   fontSize: "20.5px",
                   fontWeight: "700",
                   wordWrap: "break-word",
-                  lineHeight: "1.1", // 줄 간격 조정
                 }}
               >
                 등록되지 않았어요
@@ -229,7 +227,6 @@ function Home() {
                     fontFamily: "Pretendard",
                     fontWeight: "500",
                     wordWrap: "break-word",
-                    letterSpacing: "-0.7px",
                     wordSpacing: "-0.7px",
                     textShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
                   }}
@@ -427,11 +424,17 @@ function Home() {
         진행 중인 채팅 상황
         <img src="../img/arrow-right-white.svg" />
       </Chatting>
+      <Blank></Blank>
     </>
   );
 }
 
 export default Home;
+
+const Blank = styled.div`
+  width: 393px;
+  height: 105px;
+`;
 
 const AssistRecord = styled.div`
   color: var(--black, #000);
@@ -546,7 +549,6 @@ const AboutInsuranceBoxes = styled.div`
       font-style: normal;
       font-weight: 400;
       line-height: 133.8%; /* 18.732px */
-      letter-spacing: -0.5px;
       margin: 0;
     }
   }
@@ -564,7 +566,7 @@ const MyInsurance = styled.div`
   height: 135px;
 `;
 const MyInsuranceBox = styled.div`
-  width: 353px;
+  width: 323px;
   height: 100px;
   margin-top: 16px;
   border-radius: 8px;
@@ -573,7 +575,9 @@ const MyInsuranceBox = styled.div`
   box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.03);
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
+  padding: 0 15px;
+  cursor: pointer;
 `;
 
 const InnerDiv = styled.div`
@@ -615,6 +619,9 @@ const MyTripBox = styled.div`
   height: 147px;
   margin-top: 16px;
   display: flex;
+  img {
+    cursor: pointer;
+  }
 `;
 
 const MyTrip = styled.div`
