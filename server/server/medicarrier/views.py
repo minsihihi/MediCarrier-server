@@ -52,7 +52,9 @@ class TripListCreateAPIView(APIView):
 
 
 
-class MediCardView(APIView):    # 로그인된 사용자의 메디카드 정보 생성/반환
+class MediCardView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, format=None):
         medicard = get_object_or_404(MediCard, user=request.user)
         serializer = MediCardSerializer(medicard)
@@ -61,9 +63,30 @@ class MediCardView(APIView):    # 로그인된 사용자의 메디카드 정보 
     def post(self, request, format=None):
         serializer = MediCardSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            trip = get_object_or_404(Trip, user=request.user)
+            language = self.get_language_from_country(trip.country)
+            serializer.save(user=request.user, country=trip, language=language)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_language_from_country(self, country):
+        api_url = "https://libretranslate.com/translate"
+        payload = {
+            'q': 'hello',  # 번역할 텍스트
+            'source': 'en',  # 번역할 텍스트의 원본 언어
+            'target': 'auto'  # 자동으로 대상 언어 감지
+        }
+        headers = {
+            'accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+        try:
+            response = requests.post(api_url, data=payload, headers=headers)
+            response.raise_for_status()  # HTTPError 발생 시 예외 처리
+            result = response.json()
+            return result.get('target_language', 'en')  # 감지된 언어 반환, 기본값은 'en'
+        except requests.RequestException as e:
+            return 'en'  # 오류 발생 시 기본값은 'en'
 
 class TranslateText:    # 번역 메소드
     def __init__(self):
