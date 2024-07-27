@@ -21,16 +21,18 @@ class MediCard(models.Model):   # 사용자당 하나만 생성 & 여행의 국�
     language = models.CharField(max_length=20)
 
     def __str__(self):
-        return f"{self.user.username}의 의료카드"
+        return f"{self.user.username} - {self.country.country}"
+
 
 
 class MediInfo(models.Model):   # 메디카드당 하나만 생성되는 메디인포 모델
     medicard = models.OneToOneField(
-        'MediCard', on_delete=models.CASCADE, primary_key=True)
+        'MediCard', on_delete=models.CASCADE, primary_key=True, db_constraint=False)
     condition = models.CharField(max_length=20, default="현재 증상 없음")
     illness = models.CharField(max_length=20, default="없음")
-    allergy = models.CharField(max_length=20, default="복용하는 약 없음")
-    diagnosis = models.CharField(max_length=20, default="알레르기 없음")
+    medicine = models.CharField(max_length=20, default="복용하는 약 없음")
+    allergy = models.CharField(max_length=20, default="알레르기 없음")
+    diagnosis = models.CharField(max_length=20, default="근 n개월 이내 없음")
     surgery = models.CharField(max_length=20, default="근 n개월 이내 없음")
 
     def __str__(self):
@@ -39,7 +41,7 @@ class MediInfo(models.Model):   # 메디카드당 하나만 생성되는 메디�
 
 class BasicInfo(models.Model):  # 메디카드당 하나만 생성되는 기본인포 모델
     medicard = models.OneToOneField(
-        'MediCard', on_delete=models.CASCADE, primary_key=True)
+        'MediCard', on_delete=models.CASCADE, primary_key=True, db_constraint=False)
     name = models.CharField(max_length=20, default="이름")
 
     SEX_CHOICES = [
@@ -48,9 +50,9 @@ class BasicInfo(models.Model):  # 메디카드당 하나만 생성되는 기본�
     ]
 
     sex = models.CharField(max_length=20, choices=SEX_CHOICES)
-    nationallity = models.CharField(max_length=20, default="국적")
+    nationality = models.CharField(max_length=20, default="국적")
     name_eng = models.CharField(max_length=20, default="영문 이름")
-    birthdate = models.DateField
+    birthdate = models.DateField()
     height = models.CharField(max_length=20, default="키")
     weight = models.CharField(max_length=20, default="몸무게")
 
@@ -238,42 +240,3 @@ class Insurance(models.Model):
         return self.insturance_name
 
 
-class MediCard(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    country = models.OneToOneField(Trip, on_delete=models.CASCADE)
-    language = models.CharField(max_length=20)
-
-    def __str__(self):
-        return str(self.country)
-
-
-class MediInfo(models.Model):
-    medicard = models.OneToOneField(
-        MediCard, on_delete=models.CASCADE, primary_key=True)
-    condition = models.CharField(max_length=20, default="현재 증상 없음")
-    illness = models.CharField(max_length=20, default="없음")
-    medicine = models.CharField(max_length=20, default="복용하는 약 없음")
-    allergy = models.CharField(max_length=20, default="알레르기 없음")
-    diagnosis = models.CharField(max_length=20, default="근 n개월 이내 없음")
-    surgery = models.CharField(max_length=20, default="근 n개월 이내 없음")
-
-    def __str__(self):
-        return str(self.medicard)
-
-
-class BasicInfo(models.Model):
-    medicard = models.OneToOneField(
-        MediCard, on_delete=models.CASCADE, primary_key=True)
-    name = models.CharField(max_length=20)
-    sex = models.CharField(max_length=20)
-    nationality = models.CharField(max_length=20)
-    name_eng = models.CharField(max_length=20)
-    birthdate = models.CharField(max_length=20)
-    height = models.CharField(max_length=20)
-    weight = models.CharField(max_length=20)
-    bloodtype = models.CharField(max_length=20)
-    pregnant = models.CharField(max_length=20)
-
-    def __str__(self):
-        return str(self.medicard)
