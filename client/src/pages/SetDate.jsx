@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../styles/CustomDatePicker.css"; // 커스텀 CSS 파일 임포트
-import useTripStore, {onPost} from "../assets/tripStore";
+import useTripStore, { onPost } from "../assets/tripStore";
 
 const SetDate = () => {
   const navigate = useNavigate();
@@ -71,7 +71,7 @@ const SetDate = () => {
           lineHeight: "normal",
           letterSpacing: "-0.5px",
           position: "fixed",
-          top: "600px",
+          top: "550px",
           left: "293px",
         }}
         onClick={navigateToHome}
