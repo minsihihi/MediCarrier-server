@@ -60,7 +60,7 @@ function App() {
         <Route path="/insurance.step" element={<InsStep />} />
         <Route path="/insurance.checklist" element={<InsChecklist />} />
         <Route path="/insurance.contact" element={<InsContact />} />
-        <Routes>
+        
         <Route path="/" element={<SelectFacility />} />
         <Route path="/map-pharmacy" element={<MapPharmacyView />} />
         <Route path="/symptom-form" element={<SymptomForm />} />
@@ -80,9 +80,10 @@ function App() {
         <Route path="/document-guide" element={<DocumentGuide />} />
         <Route path="/select-paid" element={<SelectPaid />} />
         <Route path="/select-claim" element={<SelectClaim />} />{" "}
+      
+      
       </Routes>
       <NavBar />
-      </Routes>
     </BrowserRouter>
 
 
