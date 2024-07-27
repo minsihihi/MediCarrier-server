@@ -12,7 +12,8 @@ admin.site.register(Insurance)
 
 @admin.register(MediCard)
 class MediCardAdmin(admin.ModelAdmin):
-    list_display = ('user', 'country', 'language')
+    list_display = ('user', 'country', 'language')  # 표시할 필드 설정
+    search_fields = ('user__username', 'country__name')  # 검색 필드 설정
 
 
 @admin.register(MediInfo)

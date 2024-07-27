@@ -15,13 +15,13 @@ class Trip(models.Model):   # 사용자당 하나만 생성되는 여행 모델
 
 
 class MediCard(models.Model):   # 사용자당 하나만 생성 & 여행의 국가를 외래키로 가져오고 언어를 정의하는 모델
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    country = models.OneToOneField(Trip, on_delete=models.CASCADE)
+    country = models.CharField(max_length=20)
     language = models.CharField(max_length=20)
 
     def __str__(self):
-        return f"{self.user.username} - {self.country.country}"
+        return f"{self.user.username} - {self.country}"
 
 
 
