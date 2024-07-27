@@ -8,6 +8,7 @@ class TripSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class MediCardSerializer(serializers.ModelSerializer):
+<<<<<<< HEAD
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     country = serializers.PrimaryKeyRelatedField(queryset=Trip.objects.all())
 
@@ -15,6 +16,14 @@ class MediCardSerializer(serializers.ModelSerializer):
         model = MediCard
         fields = ['user', 'country', 'language']  # 'id' 필드 제외
         
+=======
+    user = serializers.ReadOnlyField(source='user.username')  # 읽기 전용 필드로 설정
+    country = serializers.SlugRelatedField(slug_field='country', queryset=Trip.objects.all())
+
+    class Meta:
+        model = MediCard
+        fields = ['user', 'country', 'language']
+>>>>>>> 6ddcfa2b5aee103e14bb6b5ddb6490dd4543737d
         
 class MediInfoSerializer(serializers.ModelSerializer):
     class Meta:
