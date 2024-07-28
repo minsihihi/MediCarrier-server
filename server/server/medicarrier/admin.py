@@ -10,6 +10,12 @@ class TripAdmin(admin.ModelAdmin):
 admin.site.register(Hospital)
 admin.site.register(Insurance)
 
+@admin.register(Insurance)
+class InsuranceAdmin(admin.ModelAdmin):
+    list_display = ('insurance_type', 'insurance_name', 'insurance_call')
+
+admin.site.register(Insurance, InsuranceAdmin)
+
 @admin.register(MediCard)
 class MediCardAdmin(admin.ModelAdmin):
     list_display = ('user', 'country', 'language')  # 표시할 필드 설정
