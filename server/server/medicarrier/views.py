@@ -432,19 +432,24 @@ def get_hospitals(request):
     response = requests.get(url)
     data = response.json()
     
-    # 필요한 필드만 추출하여 가공
-    hospitals = [
-        {
-            "name": result.get("name"),
-            "rating": result.get("rating"),
-            "address": result.get("vicinity"),
-            "lat": result["geometry"]["location"].get("lat"),
-            "lng": result["geometry"]["location"].get("lng"),
-            "place_id": result.get("place_id")
-        }
-        for result in data.get("results", [])
-    ]
-    
-    return JsonResponse({"results": hospitals})
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        hospitals = []
+        for result in data.get('results', []):
+            photos = result.get('photos', [])
+            photo_url = None
+            if photos:
+                photo_reference = photos[0].get('photo_reference')
+                photo_url = f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={photo_reference}&key={api_key}"
 
-
+            hospital = {
+                'place_id': result.get('place_id'),
+                'name': result.get('name'),
+                'address': result.get('vicinity'),
+                'rating': result.get('rating'),
+                'photo_url': photo_url,
+            }
+            hospitals.append(hospital)
+        return JsonResponse({'results': hospitals})
+    return JsonResponse(response.json(), status=response.status_code)
