@@ -13,12 +13,17 @@ from django.http import JsonResponse
 from googletrans import Translator
 from rest_framework import generics
 from rest_framework import viewsets
+<<<<<<< HEAD
 from rest_framework.response import Response
+=======
+import requests
+>>>>>>> 24bb875c0b305dafaf8f5b65f38fb6afcc05c00b
 
 
 import math
 
 def haversine(lat1, lon1, lat2, lon2):
+<<<<<<< HEAD
     # 지구의 반지름 (km)
     R = 6371.0
 
@@ -37,6 +42,17 @@ def haversine(lat1, lon1, lat2, lon2):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     distance = R * c
 
+=======
+    R = 6371  # Earth radius in kilometers
+
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    
+    a = math.sin(dlat / 2) ** 2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    
+    distance = R * c
+>>>>>>> 24bb875c0b305dafaf8f5b65f38fb6afcc05c00b
     return distance
 
 # 번역기 인스턴스 생성
@@ -430,6 +446,7 @@ class AssistView(APIView):
         serializer = AssistSerializer(assist, many=True)
         return Response(serializer.data)
 
+<<<<<<< HEAD
 class HospitalViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Hospital.objects.all()
     serializer_class = HospitalSerializer
@@ -462,3 +479,15 @@ class HospitalViewSet(viewsets.ReadOnlyModelViewSet):
                 print(f"Error: {e}")  # 에러 로그 출력
 
         return queryset
+=======
+def get_hospitals(request):
+    lat = request.GET.get('lat')
+    lng = request.GET.get('lng')
+    api_key = settings.GOOGLE_MAPS_API_KEY
+    url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius=1500&type=hospital&key={api_key}"
+
+    response = requests.get(url)
+    return JsonResponse(response.json())
+
+
+>>>>>>> 24bb875c0b305dafaf8f5b65f38fb6afcc05c00b
