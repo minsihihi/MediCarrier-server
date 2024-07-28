@@ -3,8 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
-import { GOOGLE_MAPS_API_KEY } from '../../assets/config';
-
 
 const MapHospitalView = () => {
   const [location, setLocation] = useState({ lat: null, lng: null });
@@ -57,7 +55,7 @@ const MapHospitalView = () => {
 
   const handleNext = () => {
     if (selected) {
-      const selectedHospital = hospitals.find(hospital => hospital.id === selected);
+      const selectedHospital = hospitals.find(hospital => hospital.place_id === selected);
       navigate("/symptom-form", { state: { selectedHospital } });
     }
   };
@@ -91,7 +89,13 @@ const MapHospitalView = () => {
               onClick={() => handleSelect(hospital.place_id)}
             >
               <InfoContainer>
-                <ImagePlaceholder />
+                <ImagePlaceholder>
+                  {hospital.photo_url ? (
+                    <PlaceholderImage src={hospital.photo_url} alt={hospital.name} />
+                  ) : (
+                    <PlaceholderText>No Image</PlaceholderText>
+                  )}
+                </ImagePlaceholder>
                 <InfoText>
                   <DetailText>{hospital.distance.toFixed(0)}m</DetailText>
                   <HospitalName>{hospital.name}</HospitalName>
@@ -117,6 +121,7 @@ const MapHospitalView = () => {
 };
 
 export default MapHospitalView;
+
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -184,6 +189,7 @@ const ListContainer = styled.div`
   &::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
   }
+  width: 100%;
 `;
 
 const ListItem = styled.div`
@@ -210,6 +216,22 @@ const ImagePlaceholder = styled.div`
   height: 110px;
   background-color: #e0e0e0;
   border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* 이미지가 넘치지 않도록 함 */
+`;
+
+const PlaceholderImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지가 placeholder 안에 맞게 조정되도록 함 */
+`;
+
+const PlaceholderText = styled.p`
+  font-family: "Pretendard";
+  font-size: 14px;
+  color: #aaa;
 `;
 
 const InfoText = styled.div`

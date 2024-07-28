@@ -423,33 +423,30 @@ class AssistView(APIView):
         return Response(serializer.data)
 
 def get_hospitals(request):
-    lat = request.GET.get('lat')
-    lng = request.GET.get('lng')
+    lat = float(request.GET.get('lat'))
+    lng = float(request.GET.get('lng'))
     api_key = settings.GOOGLE_MAPS_API_KEY
-    keyword = request.GET.get('keyword')
+    keyword = request.GET.get('keyword', '')  # 기본값은 빈 문자열
+    
+    # Google Places API 호출
     url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius=1000&type=hospital&key={api_key}&keyword={keyword}"
-
     response = requests.get(url)
     data = response.json()
     
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
-        hospitals = []
-        for result in data.get('results', []):
-            photos = result.get('photos', [])
-            photo_url = None
-            if photos:
-                photo_reference = photos[0].get('photo_reference')
-                photo_url = f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={photo_reference}&key={api_key}"
+    # 병원 정보 가공
+    hospitals = [
+        {
+            "name": result.get("name"),
+            "rating": result.get("rating"),
+            "address": result.get("vicinity"),
+            "lat": result["geometry"]["location"].get("lat"),
+            "lng": result["geometry"]["location"].get("lng"),
+            "place_id": result.get("place_id"),
+            "distance": haversine(lat, lng, result["geometry"]["location"].get("lat"), result["geometry"]["location"].get("lng"))  # 거리 추가
+        }
+        for result in data.get("results", [])
+    ]
+    return JsonResponse({'results': hospitals})
+    
 
-            hospital = {
-                'place_id': result.get('place_id'),
-                'name': result.get('name'),
-                'address': result.get('vicinity'),
-                'rating': result.get('rating'),
-                'photo_url': photo_url,
-            }
-            hospitals.append(hospital)
-        return JsonResponse({'results': hospitals})
-    return JsonResponse(response.json(), status=response.status_code)
+
