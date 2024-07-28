@@ -1,7 +1,11 @@
 from rest_framework import serializers
-from .models import Trip, Assist, Hospital, Insurance, MediCard, MediInfo, BasicInfo
+from .models import Trip, Assist, Hospital, Insurance, MediCard, MediInfo, BasicInfo, Script
 from api.models import User
 
+class ScriptSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Script
+        fields = '__all__'
 class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
@@ -13,16 +17,26 @@ class TripSerializer(serializers.ModelSerializer):
         # Trip 객체를 생성
         trip = super().create(validated_data)
         
-        # Trip 생성 후 MediCard 자동 생성
-        # 여기서는 'country' 필드에서 국가 정보를 가져옵니다.
+        # 여행 등록 후 MediCard 생성 또는 업데이트
         language = self.get_language_from_country(trip.country)
         
-        # MediCard를 생성
-        MediCard.objects.get_or_create(
-            user=trip.user,
-            country=trip.country,
-            defaults={'language': language}
-        )
+        # 이전 여행 국가 언어를 가진 MediCard 찾기
+        existing_medi_cards = MediCard.objects.filter(user=trip.user).exclude(language__in=['ko', 'en'])
+        
+        if existing_medi_cards.exists():
+            # 기존의 MediCard 업데이트
+            # 기존 MediCard가 존재하면, 해당 MediCard 업데이트
+            for medi_card in existing_medi_cards:
+                medi_card.country = trip.country
+                medi_card.language = language
+                medi_card.save()
+        else:
+            # 새로운 MediCard 생성
+            MediCard.objects.create(
+                user=trip.user,
+                country=trip.country,
+                language=language
+            )
         
         return trip
 

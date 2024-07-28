@@ -8,10 +8,14 @@ from .serializers import *
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated  # 인증된 사용자만 접근 가능
 from requests.exceptions import HTTPError
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 from googletrans import Translator
 
 # 번역기 인스턴스 생성
 translator = Translator()
+
+
 
 def translate_text(text, dest_language):
     try:
@@ -20,9 +24,149 @@ def translate_text(text, dest_language):
     except Exception as e:
         print(f"Translation error: {e}")
         return text
-# libertranslate api를 위해 추가됨
-import requests
-import time
+
+class TranslateScriptView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        data = request.data
+        original_script = data.get('script', '')
+        trip = Trip.objects.get(user=user)
+        dest_language = self.get_language_from_country(trip.country)
+        
+
+        # 기본 스크립트 저장
+        user = request.user
+        script = Script.objects.create(
+            user=user,
+            language=dest_language,
+            original_script=original_script,
+            translated_script=''  # 초기 번역은 비워둡니다
+        )
+
+        # 자동 번역
+        translated_script = translate_text(original_script, dest_language)
+        script.translated_script = translated_script
+        script.save()
+
+        serializer = ScriptSerializer(script)
+        return Response(serializer.data)
+    
+    def get_language_from_country(self, country):
+        # 나라에 기반한 언어 매핑 로직 (여기서는 간단한 예시)
+        country_language_map = {
+        '남아프리카 공화국': 'af',
+        '알바니아': 'sq',
+        '에티오피아': 'am',
+        '아랍 국가들': 'ar',
+        '아르메니아': 'hy',
+        '아제르바이잔': 'az',
+        '바스크': 'eu',
+        '벨라루스': 'be',
+        '방글라데시': 'bn',
+        '보스니아': 'bs',
+        '불가리아': 'bg',
+        '카탈로니아': 'ca',
+        '필리핀': 'ceb',
+        '말라위': 'ny',
+        '중국': 'zh-cn',
+        '대만': 'zh-tw',
+        '프랑스': 'co',
+        '크로아티아': 'hr',
+        '체코': 'cs',
+        '덴마크': 'da',
+        '네덜란드': 'nl',
+        '영국': 'en',
+        '국제어': 'eo',
+        '에스토니아': 'et',
+        '필리핀': 'tl',
+        '핀란드': 'fi',
+        '프랑스': 'fr',
+        '네덜란드': 'fy',
+        '스페인': 'gl',
+        '조지아': 'ka',
+        '독일': 'de',
+        '그리스': 'el',
+        '인도': 'gu',
+        '아이티': 'ht',
+        '니제르': 'ha',
+        '하와이': 'haw',
+        '이스라엘': 'iw',
+        '이스라엘': 'he',
+        '인도': 'hi',
+        '중국': 'hmn',
+        '헝가리': 'hu',
+        '아이슬란드': 'is',
+        '나이지리아': 'ig',
+        '인도네시아': 'id',
+        '아일랜드': 'ga',
+        '이탈리아': 'it',
+        '일본': 'ja',
+        '자바': 'jw',
+        '인도': 'kn',
+        '카자흐스탄': 'kk',
+        '캄보디아': 'km',
+        '한국': 'ko',
+        '터키': 'ku',
+        '키르기스스탄': 'ky',
+        '라오스': 'lo',
+        '로마': 'la',
+        '라트비아': 'lv',
+        '리투아니아': 'lt',
+        '룩셈부르크': 'lb',
+        '북마케도니아': 'mk',
+        '마다가스카르': 'mg',
+        '말레이시아': 'ms',
+        '인도': 'ml',
+        '몰타': 'mt',
+        '뉴질랜드': 'mi',
+        '인도': 'mr',
+        '몽골': 'mn',
+        '미얀마': 'my',
+        '네팔': 'ne',
+        '노르웨이': 'no',
+        '인도': 'or',
+        '파키스탄': 'ps',
+        '이란': 'fa',
+        '폴란드': 'pl',
+        '포르투갈': 'pt',
+        '인도': 'pa',
+        '루마니아': 'ro',
+        '러시아': 'ru',
+        '사모아': 'sm',
+        '스코틀랜드': 'gd',
+        '세르비아': 'sr',
+        '남아프리카': 'st',
+        '짐바브웨': 'sn',
+        '파키스탄': 'sd',
+        '스리랑카': 'si',
+        '슬로바키아': 'sk',
+        '슬로베니아': 'sl',
+        '소말리아': 'so',
+        '스페인': 'es',
+        '인도네시아': 'su',
+        '탄자니아': 'sw',
+        '스웨덴': 'sv',
+        '타지키스탄': 'tg',
+        '인도': 'ta',
+        '인도': 'te',
+        '태국': 'th',
+        '터키': 'tr',
+        '우크라이나': 'uk',
+        '파키스탄': 'ur',
+        '위구르': 'ug',
+        '우즈베키스탄': 'uz',
+        '베트남': 'vi',
+        '웨일스': 'cy',
+        '남아프리카': 'xh',
+        '유대인': 'yi',
+        '나이지리아': 'yo',
+        '남아프리카': 'zu'
+    }
+
+        return country_language_map.get(country, 'en')  # 
+ 
 class TranslateMediInfoView(APIView):
     def get(self, request, *args, **kwargs):
         user = request.user

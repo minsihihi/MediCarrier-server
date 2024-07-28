@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
 
@@ -48,6 +48,16 @@ const Subtitle = styled.p`
   align-self: flex-start;
 `;
 
+const ScriptText = styled.p`
+  color: #000;
+  font-family: Pretendard;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-left: 20px;
+  margin-right: 20px;
+  flex-grow: 1;
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -73,6 +83,8 @@ const Button = styled.button`
 
 function LocalScript() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { translatedScript } = location.state || {};
 
   const handleNext = () => {
     navigate("/select-condition");
@@ -81,13 +93,14 @@ function LocalScript() {
   return (
     <PageContainer>
       <Container>
-        <ProgressIndicator step={2} />
+        <ProgressIndicator step={3} />
         <Title>
           현지어 버전의
           <br />
-          스크립트를 작성했어요!
+          스크립트를 확인해보세요!
         </Title>
-        <Subtitle>병원 방문 시 의료진에게 보여주세요.</Subtitle>
+        <Subtitle>번역된 스크립트는 다음과 같습니다:</Subtitle>
+        <ScriptText>{translatedScript || "번역된 스크립트가 없습니다."}</ScriptText>
         <ButtonContainer>
           <Button onClick={() => navigate(-1)} primary={false}>
             이전

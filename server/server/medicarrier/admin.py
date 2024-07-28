@@ -9,6 +9,8 @@ class TripAdmin(admin.ModelAdmin):
     
 admin.site.register(Hospital)
 admin.site.register(Insurance)
+admin.site.register(Script)
+
 
 @admin.register(MediCard)
 class MediCardAdmin(admin.ModelAdmin):

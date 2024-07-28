@@ -18,7 +18,7 @@ const NavBar = () => {
         <img src={MedicalCardIcon} alt="Medical Card" />
         <span>의료 카드</span>
       </NavItem>
-      <NavItem to="/home" className="main-icon">
+      <NavItem to="/assist" className="main-icon">
         <img src={MainIcon} alt="Main" />
       </NavItem>
       <NavItem to="/search-medical">

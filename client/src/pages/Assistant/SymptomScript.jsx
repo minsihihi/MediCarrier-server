@@ -1,7 +1,9 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
+import ReactDOMServer from "react-dom/server";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
+import axios from "axios";
 
 const PageContainer = styled.div`
   display: flex;
@@ -88,6 +90,7 @@ const Button = styled.button`
 
 function SymptomScript() {
   const navigate = useNavigate();
+  const [translatedScript, setTranslatedScript] = useState("");
   const location = useLocation();
   const {
     symptoms = [],
@@ -98,10 +101,6 @@ function SymptomScript() {
     medications,
     additionalInfo,
   } = location.state || {};
-
-  const handleNext = () => {
-    navigate("/local-script");
-  };
 
   const chronicDiseasesText = chronicDiseases ? chronicDiseases : "없고";
   const medicationsText = medications ? medications : "없습니다";
@@ -114,6 +113,40 @@ function SymptomScript() {
       ? customSymptom
       : "증상이 없습니다";
 
+      const scriptComponents = `
+    안녕하세요. 저는 한국인 관광객 입니다.
+    저는 ${startDate}부터 ${frequency}으로 ${symptomsText}.
+    최근 앓았던 질병이나 현재 앓고 있는 만성 질환은 ${chronicDiseasesText}, 현재 복용하고 있는 약은 ${medicationsText}.
+    ${additionalInfo ? ` ${additionalInfo}` : ""}
+  `;
+      // Convert JSX to HTML string
+  //const scriptComponentsString = ReactDOMServer.renderToStaticMarkup(scriptComponents);
+
+  const handleNext = async () => {
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/medicarrier/script/", {
+        script: scriptComponents,
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}`, // 인증 토큰 추가
+        }
+      });
+  
+      if (response.status !== 200) {
+        throw new Error(`Failed to save script: ${response.statusText}`);
+      }
+  
+      const data = response.data;
+      console.log("Script saved:", data);
+  
+      setTranslatedScript(data.translated_script);
+      navigate("/local-script", { state: { translatedScript: data.translated_script } });
+    } catch (error) {
+      console.error("Error saving script:", error.response ? error.response.data : error.message);
+    }
+  };
+
   return (
     <PageContainer>
       <Container>
@@ -124,28 +157,7 @@ function SymptomScript() {
           스크립트를 작성했어요!
         </Title>
         <Subtitle>수정할 부분이 있다면 이전 버튼을 눌러 수정해주세요</Subtitle>
-        <ScriptText>
-          안녕하세요. 저는 <HighlightedText>한국인 관광객</HighlightedText>
-          입니다.
-          <br />
-          <br />
-          저는 <HighlightedText>{startDate}</HighlightedText>부터{" "}
-          <HighlightedText>{frequency}</HighlightedText>으로{" "}
-          <HighlightedText>{symptomsText}</HighlightedText>.
-          <br />
-          최근 앓았던 질병이나 현재 앓고 있는 만성 질환은{" "}
-          <HighlightedText>{chronicDiseasesText}</HighlightedText>, 현재
-          복용하고 있는 약은{" "}
-          <HighlightedText>{medicationsText}</HighlightedText>
-          {additionalInfo && (
-            <>
-              .
-              <br />
-              {additionalInfo}
-            </>
-          )}
-          .
-        </ScriptText>
+        <ScriptText>{scriptComponents}</ScriptText>
         <ButtonContainer>
           <Button onClick={() => navigate(-1)} primary={false}>
             이전

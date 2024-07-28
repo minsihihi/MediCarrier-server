@@ -20,6 +20,7 @@ class MediCard(models.Model):   # 사용자당 하나만 생성 & 여행의 국�
     country = models.CharField(max_length=20)
     language = models.CharField(max_length=20)
 
+
     def __str__(self):
         return f"{self.user.username} - {self.country}"
 
@@ -228,7 +229,16 @@ class Hospital(models.Model):
     def __str__(self):
         return self.hospital_name
 
+class Script(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    language = models.CharField(max_length=20)
+    original_script = models.TextField(blank=True, null=True)
+    translated_script = models.TextField(blank=True, null=True)
 
+    def __str__(self):
+        return f"Script {self.user.username}"
+    
 class Insurance(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
