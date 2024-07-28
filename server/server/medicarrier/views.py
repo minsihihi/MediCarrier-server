@@ -428,5 +428,20 @@ def get_hospitals(request):
     url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius=1500&type=hospital&key={api_key}"
 
     response = requests.get(url)
-    return JsonResponse(response.json())
+    data = response.json()
+    
+    # 필요한 필드만 추출하여 가공
+    hospitals = [
+        {
+            "name": result.get("name"),
+            "rating": result.get("rating"),
+            "address": result.get("vicinity"),
+            "lat": result["geometry"]["location"].get("lat"),
+            "lng": result["geometry"]["location"].get("lng"),
+            "place_id": result.get("place_id")
+        }
+        for result in data.get("results", [])
+    ]
+    
+    return JsonResponse({"results": hospitals})
 
