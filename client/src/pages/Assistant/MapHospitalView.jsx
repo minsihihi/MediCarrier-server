@@ -1,5 +1,5 @@
 import React, { useState, useEffect  } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
@@ -12,6 +12,8 @@ const MapHospitalView = () => {
   const [selected, setSelected] = useState(null); // 선택된 병원 상태
   const [loading, setLoading] = useState(true); // 로딩 상태
   const navigate = useNavigate();
+  const locationState = useLocation().state; // React Router의 state로부터 데이터 가져오기
+  const keyword = locationState?.keyword || ""; //
   
     useEffect(() => {
       if (navigator.geolocation) {
@@ -31,18 +33,22 @@ const MapHospitalView = () => {
       }
     }, []);
   
-    useEffect(() => {
-      if (location.lat && location.lng) {
-        axios
-          .get(`http://localhost:8000/medicarrier/hospitals/?lat=${location.lat}&lng=${location.lng}`)
-          .then((response) => {
-            setHospitals(response.data.results);
-          })
-          .catch((error) => {
-            console.error("Error fetching hospitals: ", error);
-          });
-      }
-    }, [location]);
+    // 위치 정보와 keyword가 있을 때 병원 검색 API 호출
+  useEffect(() => {
+    if (location.lat && location.lng && keyword) {
+      setLoading(true); // 로딩 시작
+      axios
+        .get(`http://localhost:8000/medicarrier/hospitals/?lat=${location.lat}&lng=${location.lng}&keyword=${keyword}`)
+        .then((response) => {
+          setHospitals(response.data.results);
+          setLoading(false); // 로딩 완료
+        })
+        .catch((error) => {
+          console.error("Error fetching hospitals: ", error);
+          setLoading(false); // 로딩 완료
+        });
+    }
+  }, [location, keyword]);
 
     const handleSelect = (id) => {
       setSelected(id);
