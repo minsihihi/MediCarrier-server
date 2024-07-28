@@ -238,6 +238,9 @@ class Hospital(models.Model):
     hospital_tel = models.CharField(max_length=15)
     hospital_ratings = models.CharField(max_length=20)
     hospital_open = models.BooleanField()
+    hospital_latitude = models.FloatField(default=0)  # 위도
+    hospital_longitude = models.FloatField(default=0)  # 경도
+    
 
     def __str__(self):
         return self.hospital_name

@@ -30,6 +30,10 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'api.User'
 
+import os
+
+# Google Maps API 키 설정
+GOOGLE_MAPS_API_KEY = os.getenv('GOOGLE_MAPS_API_KEY', 'AIzaSyBiUBN4DAVpfYWsadzciLTbNCYtPA1UIpE')
 
 # Application definition
 
