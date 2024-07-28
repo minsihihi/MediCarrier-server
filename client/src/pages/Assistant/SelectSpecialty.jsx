@@ -30,8 +30,9 @@ function SelectSpecialty() {
   };
 
   const handleNext = () => {
-    let hospital_type = selected; // 변수 정의 및 값 설정
-    navigate("/map-hospital");
+    if (selected) {
+      navigate("/map-hospital", { state: { keyword: selected } });
+    }
   };
 
   const toggleShowMore = () => {

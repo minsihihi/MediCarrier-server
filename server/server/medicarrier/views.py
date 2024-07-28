@@ -27,8 +27,9 @@ def haversine(lat1, lon1, lat2, lon2):
     a = math.sin(dlat / 2) ** 2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     
-    distance = R * c
-    return distance
+    distance_km = R * c
+    distance_m = distance_km * 1000  # Convert kilometers to meters
+    return distance_m
 
 # 번역기 인스턴스 생성
 translator = Translator()
@@ -425,7 +426,8 @@ def get_hospitals(request):
     lat = request.GET.get('lat')
     lng = request.GET.get('lng')
     api_key = settings.GOOGLE_MAPS_API_KEY
-    url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius=1500&type=hospital&key={api_key}"
+    keyword = request.GET.get('keyword')
+    url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius=1000&type=hospital&key={api_key}&keyword={keyword}"
 
     response = requests.get(url)
     data = response.json()
