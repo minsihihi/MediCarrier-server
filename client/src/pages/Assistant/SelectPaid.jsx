@@ -95,7 +95,7 @@ const Button = styled.button`
   margin-top: 266px;
 `;
 
-const hospitalFees = ["10만원 이하", "10-50만원", "50만원 이상"];
+const hospitalFees = ["3만원 미만", "3만원 이상 ~ 원 미만", "10만원 이상"];
 
 function SelectPaid() {
   const navigate = useNavigate();

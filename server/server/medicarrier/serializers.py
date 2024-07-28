@@ -276,10 +276,7 @@ class AssistSerializer(serializers.ModelSerializer):
 class HospitalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hospital
-        fields = [
-            'id', 'assist', 'hospital_name', 'hospital_category',
-            'hospital_tel', 'hospital_ratings', 'hospital_open'
-        ]
+        fields = '__all__'
 
 
 

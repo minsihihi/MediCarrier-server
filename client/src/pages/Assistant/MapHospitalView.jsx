@@ -1,50 +1,85 @@
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
+import { GOOGLE_MAPS_API_KEY } from '../../assets/config';
 
-const fakeData = [
-  {
-    id: 1,
-    name: "오가조에 이비인후과 클리닉",
-    distance: "100m",
-    rating: "4.5 (65)",
-    phone: "+81 3-3573-5487",
-  },
-  {
-    id: 2,
-    name: "니혼조제 츠키지 약국",
-    distance: "100m",
-    rating: "3.4 (18)",
-    phone: "+81 3-6226-4025",
-  },
-  {
-    id: 3,
-    name: "니혼조제 츠키지 약국",
-    distance: "100m",
-    rating: "3.4 (18)",
-    phone: "+81 3-6226-4025",
-  },
-];
 
-function MapHospitalView() {
+const MapHospitalView = () => {
   const navigate = useNavigate();
+  const [hospitals, setHospitals] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleSelect = (hospital) => {
-    setSelected(hospital);
+  const useCurrentLocation = () => {
+    const [location, setLocation] = useState(null);
+
+    useEffect(() => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLocation({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            });
+          },
+          (error) => {
+            console.error('Error fetching location:', error);
+          }
+        );
+      } else {
+        console.error('Geolocation not supported');
+      }
+    }, []);
+
+    return location;
+  };
+
+  const location = useCurrentLocation();
+
+  useEffect(() => {
+    if (location) {
+      const fetchHospitals = async () => {
+        try {
+          // Django 백엔드의 API 엔드포인트로 수정
+          const response = await axios.get(`http://localhost:8000/medicarrier/hospitals/`, {
+            params: {
+              lat: location.lat,
+              lng: location.lng,
+              radius: 5000, // 반경 5km
+            },
+          });
+
+          const sortedHospitals = response.data.sort((a, b) => (b.hospital_ratings || 0) - (a.hospital_ratings || 0));
+          setHospitals(sortedHospitals);
+          setLoading(false);
+        } catch (error) {
+          console.error('병원 데이터를 가져오는 데 실패했습니다.', error);
+          setLoading(false);
+        }
+      };
+
+      fetchHospitals();
+    }
+  }, [location]);
+
+  const handleSelect = (placeId) => {
+    setSelected(placeId);
   };
 
   const handleNext = () => {
     if (selected) {
-      // 변수 정의
-      const selected_hospital = fakeData.find(
-        (hospital) => hospital.id === selected
-      );
-
-      navigate("/symptom-form", { state: { selected_hospital } });
+      const selectedHospital = hospitals.find(hospital => hospital.id === selected);
+      navigate("/symptom-form", { state: { selectedHospital } });
     }
   };
+
+  const handleMoreInfo = (placeId) => {
+    window.open(`https://www.google.com/maps/place/?q=place_id:${placeId}`, '_blank');
+  };
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <PageContainer>
@@ -60,7 +95,7 @@ function MapHospitalView() {
         </Subtitle>
         <NearbyButton>내 주변</NearbyButton>
         <ListContainer>
-          {fakeData.map((hospital) => (
+          {hospitals.map((hospital) => (
             <ListItem
               key={hospital.id}
               selected={selected === hospital.id}
@@ -69,12 +104,12 @@ function MapHospitalView() {
               <InfoContainer>
                 <ImagePlaceholder />
                 <InfoText>
-                  <DetailText>{hospital.distance}</DetailText>
-                  <HospitalName>{hospital.name}</HospitalName>
-                  <DetailText>{hospital.phone}</DetailText>
-                  <DetailText>⭐ {hospital.rating}</DetailText>
+                  <DetailText>거리 정보 (미제공)</DetailText>
+                  <HospitalName>{hospital.hospital_name}</HospitalName>
+                  <DetailText>{hospital.hospital_category}</DetailText>
+                  <DetailText>⭐ {hospital.hospital_ratings || '정보 없음'}</DetailText>
                 </InfoText>
-                <MoreButton href="#">더보기</MoreButton>
+                <MoreButton onClick={() => handleMoreInfo(hospital.id)}>더보기</MoreButton>
               </InfoContainer>
             </ListItem>
           ))}
@@ -93,7 +128,6 @@ function MapHospitalView() {
 }
 
 export default MapHospitalView;
-
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;

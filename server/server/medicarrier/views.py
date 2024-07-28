@@ -11,6 +11,8 @@ from requests.exceptions import HTTPError
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from googletrans import Translator
+from rest_framework import generics
+from rest_framework import viewsets
 
 # 번역기 인스턴스 생성
 translator = Translator()
@@ -402,3 +404,7 @@ class AssistView(APIView):
         assist = Assist.objects.all()
         serializer = AssistSerializer(assist, many=True)
         return Response(serializer.data)
+
+class HospitalViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Hospital.objects.all()
+    serializer_class = HospitalSerializer
