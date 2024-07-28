@@ -24,6 +24,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
+  font-family: Pretendard;
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 10px;
@@ -42,60 +43,34 @@ const Subtitle = styled.p`
   font-weight: 300;
   line-height: normal;
   letter-spacing: -0.439px;
-  margin-bottom: 28px;
+  margin-bottom: 40px;
   margin-left: 20px;
   align-self: flex-start;
 `;
 
-const List = styled.ul`
-  list-style-type: none;
-  padding: 0;
-  width: 352px;
-`;
-
-const ListItem = styled.li`
-  color: #000;
-  text-align: center;
-  font-family: Pretendard;
+const SpecialtyContainer = styled.div`
   display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: ${(props) => (props.selected ? "#FFFDC9" : "#F8F8F8")};
-  border-radius: 15px;
-  margin-bottom: 8px;
-  cursor: pointer;
-
-  ${(props) =>
-    props.id === "item1" &&
-    `
-    background-color: ${props.selected ? "#FFFDC9" : "#F8F8F8"};
-    width: 92px;
-    heigth: 39px;
-  `}
-
-  ${(props) =>
-    props.id === "item2" &&
-    `
-    background-color: ${props.selected ? "#FFFDC9" : "#F8F8F8"};
-    width: 181px;
-    height: 19px;
-    
-  `}
-  
-  ${(props) =>
-    props.id === "item3" &&
-    `
-    background-color: ${props.selected ? "#FFFDC9" : "#F8F8F8"};
-    width: 98px;
-    heigth: 39px;
-  `}
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-bottom: 20px;
+  width: 90%;
+  margin-left: 20px;
 `;
 
-const ListItemText = styled.span`
+const Specialty = styled.button`
   font-family: Pretendard;
-  flex-grow: 1;
+  padding: 10px 20px;
+  font-size: 14px;
   font-weight: ${(props) => (props.selected ? "bold" : "normal")};
+  color: #000000;
+  background-color: ${(props) =>
+    props.selected ? "rgba(255, 249, 119, 0.40)" : "#F8F8F8"};
+  border: ${(props) =>
+    props.selected ? "1px solid var(--pointyellow, #FFF977)" : "none"};
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 `;
 
 const ButtonContainer = styled.div`
@@ -104,8 +79,6 @@ const ButtonContainer = styled.div`
   gap: 11px;
   width: 100%;
   padding: 0 20px;
-  position: absolute;
-  bottom: 150px;
 `;
 
 const Button = styled.button`
@@ -119,70 +92,56 @@ const Button = styled.button`
   border: none;
   border-radius: 16px;
   cursor: pointer;
+  margin-top: 266px;
 `;
 
-const SelectPaid = () => {
-  const navigate = useNavigate();
-  const [selectedItem, setSelectedItem] = useState(null);
+const hospitalFees = ["10만원 이하", "10-50만원", "50만원 이상"];
 
-  const handleItemClick = (item) => {
-    setSelectedItem(item);
+function SelectPaid() {
+  const navigate = useNavigate();
+  const [selected, setSelected] = useState(null);
+
+  const handleSelect = (fee) => {
+    setSelected(fee);
   };
 
   const handleNext = () => {
-    if (selectedItem) {
+    if (selected) {
       navigate("/document-guide");
     }
   };
+
+  // 병원비 변수 정의
+  const hospital_fee = selected;
 
   return (
     <PageContainer>
       <Container>
         <ProgressIndicator step={3} />
-        <Title>수납하신 병원비는 얼마였나요?</Title>
-        <Subtitle>병원비에 따라 필요한 서류가 달라져요</Subtitle>
-        <List>
-          <ListItem
-            id="item1"
-            selected={selectedItem === "3만원 미만"}
-            onClick={() => handleItemClick("3만원 미만")}
-          >
-            <ListItemText selected={selectedItem === "3만원 미만"}>
-              3만원 미만
-            </ListItemText>
-          </ListItem>
-          <ListItem
-            id="item2"
-            selected={selectedItem === "3만원 이상 ~ 10만원 미만"}
-            onClick={() => handleItemClick("3만원 이상 ~ 10만원 미만")}
-          >
-            <ListItemText
-              selected={selectedItem === "3만원 이상 ~ 10만원 미만"}
+        <Title>병원비를 선택해주세요</Title>
+        <Subtitle>선택하신 병원비에 따라 필요한 서류가 달라집니다</Subtitle>
+        <SpecialtyContainer>
+          {hospitalFees.map((fee, index) => (
+            <Specialty
+              key={index}
+              selected={selected === fee}
+              onClick={() => handleSelect(fee)}
             >
-              3만원 이상 ~ 10만원 미만
-            </ListItemText>
-          </ListItem>
-          <ListItem
-            id="item3"
-            selected={selectedItem === "10만원 이상"}
-            onClick={() => handleItemClick("10만원 이상")}
-          >
-            <ListItemText selected={selectedItem === "10만원 이상"}>
-              10만원 이상
-            </ListItemText>
-          </ListItem>
-        </List>
+              {fee}
+            </Specialty>
+          ))}
+        </SpecialtyContainer>
         <ButtonContainer>
           <Button onClick={() => navigate(-1)} primary={false}>
             이전
           </Button>
-          <Button onClick={handleNext} primary={true} disabled={!selectedItem}>
+          <Button onClick={handleNext} primary={true} disabled={!selected}>
             다음
           </Button>
         </ButtonContainer>
       </Container>
     </PageContainer>
   );
-};
+}
 
 export default SelectPaid;

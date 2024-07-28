@@ -16,12 +16,11 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   width: 393px;
-  height: 100vh;
+  height: 792px;
   margin: 0;
   background: #ffffff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding-bottom: 95px;
-  overflow-y: auto;
 `;
 
 const Title = styled.h1`

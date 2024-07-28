@@ -3,6 +3,23 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
 
+const specialties = [
+  "내과",
+  "외과",
+  "정형외과",
+  "이비인후과",
+  "응급실",
+  "산부인과",
+  "피부과",
+  "치과",
+  "안과",
+  "비뇨기과",
+  "신경외과",
+  "항문외과",
+  "성형외과",
+  "정신건강의학과",
+];
+
 function SelectSpecialty() {
   const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
@@ -13,6 +30,7 @@ function SelectSpecialty() {
   };
 
   const handleNext = () => {
+    let hospital_type = selected; // 변수 정의 및 값 설정
     navigate("/map-hospital");
   };
 
@@ -162,20 +180,3 @@ const MoreButton = styled(Specialty)`
   border: 1px solid rgba(226, 124, 61, 0.3);
   background: rgba(226, 124, 61, 0.09);
 `;
-
-const specialties = [
-  "내과",
-  "외과",
-  "정형외과",
-  "이비인후과",
-  "응급실",
-  "산부인과",
-  "피부과",
-  "치과",
-  "안과",
-  "비뇨기과",
-  "신경외과",
-  "항문외과",
-  "성형외과",
-  "정신건강의학과",
-];

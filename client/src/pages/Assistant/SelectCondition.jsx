@@ -26,7 +26,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  font-family: "Pretendard";
+  font-family: Pretendard;
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 8px;
@@ -86,8 +86,8 @@ const ButtonContainer = styled.div`
   gap: 11px;
   width: 100%;
   padding: 0 20px;
-  position: absolute;
-  bottom: 100px;
+  margin-top: auto;
+  margin-bottom: 25px;
 `;
 
 const Button = styled.button`
@@ -100,6 +100,7 @@ const Button = styled.button`
   border: none;
   border-radius: 16px;
   cursor: pointer;
+  margin-top: 155px;
 `;
 
 function SelectCondition() {
@@ -117,6 +118,9 @@ function SelectCondition() {
       navigate("/select-insurance-type-w");
     }
   };
+
+  // 조건 변수 정의
+  const condition = selected;
 
   return (
     <PageContainer>

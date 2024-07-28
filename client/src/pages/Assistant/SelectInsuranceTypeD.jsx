@@ -92,7 +92,7 @@ const Button = styled.button`
   border: none;
   border-radius: 16px;
   cursor: pointer;
-  margin-top: 266px;
+  margin-top: 320px;
 `;
 
 const insuranceTypes = ["입원", "통원", "후유장애", "수술", "진단"];
@@ -112,8 +112,10 @@ function SelectInsuranceTypeD() {
         case "후유장애":
         case "수술":
           navigate("/document-guide");
+          break; // break 추가
         case "통원":
           navigate("/select-paid");
+          break; // break 추가
         case "진단":
           navigate("/select-claim");
           break;
@@ -122,6 +124,9 @@ function SelectInsuranceTypeD() {
       }
     }
   };
+
+  // 보험 타입 변수 정의
+  const insurance_type = selected;
 
   return (
     <PageContainer>

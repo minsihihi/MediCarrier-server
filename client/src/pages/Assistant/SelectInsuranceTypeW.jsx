@@ -24,7 +24,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  font-family: "Pretendard";
+  font-family: Pretendard;
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 10px;
@@ -37,7 +37,7 @@ const Title = styled.h1`
 
 const Subtitle = styled.p`
   color: #000;
-  font-family: "Pretendard";
+  font-family: Pretendard;
   font-size: 14px;
   font-style: normal;
   font-weight: 300;
@@ -59,7 +59,7 @@ const SpecialtyContainer = styled.div`
 `;
 
 const Specialty = styled.button`
-  font-family: "Pretendard";
+  font-family: Pretendard;
   padding: 10px 20px;
   font-size: 14px;
   font-weight: ${(props) => (props.selected ? "bold" : "normal")};
@@ -79,16 +79,14 @@ const ButtonContainer = styled.div`
   gap: 11px;
   width: 100%;
   padding: 0 20px;
-  position: absolute;
-  bottom: 150px;
 `;
 
 const Button = styled.button`
-  font-family: "Pretendard";
+  font-family: Pretendard;
   width: 171px;
   height: 51px;
   padding: 10px 20px;
-  font-size: 18px;
+  font-size: 16px;
   color: ${(props) => (props.primary ? "#FFFFFF" : "#000000")};
   background-color: ${(props) => (props.primary ? "#4A7DFF" : "#F8F8F8")};
   border: none;
@@ -114,14 +112,18 @@ function SelectInsuranceTypeW() {
         case "후유장애":
         case "수술":
           navigate("/document-guide");
+          break; // break 추가
         case "통원":
           navigate("/select-paid");
-          break;
+          break; // break 추가
         default:
           break;
       }
     }
   };
+
+  // 보험 타입 변수 정의
+  const insurance_type = selected;
 
   return (
     <PageContainer>
