@@ -55,6 +55,9 @@ class UserLoginSerializer(serializers.Serializer):
                 data = {
                     'id': user.id,
                     'username': user.username,
-                    'access_token': access
+                    'access_token': access,
+                    'nickname': user.nickname  # nickname 추가
                 }
                 return data 
+
+        raise serializers.ValidationError('사용자가 존재하지 않습니다.')
