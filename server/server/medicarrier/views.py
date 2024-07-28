@@ -13,36 +13,12 @@ from django.http import JsonResponse
 from googletrans import Translator
 from rest_framework import generics
 from rest_framework import viewsets
-<<<<<<< HEAD
-from rest_framework.response import Response
-=======
 import requests
->>>>>>> 24bb875c0b305dafaf8f5b65f38fb6afcc05c00b
 
 
 import math
 
 def haversine(lat1, lon1, lat2, lon2):
-<<<<<<< HEAD
-    # 지구의 반지름 (km)
-    R = 6371.0
-
-    # 라디안 단위로 변환
-    lat1_rad = math.radians(lat1)
-    lon1_rad = math.radians(lon1)
-    lat2_rad = math.radians(lat2)
-    lon2_rad = math.radians(lon2)
-
-    # 차이 계산
-    dlon = lon2_rad - lon1_rad
-    dlat = lat2_rad - lat1_rad
-
-    # 하버사인 공식 적용
-    a = math.sin(dlat / 2)**2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(dlon / 2)**2
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    distance = R * c
-
-=======
     R = 6371  # Earth radius in kilometers
 
     dlat = math.radians(lat2 - lat1)
@@ -52,7 +28,6 @@ def haversine(lat1, lon1, lat2, lon2):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     
     distance = R * c
->>>>>>> 24bb875c0b305dafaf8f5b65f38fb6afcc05c00b
     return distance
 
 # 번역기 인스턴스 생성
@@ -446,40 +421,6 @@ class AssistView(APIView):
         serializer = AssistSerializer(assist, many=True)
         return Response(serializer.data)
 
-<<<<<<< HEAD
-class HospitalViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Hospital.objects.all()
-    serializer_class = HospitalSerializer
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        lat = self.request.query_params.get('lat')
-        lng = self.request.query_params.get('lng')
-        radius = self.request.query_params.get('radius')
-
-        if lat and lng and radius:
-            try:
-                lat = float(lat)
-                lng = float(lng)
-                radius = float(radius)
-                
-                hospitals_within_radius = []
-                for hospital in queryset:
-                    hosp_lat = float(hospital.hospital_latitude)
-                    hosp_lng = float(hospital.hospital_longitude)
-                    distance = haversine(lat, lng, hosp_lat, hosp_lng)
-                    print(f"Hospital: {hospital.hospital_name}, Distance: {distance}")  # 병원과 거리 로그 출력
-                    if distance <= radius / 1000:  # 반경을 km로 변환
-                        hospitals_within_radius.append(hospital)
-                
-                print(f"Filtered hospitals: {hospitals_within_radius}")  # 필터링된 병원 로그 출력
-
-                return hospitals_within_radius
-            except (ValueError, TypeError) as e:
-                print(f"Error: {e}")  # 에러 로그 출력
-
-        return queryset
-=======
 def get_hospitals(request):
     lat = request.GET.get('lat')
     lng = request.GET.get('lng')
@@ -489,5 +430,3 @@ def get_hospitals(request):
     response = requests.get(url)
     return JsonResponse(response.json())
 
-
->>>>>>> 24bb875c0b305dafaf8f5b65f38fb6afcc05c00b
