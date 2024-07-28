@@ -14,18 +14,6 @@ class Trip(models.Model):   # 사용자당 하나만 생성되는 여행 모델
         return self.country
 
 
-# class Insurance(models.Model):
-#     INSURANCE_TYPES = [
-#         ('실속형', '실속형'),
-#         ('표준형', '표준형'),
-#         ('고급형', '고급형'),
-#     ]
-#     insurance_type = models.CharField(max_length=10, choices=INSURANCE_TYPES)
-#     insurance_name = models.CharField(max_length=20)
-#     insurance_call = models.CharField(max_length=20)
-
-#     def __str__(self):
-#         return self.insurance_type
 
 class MediCard(models.Model):   # 사용자당 하나만 생성 & 여행의 국가를 외래키로 가져오고 언어를 정의하는 모델
     user = models.ForeignKey(
