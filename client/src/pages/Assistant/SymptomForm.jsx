@@ -128,13 +128,13 @@ const MoreButton = styled(SymptomButton)`
 
 function SymptomForm() {
   const navigate = useNavigate();
-  const [symptoms, setSymptoms] = useState([]);
-  const [customSymptom, setCustomSymptom] = useState("");
-  const [startDate, setStartDate] = useState(null);
-  const [frequency, setFrequency] = useState(null);
-  const [chronicDiseases, setChronicDiseases] = useState("");
-  const [medications, setMedications] = useState("");
-  const [additionalInfo, setAdditionalInfo] = useState("");
+  const [symptoms, setSymptoms] = useState([]); // 선택된 증상들
+  const [customSymptom, setCustomSymptom] = useState(""); // 사용자 입력 증상
+  const [startDate, setStartDate] = useState(null); // 증상 시작 기간
+  const [frequency, setFrequency] = useState(null); // 증상 지속 기간
+  const [chronicDiseases, setChronicDiseases] = useState(""); // 만성 질환
+  const [medications, setMedications] = useState(""); // 현재 복용 중인 약
+  const [additionalInfo, setAdditionalInfo] = useState(""); // 추가 정보
 
   const handleSymptomClick = (symptom) => {
     if (symptoms.includes(symptom)) {
@@ -150,16 +150,19 @@ function SymptomForm() {
       return;
     }
 
+    // 변수 정의
+    const variables = {
+      symptoms,
+      customSymptom,
+      startDate,
+      frequency,
+      chronicDiseases,
+      medications,
+      additionalInfo,
+    };
+
     navigate("/symptom-script", {
-      state: {
-        symptoms,
-        customSymptom,
-        startDate,
-        frequency,
-        chronicDiseases,
-        medications,
-        additionalInfo,
-      },
+      state: variables,
     });
   };
 

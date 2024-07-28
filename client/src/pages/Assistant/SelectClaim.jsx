@@ -92,7 +92,7 @@ const Button = styled.button`
   border: none;
   border-radius: 16px;
   cursor: pointer;
-  margin-top: 320px;
+  margin-top: 266px;
 `;
 
 const claimTypes = ["암", "뇌질환", "심질환", "기타"];
@@ -110,6 +110,9 @@ function SelectClaim() {
       navigate("/document-guide");
     }
   };
+
+  // 클레임 타입 변수 정의
+  const claim_type = selected;
 
   return (
     <PageContainer>

@@ -14,9 +14,12 @@ function SelectFacility() {
   };
 
   const handleNext = () => {
+    let facility = ""; // 변수 정의
     if (selected === "pharmacy") {
+      facility = "pharmacy"; // 변수 값 설정
       navigate("/map-pharmacy");
     } else if (selected === "hospital") {
+      facility = "hospital"; // 변수 값 설정
       navigate("/select-specialty");
     }
   };
@@ -149,5 +152,5 @@ const Button = styled.button`
   background: var(--mainblue, #4a7dff);
   border: none;
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
-  margin-top: 155px;
+  margin-top: 100px;
 `;

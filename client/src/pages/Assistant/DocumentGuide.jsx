@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
-import checkedIcon from "../../assets/icons/checked.svg";
-import uncheckedIcon from "../../assets/icons/unchecked.svg";
 
 const PageContainer = styled.div`
   display: flex;
@@ -26,7 +24,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  font-family: "Pretendard";
+  font-family: Pretendard;
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 10px;
@@ -50,34 +48,17 @@ const Subtitle = styled.p`
   align-self: flex-start;
 `;
 
-const List = styled.ul`
-  list-style-type: none;
+const DocumentList = styled.ul`
+  list-style: none;
   padding: 0;
-  width: 352px;
-  height: 48px;
+  margin-left: 20px;
+  align-self: flex-start;
 `;
 
-const ListItem = styled.li`
-  font-family: "Pretendard";
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: ${(props) =>
-    props.selected ? "rgba(255, 249, 119, 0.40)" : "#F8F8F8"};
-  border-radius: 15px;
-  margin-bottom: 8px;
-  cursor: pointer;
-`;
-
-const ListItemText = styled.span`
-  flex-grow: 1;
-  font-weight: ${(props) => (props.selected ? "bold" : "normal")};
-`;
-
-const ListItemIcon = styled.img`
-  width: 24px;
-  height: 24px;
+const DocumentItem = styled.li`
+  font-family: Pretendard;
+  font-size: 14px;
+  margin-bottom: 10px;
 `;
 
 const ButtonContainer = styled.div`
@@ -86,8 +67,6 @@ const ButtonContainer = styled.div`
   gap: 11px;
   width: 100%;
   padding: 0 20px;
-  position: absolute;
-  bottom: 100px;
 `;
 
 const Button = styled.button`
@@ -103,83 +82,36 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const DocumentGuide = () => {
+function DocumentGuide() {
   const navigate = useNavigate();
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [documents, setDocuments] = useState([
-    "진단서",
-    "진료비 계산서",
-    "진료비 세부 내역서",
-  ]); // 일단 가짜데이터 삽입해놨는데 백 연동하면서 수정하기
+  const location = useLocation();
+  const documents = location.state?.documents || [];
 
-  useEffect(() => {
-    // 백에서 서류 목록을 가져오는 함수 (API 호출)
-    const fetchDocuments = async () => {
-      try {
-        const response = await fetch("/api/documents"); // API 엔드포인트 수정 필요
-        const data = await response.json();
-        setDocuments(data.documents); // 서류 목록을 상태에 저장
-      } catch (error) {
-        console.error("Error fetching documents:", error);
-      }
-    };
-
-    fetchDocuments();
-  }, []);
-
-  const handleItemClick = (item) => {
-    setSelectedItems((prevSelectedItems) =>
-      prevSelectedItems.includes(item)
-        ? prevSelectedItems.filter((i) => i !== item)
-        : [...prevSelectedItems, item]
-    );
-  };
-
-  const handleNext = () => {
-    // 선택한 항목을 백엔드로 전송하거나 저장하는 로직 추가
-    navigate("/next-page"); // 경로 수정하기
-  };
+  // 필요한 서류 목록 변수 정의
+  const documentsList = documents;
 
   return (
     <PageContainer>
       <Container>
         <ProgressIndicator step={3} />
-        <Title>
-          입력해주신 조건에 따라
-          <br />
-          필요한 서류를 안내해 드렸어요
-        </Title>
-        <Subtitle>
-          아래 체크리스트를 활용해 보험 청구에 필요한 서류를 꼭 챙기세요!
-        </Subtitle>
-        <List>
+        <Title>필요한 서류 목록</Title>
+        <Subtitle>아래 서류를 준비해주세요</Subtitle>
+        <DocumentList>
           {documents.map((doc, index) => (
-            <ListItem
-              key={index}
-              selected={selectedItems.includes(doc)}
-              onClick={() => handleItemClick(doc)}
-            >
-              <ListItemText selected={selectedItems.includes(doc)}>
-                {doc}
-              </ListItemText>
-              <ListItemIcon
-                src={selectedItems.includes(doc) ? checkedIcon : uncheckedIcon}
-                alt="checkbox"
-              />
-            </ListItem>
+            <DocumentItem key={index}>{doc}</DocumentItem>
           ))}
-        </List>
+        </DocumentList>
         <ButtonContainer>
           <Button onClick={() => navigate(-1)} primary={false}>
             이전
           </Button>
-          <Button onClick={handleNext} primary={true}>
-            완료
+          <Button onClick={() => navigate("/next-step")} primary={true}>
+            다음
           </Button>
         </ButtonContainer>
       </Container>
     </PageContainer>
   );
-};
+}
 
 export default DocumentGuide;

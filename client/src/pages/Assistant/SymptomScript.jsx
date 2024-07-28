@@ -71,8 +71,8 @@ const ButtonContainer = styled.div`
   gap: 11px;
   width: 100%;
   padding: 0 20px;
-  position: absolute;
-  bottom: 100px;
+  margin-top: auto;
+  margin-bottom: 25px;
 `;
 
 const Button = styled.button`
@@ -102,12 +102,19 @@ function SymptomScript() {
     additionalInfo,
   } = location.state || {};
 
+  // 변수정의
+  const symptoms_var = symptoms;
+  const customSymptom_var = customSymptom;
+  const startDate_var = startDate;
+  const frequency_var = frequency;
+  const chronicDiseases_var = chronicDiseases;
+  const medications_var = medications;
+  const additionalInfo_var = additionalInfo;
+
   const chronicDiseasesText = chronicDiseases ? chronicDiseases : "없고";
   const medicationsText = medications ? medications : "없습니다";
   const symptomsText =
-    symptoms.length > 0 && customSymptom
-      ? `${symptoms.join(", ")} 및 ${customSymptom}`
-      : symptoms.length > 0
+    symptoms.length > 0
       ? symptoms.join(", ")
       : customSymptom
       ? customSymptom
