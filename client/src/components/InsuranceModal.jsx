@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import useInsuranceStore from "../assets/insuranceStore";
 
@@ -8,6 +8,14 @@ function InsuranceModal({ onClose }) {
   const [showRecommendation, setShowRecommendation] = useState(false);
   const [clickedButtons, setClickedButtons] = useState({}); // 단계별 클릭된 버튼 상태
   const { insuranceType, setInsuranceType } = useInsuranceStore();
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    const storedUserName = localStorage.getItem("userName");
+    if (storedUserName) {
+      setUserName(storedUserName);
+    }
+  }, []);
 
   const handleNext = () => {
     if (step === 1 && answers[1] === 1) {
@@ -61,21 +69,21 @@ function InsuranceModal({ onClose }) {
       case "실속형":
         return (
           <>
-            <span>김지은님에게 맞는 보험을 추천해드려요!</span>
+            <span>{userName}님에게 맞는 보험을 추천해드려요!</span>
             <img src="./img/실속형_결과.png" alt="실속형 결과" />
           </>
         );
       case "표준형":
         return (
           <>
-            <span>김지은님에게 맞는 보험을 추천해드려요!</span>
+            <span>{userName}님에게 맞는 보험을 추천해드려요!</span>
             <img src="./img/표준형_결과.png" alt="표준형_결과" />
           </>
         );
       case "고급형":
         return (
           <>
-            <span>김지은님에게 맞는 보험을 추천해드려요!</span>
+            <span>{userName}님에게 맞는 보험을 추천해드려요!</span>
             <img src="./img/고급형_결과.png" alt="고급형_결과" />
           </>
         );
