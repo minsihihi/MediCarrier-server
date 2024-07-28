@@ -89,7 +89,7 @@ const MapHospitalView = () => {
               onClick={() => handleSelect(hospital.place_id)}
             >
               <InfoContainer>
-                <ImagePlaceholder>
+              <ImagePlaceholder>
                   {hospital.photo_url ? (
                     <PlaceholderImage src={hospital.photo_url} alt={hospital.name} />
                   ) : (

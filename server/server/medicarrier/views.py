@@ -433,20 +433,25 @@ def get_hospitals(request):
     response = requests.get(url)
     data = response.json()
     
-    # 병원 정보 가공
-    hospitals = [
-        {
-            "name": result.get("name"),
-            "rating": result.get("rating"),
-            "address": result.get("vicinity"),
-            "lat": result["geometry"]["location"].get("lat"),
-            "lng": result["geometry"]["location"].get("lng"),
-            "place_id": result.get("place_id"),
-            "distance": haversine(lat, lng, result["geometry"]["location"].get("lat"), result["geometry"]["location"].get("lng"))  # 거리 추가
-        }
-        for result in data.get("results", [])
-    ]
+    if response.status_code == 200:
+        hospitals = []
+        for result in data.get('results', []):
+            photos = result.get('photos', [])
+            photo_url = None
+            if photos:
+                photo_reference = photos[0].get('photo_reference')
+                photo_url = f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={photo_reference}&key={api_key}"
+            
+            # 병원 정보 가공
+            hospitals.append({
+                "name": result.get("name"),
+                "rating": result.get("rating"),
+                "address": result.get("vicinity"),
+                "lat": result["geometry"]["location"].get("lat"),
+                "lng": result["geometry"]["location"].get("lng"),
+                "place_id": result.get("place_id"),
+                "distance": haversine(lat, lng, result["geometry"]["location"].get("lat"), result["geometry"]["location"].get("lng")),
+                'photo_url': photo_url,
+            })
     return JsonResponse({'results': hospitals})
-    
-
 
