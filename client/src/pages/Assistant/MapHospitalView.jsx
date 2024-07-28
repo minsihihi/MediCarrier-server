@@ -1,76 +1,56 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
-import { GOOGLE_MAPS_API_KEY } from '../../assets/config';
-
 
 const MapHospitalView = () => {
-  const navigate = useNavigate();
+  const [location, setLocation] = useState({ lat: null, lng: null });
   const [hospitals, setHospitals] = useState([]);
-  const [selected, setSelected] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const useCurrentLocation = () => {
-    const [location, setLocation] = useState(null);
-
-    useEffect(() => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            setLocation({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            });
-          },
-          (error) => {
-            console.error('Error fetching location:', error);
-          }
-        );
-      } else {
-        console.error('Geolocation not supported');
-      }
-    }, []);
-
-    return location;
-  };
-
-  const location = useCurrentLocation();
+  const [selected, setSelected] = useState(null); // 선택된 병원 상태
+  const [loading, setLoading] = useState(true); // 로딩 상태
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Error getting location: ", error);
+        }
+      );
+    } else {
+      console.error("Geolocation not supported by this browser.");
+    }
+  }, []);
 
   useEffect(() => {
-    if (location) {
-      const fetchHospitals = async () => {
-        try {
-          // Django 백엔드의 API 엔드포인트로 수정
-          const response = await axios.get(`http://localhost:8000/medicarrier/hospitals/`, {
-            params: {
-              lat: location.lat,
-              lng: location.lng,
-              radius: 5000, // 반경 5km
-            },
-          });
-
-          const sortedHospitals = response.data.sort((a, b) => (b.hospital_ratings || 0) - (a.hospital_ratings || 0));
-          setHospitals(sortedHospitals);
-          setLoading(false);
-        } catch (error) {
-          console.error('병원 데이터를 가져오는 데 실패했습니다.', error);
-          setLoading(false);
-        }
-      };
-
-      fetchHospitals();
+    if (location.lat && location.lng) {
+      axios
+        .get(`http://localhost:8000/medicarrier/hospitals/?lat=${location.lat}&lng=${location.lng}`)
+        .then((response) => {
+          setHospitals(response.data.results);
+          setLoading(false); // 로딩 상태를 false로 설정합니다.
+        })
+        .catch((error) => {
+          console.error("Error fetching hospitals: ", error);
+          setLoading(false); // 로딩 상태를 false로 설정합니다.
+        });
     }
   }, [location]);
 
-  const handleSelect = (placeId) => {
-    setSelected(placeId);
+  const handleSelect = (id) => {
+    setSelected(id);
   };
 
   const handleNext = () => {
     if (selected) {
-      const selectedHospital = hospitals.find(hospital => hospital.id === selected);
+      const selectedHospital = hospitals.find(hospital => hospital.place_id === selected);
       navigate("/symptom-form", { state: { selectedHospital } });
     }
   };
@@ -79,7 +59,7 @@ const MapHospitalView = () => {
     window.open(`https://www.google.com/maps/place/?q=place_id:${placeId}`, '_blank');
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p>Loading...</p>; // 로딩 상태인 경우 로딩 메시지를 표시합니다.
 
   return (
     <PageContainer>
@@ -97,19 +77,25 @@ const MapHospitalView = () => {
         <ListContainer>
           {hospitals.map((hospital) => (
             <ListItem
-              key={hospital.id}
-              selected={selected === hospital.id}
-              onClick={() => handleSelect(hospital.id)}
+              key={hospital.place_id}
+              selected={selected === hospital.place_id}
+              onClick={() => handleSelect(hospital.place_id)}
             >
               <InfoContainer>
-                <ImagePlaceholder />
+                <ImagePlaceholder>
+                  {hospital.photo_url ? (
+                    <PlaceholderImage src={hospital.photo_url} alt={hospital.name} />
+                  ) : (
+                    <PlaceholderText>No Image</PlaceholderText>
+                  )}
+                </ImagePlaceholder>
                 <InfoText>
                   <DetailText>거리 정보 (미제공)</DetailText>
-                  <HospitalName>{hospital.hospital_name}</HospitalName>
-                  <DetailText>{hospital.hospital_category}</DetailText>
-                  <DetailText>⭐ {hospital.hospital_ratings || '정보 없음'}</DetailText>
+                  <HospitalName>{hospital.name}</HospitalName>
+                  <DetailText>{hospital.address}</DetailText>
+                  <DetailText>⭐ {hospital.rating || '정보 없음'}</DetailText>
                 </InfoText>
-                <MoreButton onClick={() => handleMoreInfo(hospital.id)}>더보기</MoreButton>
+                <MoreButton onClick={() => handleMoreInfo(hospital.place_id)}>더보기</MoreButton>
               </InfoContainer>
             </ListItem>
           ))}
@@ -125,9 +111,10 @@ const MapHospitalView = () => {
       </Container>
     </PageContainer>
   );
-}
+};
 
 export default MapHospitalView;
+
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -195,6 +182,7 @@ const ListContainer = styled.div`
   &::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
   }
+  width: 100%;
 `;
 
 const ListItem = styled.div`
@@ -221,6 +209,22 @@ const ImagePlaceholder = styled.div`
   height: 110px;
   background-color: #e0e0e0;
   border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* 이미지가 넘치지 않도록 함 */
+`;
+
+const PlaceholderImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지가 placeholder 안에 맞게 조정되도록 함 */
+`;
+
+const PlaceholderText = styled.p`
+  font-family: "Pretendard";
+  font-size: 14px;
+  color: #aaa;
 `;
 
 const InfoText = styled.div`
