@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Trip, Assist, Hospital, Insurance, MediCard, MediInfo, BasicInfo, Script
+from .models import Trip, Assist, Hospital, MediCard, MediInfo, BasicInfo, Script
 from api.models import User
 
 class ScriptSerializer(serializers.ModelSerializer):
@@ -282,11 +282,7 @@ class HospitalSerializer(serializers.ModelSerializer):
         ]
 
 
-class InsuranceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Insurance
-        fields = ['id', 'user', 'insurance_type',
-                  'insturance_name', 'insurance_call']
+
 
 
 

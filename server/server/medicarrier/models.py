@@ -252,14 +252,6 @@ class Script(models.Model):
     def __str__(self):
         return f"Script {self.user.username}"
     
-class Insurance(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    insurance_type = models.CharField(max_length=20)
-    insturance_name = models.CharField(max_length=20)
-    insurance_call = models.CharField(max_length=20)
 
-    def __str__(self):
-        return self.insturance_name
 
 
