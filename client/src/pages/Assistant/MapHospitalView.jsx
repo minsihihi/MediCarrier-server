@@ -93,7 +93,7 @@ const MapHospitalView = () => {
               <InfoContainer>
                 <ImagePlaceholder />
                 <InfoText>
-                  <DetailText>거리 정보 (미제공)</DetailText>
+                  <DetailText>{hospital.distance.toFixed(0)}m</DetailText>
                   <HospitalName>{hospital.name}</HospitalName>
                   <DetailText>{hospital.address}</DetailText>
                   <DetailText>⭐ {hospital.rating || '정보 없음'}</DetailText>
