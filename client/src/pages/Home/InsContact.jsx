@@ -8,7 +8,7 @@ const InsContact = () => {
 
   const navigate = useNavigate();
   const navigateToHome = () => {
-    navigate("/");
+    navigate("/home");
   };
 
   return (
@@ -94,7 +94,7 @@ const Content = styled.div`
 
 const Header = styled.div`
   position: fixed;
-  background: #fafafa;
+  background: #ffffff;
   z-index: 10;
   top: 0px;
   display: inline-flex;
