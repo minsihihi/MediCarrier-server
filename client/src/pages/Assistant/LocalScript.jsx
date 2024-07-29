@@ -89,7 +89,7 @@ function LocalScript() {
     if(facility == "병원")
     navigate("/select-condition");
   else
-    navigate('/home');
+    navigate('/select-condition');
   };
 
   return (
