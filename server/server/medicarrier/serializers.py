@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Trip, Assist, Hospital, MediCard, MediInfo, BasicInfo, Script
+from .models import *
 from api.models import User
 
 class ScriptSerializer(serializers.ModelSerializer):
@@ -278,6 +278,10 @@ class HospitalSerializer(serializers.ModelSerializer):
         model = Hospital
         fields = '__all__'
 
+class PharmacySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pharmacy
+        fields = '__all__'
 
 
 

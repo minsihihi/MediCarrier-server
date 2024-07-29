@@ -8,7 +8,7 @@ class TripAdmin(admin.ModelAdmin):
     search_fields = ('country', 'user__username')
     
 admin.site.register(Hospital)
-
+admin.site.register(Pharmacy)
 admin.site.register(Script)
 
 

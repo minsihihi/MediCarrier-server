@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, get_object_or_404
 from rest_framework import views
 from rest_framework import status
@@ -18,18 +19,6 @@ import requests
 
 import math
 
-def haversine(lat1, lon1, lat2, lon2):
-    R = 6371  # Earth radius in kilometers
-
-    dlat = math.radians(lat2 - lat1)
-    dlon = math.radians(lon2 - lon1)
-    
-    a = math.sin(dlat / 2) ** 2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    
-    distance_km = R * c
-    distance_m = distance_km * 1000  # Convert kilometers to meters
-    return distance_m
 
 # 번역기 인스턴스 생성
 translator = Translator()
@@ -422,6 +411,23 @@ class AssistView(APIView):
         serializer = AssistSerializer(assist, many=True)
         return Response(serializer.data)
 
+
+def haversine(lat1, lon1, lat2, lon2):
+    R = 6371  # Earth radius in kilometers
+
+    lat1, lon1, lat2, lon2 = float(lat1), float(lon1), float(lat2), float(lon2)
+
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    
+    a = math.sin(dlat / 2) ** 2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    
+    distance_km = R * c
+    distance_m = distance_km * 1000  # Convert kilometers to meters
+    return distance_m
+
+
 def get_hospitals(request):
     lat = float(request.GET.get('lat'))
     lng = float(request.GET.get('lng'))
@@ -454,4 +460,37 @@ def get_hospitals(request):
                 'photo_url': photo_url,
             })
     return JsonResponse({'results': hospitals})
+
+
+def get_pharmacies(request):
+    lat = request.GET.get('lat')
+    lng = request.GET.get('lng')
+    api_key = settings.GOOGLE_MAPS_API_KEY
+    url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius=1000&type=pharmacy&key={api_key}"
+
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        pharmacies = []
+        for result in data.get('results', []):
+            photos = result.get('photos', [])
+            photo_url = None
+            if photos:
+                photo_reference = photos[0].get('photo_reference')
+                photo_url = f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={photo_reference}&key={api_key}"
+
+            # 약국 정보 가공
+            pharmacies.append({
+                "name": result.get("name"),
+                "rating": result.get("rating"),
+                "address": result.get("vicinity"),
+                "lat": result["geometry"]["location"].get("lat"),
+                "lng": result["geometry"]["location"].get("lng"),
+                "place_id": result.get("place_id"),
+                "distance": haversine(lat, lng, result["geometry"]["location"].get("lat"), result["geometry"]["location"].get("lng")),
+                'photo_url': photo_url,
+            })
+        return JsonResponse({'results': pharmacies})
+    else:
+        return JsonResponse(response.json(), status=response.status_code)
 

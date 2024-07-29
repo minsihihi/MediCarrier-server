@@ -233,6 +233,20 @@ class Hospital(models.Model):
     def __str__(self):
         return self.hospital_name
 
+
+class Pharmacy(models.Model):
+    pharmacy_distance = models.CharField(max_length=20, default='')
+    pharmacy_name = models.CharField(max_length=20)
+    pharmacy_category = models.CharField(max_length=20)
+    pharmacy_tel = models.CharField(max_length=15)
+    pharmacy_ratings = models.CharField(max_length=20)
+    pharmacy_open = models.BooleanField()
+    pharmacy_latitude = models.FloatField(default=0)  # 위도
+    pharmacy_longitude = models.FloatField(default=0)  # 경도
+
+    def __str__(self):
+        return self.pharmacy_name
+    
 class Script(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
