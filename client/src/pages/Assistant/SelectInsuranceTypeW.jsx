@@ -163,7 +163,7 @@ function SelectInsuranceTypeW() {
         case "수술":
           try {
             // POST 요청 보내기
-            const response = await axios.post("http://127.0.0.1:8000/medicarrier/assist", 
+            const response = await axios.post("http://127.0.0.1:8000/medicarrier/assist/", 
               { user: userId, ...stateToPass1 }, {
               headers: {
                 "Authorization": `Bearer ${localStorage.getItem("token")}`, 

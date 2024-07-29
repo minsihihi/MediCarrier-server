@@ -13,7 +13,7 @@ const Register = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.post("http://127.0.0.1:8000/api/signup", {
+      await axios.post("http://127.0.0.1:8000/api/signup/", {
         username,
         password,
         nickname,

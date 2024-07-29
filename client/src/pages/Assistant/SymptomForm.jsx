@@ -208,6 +208,7 @@ function SymptomForm() {
             ].map((symptom, index) => (
               <SymptomButton
                 key={index}
+                style={{ fontFamily: 'Pretendard'}}
                 selected={symptoms.includes(symptom)}
                 onClick={() => handleSymptomClick(symptom)}
               >
@@ -234,6 +235,7 @@ function SymptomForm() {
             {["오늘", "1일 전", "2-3일 전"].map((date, index) => (
               <SymptomButton
                 key={index}
+                style={{ fontFamily: 'Pretendard'}}
                 selected={startDate === date}
                 onClick={() => setStartDate(date)}
               >
@@ -245,6 +247,7 @@ function SymptomForm() {
             {["일주일 전", "일주일 이상"].map((date, index) => (
               <SymptomButton
                 key={index}
+                style={{ fontFamily: 'Pretendard'}}
                 selected={startDate === date}
                 onClick={() => setStartDate(date)}
               >
@@ -259,6 +262,7 @@ function SymptomForm() {
             {["지속적", "간헐적", "특정 시간에만"].map((freq, index) => (
               <SymptomButton
                 key={index}
+                style={{ fontFamily: 'Pretendard'}}
                 selected={frequency === freq}
                 onClick={() => setFrequency(freq)}
               >

@@ -38,7 +38,7 @@ const onPost = async () => {
   try {
     const response = await axios({
       method: "POST",
-      url: "http://127.0.0.1:8000/medicarrier/register.trip",
+      url: "http://127.0.0.1:8000/medicarrier/register.trip/",
       data: tripData,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`, // 인증 토큰
