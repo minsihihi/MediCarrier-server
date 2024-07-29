@@ -153,7 +153,7 @@ function DocumentGuide() {
           <Button onClick={() => navigate(-1)} primary={false}>
             이전
           </Button>
-          <Button onClick={() => navigate("/next-step")} primary={true}>
+          <Button onClick={() => navigate("/home")} primary={true}>
             다음
           </Button>
         </ButtonContainer>
