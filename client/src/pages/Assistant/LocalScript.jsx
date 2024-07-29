@@ -83,10 +83,13 @@ const Button = styled.button`
 function LocalScript() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { translatedScript } = location.state || {};
+  const { translatedScript, facility } = location.state || {};
 
   const handleNext = () => {
+    if(facility == "병원")
     navigate("/select-condition");
+  else
+    navigate('/home');
   };
 
   return (
