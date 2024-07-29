@@ -105,7 +105,7 @@ const MapPharmacyView = () => {
                   )}
                 </ImagePlaceholder>
                 <InfoText>
-                  <DetailText>거리 정보 (미제공)</DetailText>
+                  <DetailText>{pharmacy.distance.toFixed(0)}m</DetailText>
                   <PharmacyName>{pharmacy.name}</PharmacyName>
                   <DetailText>{pharmacy.address}</DetailText>
                   <DetailText>⭐ {pharmacy.rating || '정보 없음'}</DetailText>
