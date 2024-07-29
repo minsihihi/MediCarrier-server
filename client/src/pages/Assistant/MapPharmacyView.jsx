@@ -52,7 +52,7 @@ const MapPharmacyView = () => {
   const handleNext = () => {
     if (selected) {
       const selectedPharmacy = pharmacies.find(pharmacy => pharmacy.place_id === selected);
-      navigate("/pharmacy-details", { state: { selectedPharmacy } });
+      navigate("/symptom-form", { state: { selectedPharmacy } });
     }
   };
 
