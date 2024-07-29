@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import styled from "styled-components";
@@ -13,25 +13,25 @@ const MapHospitalView = () => {
   const locationState = useLocation().state; // React Router의 state로부터 데이터 가져오기
   const keyword = locationState?.keyword || ""; //
   
-    useEffect(() => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            setLocation({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            });
-          },
-          (error) => {
-            console.error("Error getting location: ", error);
-          }
-        );
-      } else {
-        console.error("Geolocation not supported by this browser.");
-      }
-    }, []);
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Error getting location: ", error);
+        }
+      );
+    } else {
+      console.error("Geolocation not supported by this browser.");
+    }
+  }, []);
   
-    // 위치 정보와 keyword가 있을 때 병원 검색 API 호출
+  // 위치 정보와 keyword가 있을 때 병원 검색 API 호출
   useEffect(() => {
     if (location.lat && location.lng && keyword) {
       setLoading(true); // 로딩 시작
@@ -48,10 +48,9 @@ const MapHospitalView = () => {
     }
   }, [location, keyword]);
 
-    const handleSelect = (id) => {
-      setSelected(id);
+  const handleSelect = (id) => {
+    setSelected(id);
   };
-
 
   const handleNext = () => {
     if (selected) {
@@ -64,9 +63,21 @@ const MapHospitalView = () => {
     window.open(`https://www.google.com/maps/place/?q=place_id:${placeId}`, '_blank');
   };
 
-  
-
-  //if (loading) return <p>Loading...</p>;
+  const handleNearbySearch = () => {
+    if (location.lat && location.lng) {
+      setLoading(true);
+      axios
+        .get(`http://localhost:8000/medicarrier/hospitals/?lat=${location.lat}&lng=${location.lng}`)
+        .then((response) => {
+          setHospitals(response.data.results);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching hospitals: ", error);
+          setLoading(false);
+        });
+    }
+  };
 
   return (
     <PageContainer>
@@ -80,33 +91,37 @@ const MapHospitalView = () => {
         <Subtitle>
           추천된 병원은 구글맵 기준 별점, 후기가 좋은 병원들이에요
         </Subtitle>
-        <NearbyButton>내 주변</NearbyButton>
-        <ListContainer>
-          {hospitals.map((hospital) => (
-            <ListItem
-              key={hospital.place_id}
-              selected={selected === hospital.place_id}
-              onClick={() => handleSelect(hospital.place_id)}
-            >
-              <InfoContainer>
-              <ImagePlaceholder>
-                  {hospital.photo_url ? (
-                    <PlaceholderImage src={hospital.photo_url} alt={hospital.name} />
-                  ) : (
-                    <PlaceholderText>No Image</PlaceholderText>
-                  )}
-                </ImagePlaceholder>
-                <InfoText>
-                  <DetailText>{hospital.distance.toFixed(0)}m</DetailText>
-                  <HospitalName>{hospital.name}</HospitalName>
-                  <DetailText>{hospital.address}</DetailText>
-                  <DetailText>⭐ {hospital.rating || '정보 없음'}</DetailText>
-                </InfoText>
-                <MoreButton onClick={() => handleMoreInfo(hospital.place_id)}>더보기</MoreButton>
-              </InfoContainer>
-            </ListItem>
-          ))}
-        </ListContainer>
+        <NearbyButton onClick={handleNearbySearch}>내 주변</NearbyButton>
+        {loading ? (
+          <LoadingText>Loading...</LoadingText>
+        ) : (
+          <ListContainer>
+            {hospitals.map((hospital) => (
+              <ListItem
+                key={hospital.place_id}
+                selected={selected === hospital.place_id}
+                onClick={() => handleSelect(hospital.place_id)}
+              >
+                <InfoContainer>
+                  <ImagePlaceholder>
+                    {hospital.photo_url ? (
+                      <PlaceholderImage src={hospital.photo_url} alt={hospital.name} />
+                    ) : (
+                      <PlaceholderText>No Image</PlaceholderText>
+                    )}
+                  </ImagePlaceholder>
+                  <InfoText>
+                    <DetailText>{hospital.distance.toFixed(0)}m</DetailText>
+                    <HospitalName>{hospital.name}</HospitalName>
+                    <DetailText>{hospital.address}</DetailText>
+                    <DetailText>⭐ {hospital.rating || '정보 없음'}</DetailText>
+                  </InfoText>
+                  <MoreButton onClick={() => handleMoreInfo(hospital.place_id)}>더보기</MoreButton>
+                </InfoContainer>
+              </ListItem>
+            ))}
+          </ListContainer>
+        )}
         <ButtonContainer>
           <Button onClick={() => navigate(-1)} primary={false}>
             이전
@@ -289,9 +304,9 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const MapContainer = styled.div`
-  width: 353px;
-  height: 190px;
-  flex: 1;
-  background-color: #e0e0e0;
+const LoadingText = styled.p`
+  font-family: "Pretendard";
+  font-size: 16px;
+  color: #aaa;
+  margin-top: 20px;
 `;

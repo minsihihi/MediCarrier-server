@@ -1,46 +1,78 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
 
-const fakeData = [
-  {
-    id: 1,
-    name: "오가조에 이비인후과 클리닉",
-    distance: "100m",
-    rating: "4.5 (65)",
-    phone: "+81 3-3573-5487",
-  },
-  {
-    id: 2,
-    name: "니혼조제 츠키지 약국",
-    distance: "100m",
-    rating: "3.4 (18)",
-    phone: "+81 3-6226-4025",
-  },
-  {
-    id: 3,
-    name: "니혼조제 츠키지 약국",
-    distance: "100m",
-    rating: "3.4 (18)",
-    phone: "+81 3-6226-4025",
-  },
-];
-
-function MapPharmacyView() {
+const MapPharmacyView = () => {
+  const [location, setLocation] = useState({ lat: null, lng: null });
+  const [pharmacies, setPharmacies] = useState([]);
+  const [selected, setSelected] = useState(null); // 선택된 약국 상태
+  const [loading, setLoading] = useState(true); // 로딩 상태
   const navigate = useNavigate();
-  const [selected, setSelected] = useState(null);
 
-  const handleSelect = (pharmacy) => {
-    setSelected(pharmacy);
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Error getting location: ", error);
+        }
+      );
+    } else {
+      console.error("Geolocation not supported by this browser.");
+    }
+  }, []);
+  
+  useEffect(() => {
+    if (location.lat && location.lng) {
+      setLoading(true); // 로딩 시작
+      axios
+        .get(`http://localhost:8000/medicarrier/pharmacies/?lat=${location.lat}&lng=${location.lng}`)
+        .then((response) => {
+          setPharmacies(response.data.results);
+          setLoading(false); // 로딩 완료
+        })
+        .catch((error) => {
+          console.error("Error fetching pharmacies: ", error);
+          setLoading(false); // 로딩 완료
+        });
+    }
+  }, [location]);
+
+  const handleSelect = (id) => {
+    setSelected(id);
   };
 
   const handleNext = () => {
     if (selected) {
-      const selected_pharmacy = fakeData.find(
-        (pharmacy) => pharmacy.id === selected
-      ); // 변수 정의
-      navigate("/symptom-form", { state: { selected_pharmacy } });
+      const selectedPharmacy = pharmacies.find(pharmacy => pharmacy.place_id === selected);
+      navigate("/pharmacy-details", { state: { selectedPharmacy } });
+    }
+  };
+
+  const handleMoreInfo = (placeId) => {
+    window.open(`https://www.google.com/maps/place/?q=place_id:${placeId}`, '_blank');
+  };
+
+  const handleNearbySearch = () => {
+    if (location.lat && location.lng) {
+      setLoading(true);
+      axios
+        .get(`http://localhost:8000/medicarrier/pharmacies/?lat=${location.lat}&lng=${location.lng}`)
+        .then((response) => {
+          setPharmacies(response.data.results);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching pharmacies: ", error);
+          setLoading(false);
+        });
     }
   };
 
@@ -56,23 +88,29 @@ function MapPharmacyView() {
         <Subtitle>
           추천된 약국은 구글맵 기준 별점, 후기가 좋은 약국들이에요
         </Subtitle>
-        <NearbyButton>내 주변</NearbyButton>
+        <NearbyButton onClick={handleNearbySearch}>내 주변</NearbyButton>
         <ListContainer>
-          {fakeData.map((pharmacy) => (
+          {pharmacies.map((pharmacy) => (
             <ListItem
-              key={pharmacy.id}
-              selected={selected === pharmacy.id}
-              onClick={() => handleSelect(pharmacy.id)}
+              key={pharmacy.place_id}
+              selected={selected === pharmacy.place_id}
+              onClick={() => handleSelect(pharmacy.place_id)}
             >
               <InfoContainer>
-                <ImagePlaceholder />
+                <ImagePlaceholder>
+                  {pharmacy.photo_url ? (
+                    <PlaceholderImage src={pharmacy.photo_url} alt={pharmacy.name} />
+                  ) : (
+                    <PlaceholderText>No Image</PlaceholderText>
+                  )}
+                </ImagePlaceholder>
                 <InfoText>
-                  <DistanceBadge>{pharmacy.distance}</DistanceBadge>
-                  <HospitalName>{pharmacy.name}</HospitalName>
-                  <DetailText>{pharmacy.phone}</DetailText>
-                  <DetailText>⭐ {pharmacy.rating}</DetailText>
+                  <DetailText>거리 정보 (미제공)</DetailText>
+                  <PharmacyName>{pharmacy.name}</PharmacyName>
+                  <DetailText>{pharmacy.address}</DetailText>
+                  <DetailText>⭐ {pharmacy.rating || '정보 없음'}</DetailText>
                 </InfoText>
-                <MoreButton href="#">더보기</MoreButton>
+                <MoreButton onClick={() => handleMoreInfo(pharmacy.place_id)}>더보기</MoreButton>
               </InfoContainer>
             </ListItem>
           ))}
@@ -88,7 +126,7 @@ function MapPharmacyView() {
       </Container>
     </PageContainer>
   );
-}
+};
 
 export default MapPharmacyView;
 
@@ -142,7 +180,6 @@ const NearbyButton = styled.button`
   font-family: "Pretendard";
   font-size: 14px;
   color: #4a7dff;
-  font-weight: 400;
   background: #fff;
   border: 1px solid #4a7dff;
   border-radius: 53px;
@@ -160,6 +197,7 @@ const ListContainer = styled.div`
   &::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
   }
+  width: 100%;
 `;
 
 const ListItem = styled.div`
@@ -186,6 +224,22 @@ const ImagePlaceholder = styled.div`
   height: 110px;
   background-color: #e0e0e0;
   border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* 이미지가 넘치지 않도록 함 */
+`;
+
+const PlaceholderImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지가 placeholder 안에 맞게 조정되도록 함 */
+`;
+
+const PlaceholderText = styled.p`
+  font-family: "Pretendard";
+  font-size: 14px;
+  color: #aaa;
 `;
 
 const InfoText = styled.div`
@@ -195,7 +249,7 @@ const InfoText = styled.div`
   flex-direction: column;
 `;
 
-const HospitalName = styled.h2`
+const PharmacyName = styled.h2`
   font-family: "Pretendard";
   font-size: 16px;
   font-weight: bold;
@@ -208,28 +262,15 @@ const DetailText = styled.p`
   margin: 0;
 `;
 
-const DistanceBadge = styled.div`
-  font-family: "Pretendard";
-  font-size: 14px;
-  width: 32px;
-  height: 13px;
-  color: #fff;
-  background: #ffca28;
-  border-radius: 12px;
-  padding: 3px 10px;
-  display: inline-block;
-  margin-bottom: 8px;
-`;
-
 const MoreButton = styled.a`
   font-family: "Pretendard";
   font-size: 14px;
-  color: #000;
+  color: #4a7dff;
   text-decoration: none;
   margin-left: auto;
   margin-top: auto;
   &:hover {
-    color: #4a7dff;
+    color: #003cff;
   }
 `;
 
@@ -247,14 +288,13 @@ const Button = styled.button`
   font-family: "Pretendard";
   width: 171px;
   height: 51px;
-  padding: 4px 20px;
+  padding: 10px 20px;
   font-size: 16px;
   color: ${(props) => (props.primary ? "#FFFFFF" : "#000000")};
   background-color: ${(props) => (props.primary ? "#4A7DFF" : "#F8F8F8")};
   border: none;
   border-radius: 16px;
   cursor: pointer;
-  margin-bottom: 23px;
 `;
 
 const MapContainer = styled.div`
