@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import useTripStore from "../../assets/tripStore";
 import useInsuranceStore from "../../assets/insuranceStore";
 import InsuranceModal from "../../components/InsuranceModal";
-import ChecklisteModal from "../../components/ChecklisteModal";
+import ChecklistModal from "../../components/ChecklistModal";
 
 function Home() {
   const navigate = useNavigate();
@@ -29,13 +29,17 @@ function Home() {
   const { country, startDate, endDate } = useTripStore();
   const { insuranceType, insuranceName } = useInsuranceStore();
   const [isInsuranceModalOpen, setIsInsuranceModalOpen] = useState(false);
-  const [isChecklistModalOpen, setIsChecklistModalOpen] = useState(false); // 모달 상태 추가
+  const [isChecklistModalOpen, setIsChecklistModalOpen] = useState(false);
 
   const handleInsuranceBox = () => {
     setIsInsuranceModalOpen(true);
   };
-  const handleChecklistBox = () => {
+  const handleOpenChecklistModal = () => {
     setIsChecklistModalOpen(true);
+  };
+
+  const handleCloseChecklistModal = () => {
+    setIsChecklistModalOpen(false);
   };
 
   // 현재 날짜를 가져옵니다.
@@ -372,7 +376,7 @@ function Home() {
         <AboutInsurance>
           보험 알아보기
           <AboutInsuranceBoxes>
-            <div onClick={navigateToInsFeature}>
+            <Feature onClick={navigateToInsFeature}>
               <span>
                 <h1>보장 범위와 특징</h1>
                 <h2>
@@ -382,8 +386,8 @@ function Home() {
                 </h2>
               </span>
               <img src="../img/icon1.svg" />
-            </div>
-            <div onClick={navigateToInsStep}>
+            </Feature>
+            <Step onClick={navigateToInsStep}>
               <span>
                 <h1>보험 처리 절차 안내</h1>
                 <h2>
@@ -393,8 +397,8 @@ function Home() {
                 </h2>
               </span>
               <img src="../img/icon2.svg" />
-            </div>
-            <div onClick={handleChecklistBox}>
+            </Step>
+            <ChecklistBox onClick={handleOpenChecklistModal}>
               <span>
                 <h1>보험 청구시 필요 서류</h1>
                 <h2>
@@ -404,11 +408,11 @@ function Home() {
                 </h2>
               </span>
               <img src="../img/icon3.svg" />
-            </div>
+            </ChecklistBox>
             {isChecklistModalOpen && (
-              <ChecklisteModal onClose={() => setIsChecklistModalOpen(false)} />
+              <ChecklistModal onClose={handleCloseChecklistModal} />
             )}
-            <div onClick={navigateToInsContact}>
+            <Contact onClick={navigateToInsContact}>
               <span>
                 <h1>보험사 연락</h1>
                 <h2>
@@ -418,7 +422,7 @@ function Home() {
                 </h2>
               </span>
               <img src="../img/icon4.svg" />
-            </div>
+            </Contact>
           </AboutInsuranceBoxes>
         </AboutInsurance>
         <Chatting>
@@ -432,6 +436,42 @@ function Home() {
 }
 
 export default Home;
+
+const ChecklistBox = styled.div`
+  border-radius: 8px;
+  border: 1px solid #f5f5f5;
+  background: #fff;
+  width: 323px;
+  height: 66px;
+  padding: 17px 15px;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+
+  span {
+    h1 {
+      color: var(--black, #000);
+      font-family: Pretendard;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 133.8%; /* 18.732px */
+      margin: 0;
+      padding-bottom: 9px;
+    }
+    h2 {
+      color: #a7a7a7;
+      font-family: Pretendard;
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 133.8%; /* 18.732px */
+      margin: 0;
+    }
+  }
+`;
 
 const Blank = styled.div`
   width: 393px;
@@ -519,20 +559,8 @@ const AboutInsurance = styled.div`
   margin: 0 20px 24px 20px;
   width: 353px;
 `;
+
 const AboutInsuranceBoxes = styled.div`
-  div {
-    border-radius: 8px;
-    border: 1px solid #f5f5f5;
-    background: #fff;
-    width: 323px;
-    height: 66px;
-    padding: 17px 15px;
-    margin-top: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-  }
   span {
     h1 {
       color: var(--black, #000);
@@ -555,6 +583,23 @@ const AboutInsuranceBoxes = styled.div`
     }
   }
 `;
+
+const Feature = styled.div`
+  border-radius: 8px;
+  border: 1px solid #f5f5f5;
+  background: #fff;
+  width: 323px;
+  height: 66px;
+  padding: 17px 15px;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+`;
+
+const Step = styled(Feature)``;
+const Contact = styled(Feature)``;
 
 const MyInsurance = styled.div`
   color: var(--black, #000);

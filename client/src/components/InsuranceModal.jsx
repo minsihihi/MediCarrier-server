@@ -293,6 +293,7 @@ const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-end; /* 아래쪽에 정렬 */
+  z-index: 200;
 `;
 
 const ModalContent = styled.div`
