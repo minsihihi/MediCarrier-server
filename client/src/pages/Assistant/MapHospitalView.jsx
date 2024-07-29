@@ -10,8 +10,8 @@ const MapHospitalView = () => {
   const [selected, setSelected] = useState(null); // 선택된 병원 상태
   const [loading, setLoading] = useState(true); // 로딩 상태
   const navigate = useNavigate();
-  const locationState = useLocation().state; // React Router의 state로부터 데이터 가져오기
-  const keyword = locationState?.keyword || ""; //
+  const locationState = useLocation().state || {};
+  const { facility, hospital_type } = locationState;
   
   useEffect(() => {
     if (navigator.geolocation) {
@@ -33,10 +33,10 @@ const MapHospitalView = () => {
   
   // 위치 정보와 keyword가 있을 때 병원 검색 API 호출
   useEffect(() => {
-    if (location.lat && location.lng && keyword) {
+    if (location.lat && location.lng && hospital_type) {
       setLoading(true); // 로딩 시작
       axios
-        .get(`http://localhost:8000/medicarrier/hospitals/?lat=${location.lat}&lng=${location.lng}&keyword=${keyword}`)
+        .get(`http://localhost:8000/medicarrier/hospitals/?lat=${location.lat}&lng=${location.lng}&keyword=${hospital_type}`)
         .then((response) => {
           setHospitals(response.data.results);
           setLoading(false); // 로딩 완료
@@ -46,7 +46,7 @@ const MapHospitalView = () => {
           setLoading(false); // 로딩 완료
         });
     }
-  }, [location, keyword]);
+  }, [location, hospital_type]);
 
   const handleSelect = (id) => {
     setSelected(id);
@@ -54,8 +54,11 @@ const MapHospitalView = () => {
 
   const handleNext = () => {
     if (selected) {
-      const selectedHospital = hospitals.find(hospital => hospital.place_id === selected);
-      navigate("/symptom-form", { state: { selectedHospital } });
+      // 선택된 병원 ID를 배열로 만듭니다.
+      const selectedHospitalIds = [selected]; // 선택된 병원의 ID를 배열로 생성합니다.
+      navigate("/symptom-form", { state: { facility, hospital_type, 
+        //recommended_hospitals : selectedHospitalIds 
+      } });
     }
   };
 

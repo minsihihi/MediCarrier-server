@@ -116,8 +116,8 @@ class Assist(models.Model):
         default='',
     )
 
-    recommended_hospitals = models.ManyToManyField(
-        'Hospital', related_name='recommended_by_assists', blank=True)
+    #recommended_hospitals = models.ManyToManyField(
+    #    'Hospital', related_name='recommended_by_assists', blank=True)
 
     SYMPTOM_TYPE = [
         ('콧물이 나요', '콧물이 나요'),

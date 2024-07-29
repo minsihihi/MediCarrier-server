@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
 
@@ -22,6 +22,8 @@ const specialties = [
 
 function SelectSpecialty() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { facility } = location.state || {};
   const [selected, setSelected] = useState(null);
   const [showMore, setShowMore] = useState(false);
 
@@ -31,7 +33,7 @@ function SelectSpecialty() {
 
   const handleNext = () => {
     if (selected) {
-      navigate("/map-hospital", { state: { keyword: selected } });
+      navigate("/map-hospital", { state: {facility, hospital_type: selected } });
     }
   };
 

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation} from "react-router-dom";
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
+import axios from "axios";
 
 const PageContainer = styled.div`
   display: flex;
@@ -99,15 +100,85 @@ const claimTypes = ["암", "뇌질환", "심질환", "기타"];
 
 function SelectClaim() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const {
+    facility,
+    hospital_type,
+    symptom_type,
+    symptom_etc,
+    symptom_start,
+    symptom_freq,
+    illness_etc,
+    medicine_etc,
+    etc,
+    ins_req1,
+    ins_req2,
+  } = location.state || {};
   const [selected, setSelected] = useState(null);
 
   const handleSelect = (type) => {
     setSelected(type);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    const userId = localStorage.getItem("userId");
     if (selected) {
-      navigate("/document-guide");
+      try {
+        // POST 요청 보내기
+        const response = await axios.post(
+          "http://127.0.0.1:8000/medicarrier/assist",
+          {
+            user: userId,
+            facility,
+            hospital_type,
+            symptom_type,
+            symptom_etc,
+            symptom_start,
+            symptom_freq,
+            illness_etc,
+            medicine_etc,
+            etc,
+            ins_req1,
+            ins_req2,
+            hospital_fee: "3만원 미만",
+            disease_detail: selected,
+            document: "",
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.status === 201) {
+          // 성공적으로 데이터가 저장된 경우
+          navigate("/document-guide", {
+            state: {
+              user: userId,
+              facility,
+              hospital_type,
+              symptom_type,
+              symptom_etc,
+              symptom_start,
+              symptom_freq,
+              illness_etc,
+              medicine_etc,
+              etc,
+              ins_req1,
+              ins_req2,
+              hospital_fee: "3만원 미만",
+              disease_detail: selected,
+              document: "",
+            }
+          });
+        } else {
+          console.error("Failed to save data:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error saving data:", error.response ? error.response.data : error.message);
+      }
     }
   };
 

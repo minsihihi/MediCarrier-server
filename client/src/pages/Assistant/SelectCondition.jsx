@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
 import DiseaseIcon from "../../assets/icons/disease.svg";
@@ -105,6 +105,19 @@ const Button = styled.button`
 
 function SelectCondition() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const {
+    facility,
+    hospital_type,
+    //recommended_hospitals,
+    symptom_type,
+    symptom_etc,
+    symptom_start,
+    symptom_freq,
+    illness_etc,
+    medicine_etc,
+    etc
+  } = location.state || {};
   const [selected, setSelected] = useState(null);
 
   const handleSelect = (condition) => {
@@ -112,10 +125,38 @@ function SelectCondition() {
   };
 
   const handleNext = () => {
-    if (selected === "disease") {
-      navigate("/select-insurance-type-d");
-    } else if (selected === "wound") {
-      navigate("/select-insurance-type-w");
+    if (selected === "질병") {
+      navigate("/select-insurance-type-d", {
+        state: {
+          facility, // 시설
+          hospital_type, // 병원 유형
+          //recommended_hospitals, // 추천 병원
+          symptom_type, // 선택된 증상들
+          symptom_etc, // 사용자 입력 증상
+          symptom_start, // 증상 시작 기간
+          symptom_freq, // 증상 지속 기간
+          illness_etc, // 만성 질환
+          medicine_etc, // 현재 복용 중인 약
+          etc, // 추가 정보
+          ins_req1: selected // 질병 또는 상해
+        },
+      });
+    } else if (selected === "상해") {
+      navigate("/select-insurance-type-w", {
+        state: {
+          facility, // 시설
+          hospital_type, // 병원 유형
+          //recommended_hospitals, // 추천 병원
+          symptom_type, // 선택된 증상들
+          symptom_etc, // 사용자 입력 증상
+          symptom_start, // 증상 시작 기간
+          symptom_freq, // 증상 지속 기간
+          illness_etc, // 만성 질환
+          medicine_etc, // 현재 복용 중인 약
+          etc, // 추가 정보
+          ins_req1: selected // 질병 또는 상해
+        },
+      });
     }
   };
 
@@ -132,15 +173,15 @@ function SelectCondition() {
         </Subtitle>
         <Options>
           <Option
-            selected={selected === "disease"}
-            onClick={() => handleSelect("disease")}
+            selected={selected === "질병"}
+            onClick={() => handleSelect("질병")}
             left
           >
             <Icon src={DiseaseIcon} alt="질병" />
           </Option>
           <Option
-            selected={selected === "wound"}
-            onClick={() => handleSelect("wound")}
+            selected={selected === "상해"}
+            onClick={() => handleSelect("상해")}
             right
           >
             <Icon src={WoundIcon} alt="상해" />

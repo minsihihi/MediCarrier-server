@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
+import axios from "axios";
 
 const PageContainer = styled.div`
   display: flex;
@@ -95,35 +96,95 @@ const Button = styled.button`
   margin-top: 266px;
 `;
 
-const insuranceTypes = ["입원", "통원", "후유장애", "수술"];
+const insuranceTypes = ["입원", "통원", "후유장해", "수술"];
 
 function SelectInsuranceTypeW() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const {
+    facility,
+    hospital_type,
+    //recommended_hospitals,
+    symptom_type,
+    symptom_etc,
+    symptom_start,
+    symptom_freq,
+    illness_etc,
+    medicine_etc,
+    etc,
+    ins_req1
+  } = location.state || {};
   const [selected, setSelected] = useState(null);
 
   const handleSelect = (type) => {
     setSelected(type);
   };
-
-  const handleNext = () => {
+  const handleNext = async () => {
+    const userId = localStorage.getItem("userId"); 
     if (selected) {
+      const stateToPass1 = {
+        facility,
+        hospital_type, // 병원 유형
+        symptom_type, // 선택된 증상들
+        symptom_etc, // 사용자 입력 증상
+        symptom_start, // 증상 시작 기간
+        symptom_freq, // 증상 지속 기간
+        illness_etc, // 만성 질환
+        medicine_etc, // 현재 복용 중인 약
+        etc, // 추가 정보
+        ins_req1, // 질병 또는 상해
+        ins_req2: selected, // 선택된 보험 유형
+        hospital_fee: "3만원 미만", // 예를 들어 선택된 병원비
+        disease_detail: "암", // 예를 들어 선택된 질병 세부 사항
+        document: "",
+      };
+  
+      const stateToPass2 = {
+        facility,
+        hospital_type, // 병원 유형
+        symptom_type, // 선택된 증상들
+        symptom_etc, // 사용자 입력 증상
+        symptom_start, // 증상 시작 기간
+        symptom_freq, // 증상 지속 기간
+        illness_etc, // 만성 질환
+        medicine_etc, // 현재 복용 중인 약
+        etc, // 추가 정보
+        ins_req1, // 질병 또는 상해
+        ins_req2: selected, // 선택된 보험 유형
+      };
+  
       switch (selected) {
         case "입원":
-        case "후유장애":
+        case "후유장해":
         case "수술":
-          navigate("/document-guide");
-          break; // break 추가
+          try {
+            // POST 요청 보내기
+            const response = await axios.post("http://127.0.0.1:8000/medicarrier/assist", 
+              { user: userId, ...stateToPass1 }, {
+              headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`, 
+                "Content-Type": "application/json",
+              },
+            });
+  
+            if (response.status === 201) {
+              navigate("/document-guide", { state: stateToPass1 });
+            } else {
+              console.error("Failed to save data:", response.statusText);
+            }
+          } catch (error) {
+            console.error("Error saving data:", error.response ? error.response.data : error.message);
+          }
+          break;
         case "통원":
-          navigate("/select-paid");
-          break; // break 추가
+          navigate("/select-paid", { state: stateToPass1 });
+          break;
         default:
           break;
       }
     }
   };
 
-  // 보험 타입 변수 정의
-  const insurance_type = selected;
 
   return (
     <PageContainer>

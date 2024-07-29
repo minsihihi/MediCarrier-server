@@ -93,38 +93,30 @@ function SymptomScript() {
   const [translatedScript, setTranslatedScript] = useState("");
   const location = useLocation();
   const {
-    symptoms = [],
-    customSymptom,
-    startDate,
-    frequency,
-    chronicDiseases,
-    medications,
-    additionalInfo,
+    symptom_type,
+    symptom_etc,
+    symptom_start,
+    symptom_freq,
+    illness_etc,
+    medicine_etc,
+    etc,
   } = location.state || {};
 
-  // 변수정의
-  const symptoms_var = symptoms;
-  const customSymptom_var = customSymptom;
-  const startDate_var = startDate;
-  const frequency_var = frequency;
-  const chronicDiseases_var = chronicDiseases;
-  const medications_var = medications;
-  const additionalInfo_var = additionalInfo;
 
-  const chronicDiseasesText = chronicDiseases ? chronicDiseases : "없고";
-  const medicationsText = medications ? medications : "없습니다";
+  const chronicDiseasesText = illness_etc ? illness_etc : "없고";
+  const medicationsText = medicine_etc ? medicine_etc : "없습니다";
   const symptomsText =
-    symptoms.length > 0
-      ? symptoms.join(", ")
-      : customSymptom
-      ? customSymptom
+  symptom_type.length > 0
+      ? symptom_type.join(", ")
+      : symptom_etc
+      ? symptom_etc
       : "증상이 없습니다";
 
       const scriptComponents = `
     안녕하세요. 저는 한국인 관광객 입니다.
-    저는 ${startDate}부터 ${frequency}으로 ${symptomsText}.
-    최근 앓았던 질병이나 현재 앓고 있는 만성 질환은 ${chronicDiseasesText}, 현재 복용하고 있는 약은 ${medicationsText}.
-    ${additionalInfo ? ` ${additionalInfo}` : ""}
+    저는 ${symptom_start}부터 ${symptom_freq}으로 ${symptomsText}.
+    최근 앓았던 질병이나 현재 앓고 있는 만성 질환은 ${chronicDiseasesText}이고, 현재 복용하고 있는 약은 ${medicationsText} 입니다.
+    ${etc ? ` ${etc}` : ""}
   `;
       // Convert JSX to HTML string
   //const scriptComponentsString = ReactDOMServer.renderToStaticMarkup(scriptComponents);
