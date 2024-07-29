@@ -1,5 +1,6 @@
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
 
@@ -83,12 +84,49 @@ const Button = styled.button`
 `;
 
 function DocumentGuide() {
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const location = useLocation();
-  const documents = location.state?.documents || [];
 
-  // 필요한 서류 목록 변수 정의
-  const documentsList = documents;
+  useEffect(() => {
+    const fetchLatestAssist = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/medicarrier/assist", {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+          params: {
+            user: localStorage.getItem("userId"), // 사용자 ID를 파라미터로 추가
+          }
+        });
+
+        const data = response.data;
+
+        if (data.length > 0) {
+          // 가장 최근의 assist 항목 찾기
+          const latestAssist = data.reduce((latest, item) => {
+            return item.id > latest.id ? item : latest;
+          }, data[0]);
+
+          // `document` 필드를 문자열에서 배열로 변환
+          const documentStr = latestAssist.document;
+          const documentList = documentStr ? documentStr.split(',').map(doc => doc.trim()) : [];
+          setDocuments(documentList);
+        } else {
+          setDocuments([]);
+        }
+      } catch (err) {
+        setError(err);
+        console.error("Error fetching document:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLatestAssist();
+  }, []);
 
   return (
     <PageContainer>
@@ -96,11 +134,21 @@ function DocumentGuide() {
         <ProgressIndicator step={3} />
         <Title>필요한 서류 목록</Title>
         <Subtitle>아래 서류를 준비해주세요</Subtitle>
-        <DocumentList>
-          {documents.map((doc, index) => (
-            <DocumentItem key={index}>{doc}</DocumentItem>
-          ))}
-        </DocumentList>
+        {loading ? (
+          <p>로딩 중...</p>
+        ) : error ? (
+          <p>문서 목록을 가져오는 데 문제가 발생했습니다.</p>
+        ) : (
+          <DocumentList>
+            {documents.length > 0 ? (
+              documents.map((doc, index) => (
+                <DocumentItem key={index}>{doc}</DocumentItem>
+              ))
+            ) : (
+              <DocumentItem>서류가 없습니다.</DocumentItem>
+            )}
+          </DocumentList>
+        )}
         <ButtonContainer>
           <Button onClick={() => navigate(-1)} primary={false}>
             이전

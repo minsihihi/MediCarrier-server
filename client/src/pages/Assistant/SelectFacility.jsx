@@ -16,11 +16,11 @@ function SelectFacility() {
   const handleNext = () => {
     let facility = ""; // 변수 정의
     if (selected === "pharmacy") {
-      facility = "pharmacy"; // 변수 값 설정
-      navigate("/map-pharmacy");
+      facility = "약국"; // 변수 값 설정
+      navigate("/map-pharmacy", { state: { facility } });
     } else if (selected === "hospital") {
-      facility = "hospital"; // 변수 값 설정
-      navigate("/select-specialty");
+      facility = "병원"; // 변수 값 설정
+      navigate("/select-specialty", { state: { facility } });
     }
   };
 

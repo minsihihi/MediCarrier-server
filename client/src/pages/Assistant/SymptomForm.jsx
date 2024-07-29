@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
 
@@ -128,6 +128,10 @@ const MoreButton = styled(SymptomButton)`
 
 function SymptomForm() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { facility, hospital_type, recommended_hospitals } = location.state || {};
+
+
   const [symptoms, setSymptoms] = useState([]); // 선택된 증상들
   const [customSymptom, setCustomSymptom] = useState(""); // 사용자 입력 증상
   const [startDate, setStartDate] = useState(null); // 증상 시작 기간
@@ -162,7 +166,18 @@ function SymptomForm() {
     };
 
     navigate("/symptom-script", {
-      state: variables,
+      state: {
+        facility, // 시설
+        hospital_type, // 병원 유형
+        recommended_hospitals, // 추천 병원
+        symptom_type : symptoms, // 선택된 증상들
+        symptom_etc: customSymptom, // 사용자 입력 증상
+        symptom_start : startDate, // 증상 시작 기간
+        symptom_freq: frequency, // 증상 지속 기간
+        illness_etc: chronicDiseases, // 만성 질환
+        medicine_etc : medications, // 현재 복용 중인 약
+        etc : additionalInfo // 추가 정보
+      },
     });
   };
 
