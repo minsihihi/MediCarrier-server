@@ -89,9 +89,11 @@ export default SelectSpecialty;
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   height: 100vh;
   background: #fafafa;
+  overflow-y: auto;
+
 `;
 
 const Container = styled.div`
@@ -163,8 +165,7 @@ const ButtonContainer = styled.div`
   gap: 11px;
   width: 100%;
   padding: 0 20px;
-  position: absolute;
-  bottom: 80px;
+  margin-top: 20px;
 `;
 
 const Button = styled.button`

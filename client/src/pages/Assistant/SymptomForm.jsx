@@ -129,7 +129,9 @@ const MoreButton = styled(SymptomButton)`
 function SymptomForm() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { facility, hospital_type, recommended_hospitals } = location.state || {};
+  const { facility, hospital_type, 
+    //recommended_hospitals 
+  } = location.state || {};
 
 
   const [symptoms, setSymptoms] = useState([]); // 선택된 증상들
@@ -169,7 +171,7 @@ function SymptomForm() {
       state: {
         facility, // 시설
         hospital_type, // 병원 유형
-        recommended_hospitals, // 추천 병원
+        //recommended_hospitals, // 추천 병원
         symptom_type : symptoms, // 선택된 증상들
         symptom_etc: customSymptom, // 사용자 입력 증상
         symptom_start : startDate, // 증상 시작 기간

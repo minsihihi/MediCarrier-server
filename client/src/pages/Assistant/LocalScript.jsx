@@ -6,9 +6,10 @@ import ProgressIndicator from "../../components/ProgressIndicator";
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   height: 100vh;
   background: #fafafa;
+  overflow-y: auto;
 `;
 
 const Container = styled.div`
@@ -63,8 +64,8 @@ const ButtonContainer = styled.div`
   gap: 11px;
   width: 100%;
   padding: 0 20px;
-  position: absolute;
-  bottom: 100px;
+  margin-top: 20px;
+  margin-bottom: 25px;
 `;
 
 const Button = styled.button`
@@ -85,17 +86,19 @@ function LocalScript() {
   const location = useLocation();
   const { translatedScript, facility } = location.state || {};
 
+
   const handleNext = () => {
-    if(facility == "병원")
-    navigate("/select-condition");
-  else
-    navigate('/select-condition');
+    if (facility === "병원") {
+      navigate("/select-condition");
+    } else {
+      navigate("/select-condition");
+    }
   };
 
   return (
     <PageContainer>
       <Container>
-        <ProgressIndicator step={3} />
+        <ProgressIndicator step={2} />
         <Title>
           현지어 버전의
           <br />
