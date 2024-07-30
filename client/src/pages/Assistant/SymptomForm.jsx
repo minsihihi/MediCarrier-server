@@ -129,7 +129,9 @@ const MoreButton = styled(SymptomButton)`
 function SymptomForm() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { facility, hospital_type, recommended_hospitals } = location.state || {};
+  const { facility, hospital_type, 
+    //recommended_hospitals 
+  } = location.state || {};
 
 
   const [symptoms, setSymptoms] = useState([]); // 선택된 증상들
@@ -169,7 +171,7 @@ function SymptomForm() {
       state: {
         facility, // 시설
         hospital_type, // 병원 유형
-        recommended_hospitals, // 추천 병원
+        //recommended_hospitals, // 추천 병원
         symptom_type : symptoms, // 선택된 증상들
         symptom_etc: customSymptom, // 사용자 입력 증상
         symptom_start : startDate, // 증상 시작 기간
@@ -206,6 +208,7 @@ function SymptomForm() {
             ].map((symptom, index) => (
               <SymptomButton
                 key={index}
+                style={{ fontFamily: 'Pretendard'}}
                 selected={symptoms.includes(symptom)}
                 onClick={() => handleSymptomClick(symptom)}
               >
@@ -232,6 +235,7 @@ function SymptomForm() {
             {["오늘", "1일 전", "2-3일 전"].map((date, index) => (
               <SymptomButton
                 key={index}
+                style={{ fontFamily: 'Pretendard'}}
                 selected={startDate === date}
                 onClick={() => setStartDate(date)}
               >
@@ -243,6 +247,7 @@ function SymptomForm() {
             {["일주일 전", "일주일 이상"].map((date, index) => (
               <SymptomButton
                 key={index}
+                style={{ fontFamily: 'Pretendard'}}
                 selected={startDate === date}
                 onClick={() => setStartDate(date)}
               >
@@ -257,6 +262,7 @@ function SymptomForm() {
             {["지속적", "간헐적", "특정 시간에만"].map((freq, index) => (
               <SymptomButton
                 key={index}
+                style={{ fontFamily: 'Pretendard'}}
                 selected={frequency === freq}
                 onClick={() => setFrequency(freq)}
               >

@@ -8,9 +8,11 @@ import WoundIcon from "../../assets/icons/wound.svg";
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   height: 100vh;
   background: #fafafa;
+  overflow-y: auto;
+
 `;
 
 const Container = styled.div`
@@ -86,15 +88,16 @@ const ButtonContainer = styled.div`
   gap: 11px;
   width: 100%;
   padding: 0 20px;
-  margin-top: auto;
+  margin-top: 20px;
   margin-bottom: 25px;
 `;
 
 const Button = styled.button`
+  font-family: Pretendard;
   width: 171px;
   height: 51px;
   padding: 10px 20px;
-  font-size: 18px;
+  font-size: 16px;
   color: ${(props) => (props.primary ? "#FFFFFF" : "#000000")};
   background-color: ${(props) => (props.primary ? "#4A7DFF" : "#F8F8F8")};
   border: none;
@@ -125,6 +128,7 @@ function SelectCondition() {
   };
 
   const handleNext = () => {
+    
     if (selected === "질병") {
       navigate("/select-insurance-type-d", {
         state: {
@@ -144,9 +148,9 @@ function SelectCondition() {
     } else if (selected === "상해") {
       navigate("/select-insurance-type-w", {
         state: {
-          facility, // 시설
+          facility,
           hospital_type, // 병원 유형
-          //recommended_hospitals, // 추천 병원
+                //recommended_hospitals, // 추천 병원
           symptom_type, // 선택된 증상들
           symptom_etc, // 사용자 입력 증상
           symptom_start, // 증상 시작 기간
@@ -154,7 +158,8 @@ function SelectCondition() {
           illness_etc, // 만성 질환
           medicine_etc, // 현재 복용 중인 약
           etc, // 추가 정보
-          ins_req1: selected // 질병 또는 상해
+          ins_req1: selected, // 질병 또는 상해
+          
         },
       });
     }

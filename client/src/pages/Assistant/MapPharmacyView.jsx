@@ -35,7 +35,11 @@ const MapPharmacyView = () => {
       axios
         .get(`http://localhost:8000/medicarrier/pharmacies/?lat=${location.lat}&lng=${location.lng}`)
         .then((response) => {
-          setPharmacies(response.data.results);
+          // 별점 순으로 정렬하여 상위 3개만 선택
+          const sortedPharmacies = response.data.results
+            .sort((a, b) => b.rating - a.rating)
+            .slice(0, 3);
+          setPharmacies(sortedPharmacies);
           setLoading(false); // 로딩 완료
         })
         .catch((error) => {
@@ -66,7 +70,10 @@ const MapPharmacyView = () => {
       axios
         .get(`http://localhost:8000/medicarrier/pharmacies/?lat=${location.lat}&lng=${location.lng}`)
         .then((response) => {
-          setPharmacies(response.data.results);
+          const sortedPharmacies = response.data.results
+            .sort((a, b) => b.rating - a.rating)
+            .slice(0, 3);
+          setPharmacies(sortedPharmacies);
           setLoading(false);
         })
         .catch((error) => {
@@ -90,30 +97,34 @@ const MapPharmacyView = () => {
         </Subtitle>
         <NearbyButton onClick={handleNearbySearch}>내 주변</NearbyButton>
         <ListContainer>
-          {pharmacies.map((pharmacy) => (
-            <ListItem
-              key={pharmacy.place_id}
-              selected={selected === pharmacy.place_id}
-              onClick={() => handleSelect(pharmacy.place_id)}
-            >
-              <InfoContainer>
-                <ImagePlaceholder>
-                  {pharmacy.photo_url ? (
-                    <PlaceholderImage src={pharmacy.photo_url} alt={pharmacy.name} />
-                  ) : (
-                    <PlaceholderText>No Image</PlaceholderText>
-                  )}
-                </ImagePlaceholder>
-                <InfoText>
-                  <DetailText>{pharmacy.distance.toFixed(0)}m</DetailText>
-                  <PharmacyName>{pharmacy.name}</PharmacyName>
-                  <DetailText>{pharmacy.address}</DetailText>
-                  <DetailText>⭐ {pharmacy.rating || '정보 없음'}</DetailText>
-                </InfoText>
-                <MoreButton onClick={() => handleMoreInfo(pharmacy.place_id)}>더보기</MoreButton>
-              </InfoContainer>
-            </ListItem>
-          ))}
+          {loading ? (
+            <LoadingText>Loading...</LoadingText>
+          ) : (
+            pharmacies.map((pharmacy) => (
+              <ListItem
+                key={pharmacy.place_id}
+                selected={selected === pharmacy.place_id}
+                onClick={() => handleSelect(pharmacy.place_id)}
+              >
+                <InfoContainer>
+                  <ImagePlaceholder>
+                    {pharmacy.photo_url ? (
+                      <PlaceholderImage src={pharmacy.photo_url} alt={pharmacy.name} />
+                    ) : (
+                      <PlaceholderText>No Image</PlaceholderText>
+                    )}
+                  </ImagePlaceholder>
+                  <InfoText>
+                    <DetailText>{pharmacy.distance.toFixed(0)}m</DetailText>
+                    <PharmacyName>{pharmacy.name}</PharmacyName>
+                    <DetailText>{pharmacy.address}</DetailText>
+                    <DetailText>⭐ {pharmacy.rating || '정보 없음'}</DetailText>
+                  </InfoText>
+                  <MoreButton onClick={() => handleMoreInfo(pharmacy.place_id)}>더보기</MoreButton>
+                </InfoContainer>
+              </ListItem>
+            ))
+          )}
         </ListContainer>
         <ButtonContainer>
           <Button onClick={() => navigate(-1)} primary={false}>
@@ -133,9 +144,10 @@ export default MapPharmacyView;
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   height: 100vh;
   background: #fafafa;
+  overflow-y: auto;
 `;
 
 const Container = styled.div`
@@ -143,7 +155,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   width: 393px;
-  height: 792px;
+  height: auto;
   margin: 0;
   background: #ffffff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -201,17 +213,18 @@ const ListContainer = styled.div`
 `;
 
 const ListItem = styled.div`
-  width: 353px;
+  flex: 0 0 auto; /* 아이템이 고정된 너비를 가지도록 설정 */
+  width: 100%; /* 전체 너비 사용 */
+  max-width: 353px; /* 최대 너비 설정 */
   height: 190px;
   display: flex;
   align-items: center;
   padding: 15px;
-  margin: 10px 20px;
-  background: ${(props) =>
-    props.selected ? "rgba(255, 249, 119, 0.40)" : "#F8F8F8"};
+  margin: 10px 0; /* 가로 마진 제거 */
+  background:  "#F8F8F8";
   border-radius: 15px;
   cursor: pointer;
-  transition: background-color 0.3s;
+
 `;
 
 const InfoContainer = styled.div`
@@ -280,8 +293,8 @@ const ButtonContainer = styled.div`
   gap: 11px;
   width: 100%;
   padding: 0 20px;
-  position: absolute;
-  bottom: 20px;
+  margin-top: 20px;
+  margin-bottom: 25px;
 `;
 
 const Button = styled.button`
@@ -297,9 +310,9 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const MapContainer = styled.div`
-  width: 353px;
-  height: 190px;
-  flex: 1;
-  background-color: #e0e0e0;
+const LoadingText = styled.p`
+  font-family: "Pretendard";
+  font-size: 16px;
+  color: #aaa;
+  margin-top: 20px;
 `;

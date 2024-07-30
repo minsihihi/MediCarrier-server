@@ -7,9 +7,12 @@ import axios from "axios";
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   height: 100vh;
   background: #fafafa;
+  overflow-y: auto;
+
+
 `;
 
 const Container = styled.div`
@@ -80,6 +83,8 @@ const ButtonContainer = styled.div`
   gap: 11px;
   width: 100%;
   padding: 0 20px;
+  margin-top: 20px;
+  margin-bottom: 25px;
 `;
 
 const Button = styled.button`
@@ -132,7 +137,7 @@ function SelectPaid() {
       try {
         // POST 요청 보내기
         const response = await axios.post(
-          "http://127.0.0.1:8000/medicarrier/assist",
+          "http://127.0.0.1:8000/medicarrier/assist/",
           {
             user: userId,
             facility,

@@ -89,9 +89,11 @@ export default SelectSpecialty;
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   height: 100vh;
   background: #fafafa;
+  overflow-y: auto;
+
 `;
 
 const Container = styled.div`
@@ -145,7 +147,8 @@ const SpecialtyContainer = styled.div`
 
 const Specialty = styled.button`
   padding: 10px 20px;
-  font-size: 14px;
+  font-family: Pretendard;
+  font-size: 16px;
   font-weight: ${(props) => (props.selected ? "bold" : "normal")};
   color: #000000;
   background-color: ${(props) =>
@@ -163,11 +166,12 @@ const ButtonContainer = styled.div`
   gap: 11px;
   width: 100%;
   padding: 0 20px;
-  position: absolute;
-  bottom: 80px;
+  margin-top: 20px;
+  margin-bottom: 25px;
 `;
 
 const Button = styled.button`
+  font-family: Pretendard;
   width: 171px;
   height: 51px;
   padding: 10px 20px;

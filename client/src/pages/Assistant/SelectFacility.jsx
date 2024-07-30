@@ -67,9 +67,10 @@ export default SelectFacility;
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   height: 100vh;
   background: #fafafa;
+  overflow-y: auto;
 `;
 
 const Container = styled.div`
