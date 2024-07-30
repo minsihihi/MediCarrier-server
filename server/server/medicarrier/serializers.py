@@ -184,6 +184,25 @@ class AssistSerializer(serializers.ModelSerializer):
         self.update_document(assist_instance)
         return assist_instance
 
+    def update(self, instance, validated_data):
+        instance.facility = validated_data.get('facility', instance.facility)
+        instance.hospital_type = validated_data.get('hospital_type', instance.hospital_type)
+        instance.symptom_type = validated_data.get('symptom_type', instance.symptom_type)
+        instance.symptom_etc = validated_data.get('symptom_etc', instance.symptom_etc)
+        instance.symptom_start = validated_data.get('symptom_start', instance.symptom_start)
+        instance.symptom_freq = validated_data.get('symptom_freq', instance.symptom_freq)
+        instance.illness_etc = validated_data.get('illness_etc', instance.illness_etc)
+        instance.medicine_etc = validated_data.get('medicine_etc', instance.medicine_etc)
+        instance.etc = validated_data.get('etc', instance.etc)
+        instance.ins_req1 = validated_data.get('ins_req1', instance.ins_req1)
+        instance.ins_req2 = validated_data.get('ins_req2', instance.ins_req2)
+        instance.hospital_fee = validated_data.get('hospital_fee', instance.hospital_fee)
+        instance.disease_detail = validated_data.get('disease_detail', instance.disease_detail)
+        instance.document = validated_data.get('document', instance.document)
+        instance.save()
+        self.update_document(instance)
+        return instance
+
     def update_document(self, assist_instance):
         ins_req1 = assist_instance.ins_req1
         ins_req2 = assist_instance.ins_req2
@@ -271,6 +290,7 @@ class AssistSerializer(serializers.ModelSerializer):
 
         assist_instance.document = ', '.join(documents)  # ', '로 각 문서를 구분하여 저장
         assist_instance.save()
+
     
 
 class HospitalSerializer(serializers.ModelSerializer):
