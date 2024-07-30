@@ -86,10 +86,10 @@ function LocalScript() {
   const { translatedScript, facility } = location.state || {};
 
   const handleNext = () => {
-    if(facility == "병원")
-    navigate("/select-condition");
-  else
-    navigate('/home');
+      if(facility == "병원")
+        navigate("/select-condition");
+      else
+        navigate('/home');
   };
 
   return (
