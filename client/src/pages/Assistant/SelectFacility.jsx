@@ -86,7 +86,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  font-family: "Pretendard";
+  font-family: Pretendard;
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 8px;

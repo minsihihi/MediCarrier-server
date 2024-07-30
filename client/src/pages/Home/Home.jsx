@@ -138,7 +138,7 @@ function Home() {
                   여행 상태를 변경하려면 클릭해주세요
                 </div>
               </>
-            ) : country && startDate && endDate ? (
+            ) : tripData ? (
               <>
                 <span
                   style={{
