@@ -9,6 +9,7 @@ class Trip(models.Model):   # 사용자당 하나만 생성되는 여행 모델
     country = models.CharField(max_length=20)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    insuranceType = models.CharField(max_length=20, default="실속형")
 
     def __str__(self):
         return self.country
@@ -59,10 +60,14 @@ class BasicInfo(models.Model):  # 메디카드당 하나만 생성되는 기본�
     weight = models.CharField(max_length=20, default="몸무게")
 
     BLOODTYPE_CHOICES = [
-        ('A', 'A'),
-        ('B', 'B'),
-        ('O', 'O'),
-        ('AB', 'AB')
+        ('A+', 'A+'),
+        ('A-', 'A-'),
+        ('B+', 'B+'),
+        ('B-', 'B-'),
+        ('O+', 'O+'),
+        ('O-', 'O-'),
+        ('AB+', 'AB+'),
+        ('AB-', 'AB-')
     ]
 
     bloodtype = models.CharField(max_length=20, choices=BLOODTYPE_CHOICES)

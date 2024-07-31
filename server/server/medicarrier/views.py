@@ -23,7 +23,40 @@ import math
 # 번역기 인스턴스 생성
 translator = Translator()
 
+# 검색뷰
+def search_hospitals(request):
+    keyword = request.GET.get('keyword')
+    lat = request.GET.get('lat')
+    lng = request.GET.get('lng')
+    radius = request.GET.get('radius', 1000)  # 기본 반경 1000미터
 
+    api_key = settings.GOOGLE_MAPS_API_KEY
+    url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius={radius}&type=hospital&keyword={keyword}&key={api_key}"
+
+    response = requests.get(url)
+    data = response.json()
+
+    if response.status_code == 200:
+        hospitals = []
+        for result in data.get('results', []):
+            photos = result.get('photos', [])
+            photo_url = None
+            if photos:
+                photo_reference = photos[0].get('photo_reference')
+                photo_url = f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={photo_reference}&key={api_key}"
+
+            hospitals.append({
+                "name": result.get("name"),
+                "rating": result.get("rating"),
+                "address": result.get("vicinity"),
+                "lat": result["geometry"]["location"].get("lat"),
+                "lng": result["geometry"]["location"].get("lng"),
+                "place_id": result.get("place_id"),
+                "photo_url": photo_url,
+            })
+        return JsonResponse({'results': hospitals})
+    else:
+        return JsonResponse({'error': data.get('error_message', 'Unknown error')}, status=response.status_code)
 
 def translate_text(text, dest_language):
     try:
