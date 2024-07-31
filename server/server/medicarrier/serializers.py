@@ -162,15 +162,17 @@ class MediCardSerializer(serializers.ModelSerializer):
         
 class MediInfoSerializer(serializers.ModelSerializer):
     class Meta:
-        model=MediInfo
-        fields = ['medicard', 'condition', 'illness', 'allergy', 'diagnosis', 'surgery']
-        
-        
+        model = MediInfo
+        fields = '__all__'
+
+    
+
 class BasicInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = BasicInfo
-        fields = ['medicard', 'name', 'sex', 'nationality', 'name_eng', 'birthdate', 'height', 'weight', 'bloodtype', 'pregnant']
-        
+        fields = '__all__'
+
+
         
 class AssistSerializer(serializers.ModelSerializer):
     class Meta:

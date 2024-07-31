@@ -530,3 +530,40 @@ def get_pharmacies(request):
     else:
         return JsonResponse(response.json(), status=response.status_code)
 
+class CreateMediInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        # 필터링: country가 "한국"인 MediCard를 찾기
+        try:
+            medicard = MediCard.objects.get(user=request.user, country='한국')
+        except MediCard.DoesNotExist:
+            return Response({'error': 'No MediCard with country "한국" found for this user.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # 데이터에 Medicard PK 설정
+        request.data['medicard'] = medicard.pk
+
+        serializer = MediInfoSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CreateBasicInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        # 필터링: country가 "한국"인 MediCard를 찾기
+        try:
+            medicard = MediCard.objects.get(user=request.user, country='한국')
+        except MediCard.DoesNotExist:
+            return Response({'error': 'No MediCard with country "한국" found for this user.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # 데이터에 Medicard PK 설정
+        request.data['medicard'] = medicard.pk
+
+        serializer = BasicInfoSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
