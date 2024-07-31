@@ -4,7 +4,7 @@ from .models import *
 # Register your models here.
 @admin.register(Trip)
 class TripAdmin(admin.ModelAdmin):
-    list_display = ('user', 'country', 'start_date', 'end_date')
+    list_display = ('user', 'country', 'start_date', 'end_date', 'insuranceType')
     search_fields = ('country', 'user__username')
     
 admin.site.register(Hospital)
@@ -30,7 +30,8 @@ class BasicInfoAdmin(admin.ModelAdmin):
 
 class AssistAdmin(admin.ModelAdmin):
     list_display = ('id', 'facility', 'hospital_type', 'symptom_type', 'document')
-
+    fields = ('user', 'facility', 'hospital_type', 'symptom_type', 'symptom_etc', 'symptom_start', 'symptom_freq', 'illness_etc', 'medicine_etc', 'etc', 'ins_req1', 'ins_req2', 'hospital_fee', 'disease_detail', 'document')
+    
     def save_model(self, request, obj, form, change):
         # 기본 문서 목록
         documents = [
