@@ -306,6 +306,10 @@ class TripListCreateAPIView(APIView):
         # 기존 여행 삭제 (하나의 여행만 등록 가능하도록)
         Trip.objects.filter(user=request.user).delete()
 
+        # 사용자와 관련된 스크립트가 존재하는 경우에만 삭제
+        if Script.objects.filter(user=request.user).exists():
+            Script.objects.filter(user=request.user).delete()
+
         # 새로운 여행 등록
         serializer = TripSerializer(data=request.data)
         if serializer.is_valid():
@@ -314,7 +318,6 @@ class TripListCreateAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
             
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 

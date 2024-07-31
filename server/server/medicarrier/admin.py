@@ -4,7 +4,7 @@ from .models import *
 # Register your models here.
 @admin.register(Trip)
 class TripAdmin(admin.ModelAdmin):
-    list_display = ('user', 'country', 'start_date', 'end_date')
+    list_display = ('user', 'country', 'start_date', 'end_date', 'insuranceType')
     search_fields = ('country', 'user__username')
     
 admin.site.register(Hospital)

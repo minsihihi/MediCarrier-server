@@ -11,8 +11,6 @@ class TripSerializer(serializers.ModelSerializer):
         model = Trip
         fields = '__all__'
 
-
-
     def create(self, validated_data):
         # Trip 객체를 생성
         trip = super().create(validated_data)
