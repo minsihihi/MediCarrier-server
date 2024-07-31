@@ -206,6 +206,12 @@ class TranslateScriptView(APIView):
     }
 
         return country_language_map.get(country, 'en')  # 
+    
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        scripts = Script.objects.filter(user=user)
+        serializer = ScriptSerializer(scripts, many=True)
+        return Response(serializer.data)
 
 class TranslateMediInfoView(APIView):
     def get(self, request, *args, **kwargs):
@@ -449,8 +455,9 @@ class AssistView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, format=None):
-        assist = Assist.objects.all()
-        serializer = AssistSerializer(assist, many=True)
+        user = request.user
+        assists = Assist.objects.filter(user=user)  # 현재 사용자가 작성한 어시스트만 필터링
+        serializer = AssistSerializer(assists, many=True)
         return Response(serializer.data)
 
 
