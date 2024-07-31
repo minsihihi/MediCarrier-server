@@ -206,7 +206,7 @@ class TranslateScriptView(APIView):
     }
 
         return country_language_map.get(country, 'en')  # 
- 
+
 class TranslateMediInfoView(APIView):
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -427,17 +427,15 @@ class AssistView(APIView):
                     documents.append('진단명/수술명/수술일자가 포함된 서류')
                 elif ins_req2 == '진단':
                     if disease_detail == '암':
-                        documents.extend(['진단서',
-                                         '조직검사결과지'])
+                        documents.extend(['진단서','조직검사결과지'])
                     elif disease_detail == '뇌질환':
-                        documents.extend(['진단서',
-                                         'CT, MRI등 방사선 판독결과지'])
+                        documents.extend(['진단서','CT, MRI등 방사선 판독결과지'])
                     elif disease_detail == '심질환':
                         documents.extend(['진단서',
-                                         '각종 검사결과지'])
+                                        '각종 검사결과지'])
                     elif disease_detail == '기타':
                         documents.extend(['진단서',
-                                         '진단사실 확인서류'])
+                                        '진단사실 확인서류'])
 
             # documents 리스트를 문자열로 변환하여 저장
             assist_instance.document = ', '.join(
@@ -558,13 +556,16 @@ class CreateMediInfoView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     def put(self, request, *args, **kwargs):
+        # 로그인된 사용자의 MediCard를 필터링합니다.
         try:
             medicard = MediCard.objects.get(user=request.user, country='한국')
-            medi_info = get_object_or_404(MediInfo, medicard=medicard)
+            medi_info = MediInfo.objects.get(medicard=medicard)
         except MediCard.DoesNotExist:
             return Response({'error': 'No MediCard with country "한국" found for this user.'}, status=status.HTTP_400_BAD_REQUEST)
+        except MediInfo.DoesNotExist:
+            return Response({'error': 'No MediInfo found for this user.'}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = MediInfoSerializer(medi_info, data=request.data, context={'request': request})
+        serializer = MediInfoSerializer(medi_info, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -591,13 +592,17 @@ class CreateBasicInfoView(APIView):
     
 
     def put(self, request, *args, **kwargs):
+        # 로그인된 사용자의 MediCard를 필터링합니다.
         try:
             medicard = MediCard.objects.get(user=request.user, country='한국')
-            basic_info = get_object_or_404(BasicInfo, medicard=medicard)
+            basic_info = BasicInfo.objects.get(medicard=medicard)
         except MediCard.DoesNotExist:
             return Response({'error': 'No MediCard with country "한국" found for this user.'}, status=status.HTTP_400_BAD_REQUEST)
+        except BasicInfo.DoesNotExist:
+            return Response({'error': 'No BasicInfo found for this user.'}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = BasicInfoSerializer(basic_info, data=request.data, context={'request': request})
+        # 기존 BasicInfo 객체를 업데이트합니다.
+        serializer = BasicInfoSerializer(basic_info, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
