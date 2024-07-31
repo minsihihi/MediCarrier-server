@@ -12,5 +12,6 @@ urlpatterns = [
     path('script/', TranslateScriptView.as_view(), name='save-script'),
     path('hospitals/', get_hospitals, name='get_hospitals'),
     path('pharmacies/', get_pharmacies, name='get_pharmacies'),
-    path('search_hospitals/', search_hospitals, name='search_hospitals'),
+    path('search/', search_hospitals, name='search_hospitals'),
+    
 ]

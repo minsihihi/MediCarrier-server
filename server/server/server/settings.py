@@ -62,9 +62,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React 개발 서버의 URL
-]
+#CORS_ALLOWED_ORIGINS = [
+#    '*'  # React 개발 서버의 URL
+#]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'server.urls'
 
