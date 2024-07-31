@@ -59,10 +59,14 @@ class BasicInfo(models.Model):  # 메디카드당 하나만 생성되는 기본�
     weight = models.CharField(max_length=20, default="몸무게")
 
     BLOODTYPE_CHOICES = [
-        ('A', 'A'),
-        ('B', 'B'),
-        ('O', 'O'),
-        ('AB', 'AB')
+        ('RH+ A', 'RH+ A'),
+        ('RH- A', 'RH- A'),
+        ('RH+ B', 'RH+ B'),
+        ('RH- B', 'RH- B'),
+        ('RH+ O', 'RH+ O'),
+        ('RH- O', 'RH- O'),
+        ('RH+ AB', 'RH+ AB'),
+        ('RH- AB', 'RH- AB')
     ]
 
     bloodtype = models.CharField(max_length=20, choices=BLOODTYPE_CHOICES)
