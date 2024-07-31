@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-82bi&k1sg4c!@051pblehmtqz^@z7gdl)2kq*m0qnmzp^w-l1)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['minsi.pythonanywhere.com']
 
@@ -33,6 +33,8 @@ AUTH_USER_MODEL = 'api.User'
 
 import os
 
+STATIC_URL="/static/"
+STATIC_ROOT=os.path.join(BASE_DIR, 'static')
 # Google Maps API 키 설정
 GOOGLE_MAPS_API_KEY = os.getenv('GOOGLE_MAPS_API_KEY', 'AIzaSyBiUBN4DAVpfYWsadzciLTbNCYtPA1UIpE')
 
