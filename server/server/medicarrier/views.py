@@ -23,14 +23,14 @@ import math
 translator = Translator()
 
 # 검색뷰
+@csrf_exempt
 def search_hospitals(request):
     keyword = request.GET.get('keyword')
     lat = request.GET.get('lat')
     lng = request.GET.get('lng')
-    radius = request.GET.get('radius', 1000)  # 기본 반경 1000미터
 
     api_key = settings.GOOGLE_MAPS_API_KEY
-    url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius={radius}&type=hospital&keyword={keyword}&key={api_key}"
+    url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius=1000&type=hospital&keyword={keyword}&key={api_key}"
 
     response = requests.get(url)
     data = response.json()
@@ -471,7 +471,7 @@ def haversine(lat1, lon1, lat2, lon2):
     distance_m = distance_km * 1000  # Convert kilometers to meters
     return distance_m
 
-
+@csrf_exempt
 def get_hospitals(request):
     lat = float(request.GET.get('lat'))
     lng = float(request.GET.get('lng'))
