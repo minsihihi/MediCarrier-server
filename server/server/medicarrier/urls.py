@@ -13,5 +13,7 @@ urlpatterns = [
     path('hospitals/', get_hospitals, name='get_hospitals'),
     path('pharmacies/', get_pharmacies, name='get_pharmacies'),
     path('search/', search_hospitals, name='search_hospitals'),
+    path('mediinfo/', CreateMediInfoView.as_view(), name='create-mediinfo'),
+    path('basicinfo/', CreateBasicInfoView.as_view(), name='create-basicinfo'),
     
 ]
