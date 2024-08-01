@@ -130,7 +130,7 @@ function SelectClaim() {
       try {
         // POST 요청 보내기
         const response = await axios.post(
-          "http://127.0.0.1:8000/medicarrier/assist/",
+          "https://jieun1234.pyhtonanywhere.com/medicarrier/assist/",
           {
             user: userId,
             facility,

@@ -41,7 +41,7 @@ function Home() {
         const userId = localStorage.getItem("userId");
         const token = localStorage.getItem("token");
 
-        const response = await axios.get("http://127.0.0.1:8000/medicarrier/register.trip/", {
+        const response = await axios.get("https://jieun1234.pyhtonanywhere.com/medicarrier/register.trip/", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
