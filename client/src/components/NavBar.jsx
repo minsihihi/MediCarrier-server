@@ -21,7 +21,7 @@ const NavBar = () => {
       <NavItem to="/assist" className="main-icon">
         <img src={MainIcon} alt="Main" />
       </NavItem>
-      <NavItem to="/search-medical">
+      <NavItem to="/search">
         <img src={SearchMedicalIcon} alt="Search Medical" />
         <span>의료 시설 검색</span>
       </NavItem>

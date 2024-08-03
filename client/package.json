@@ -7,15 +7,10 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-<<<<<<< HEAD
-    "axios": "^1.7.2",
-    "date-fns": "^3.6.0",
-=======
     "@use-gesture/react": "^10.3.1",
     "axios": "^1.7.2",
     "date-fns": "^3.6.0",
     "framer-motion": "^11.3.19",
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
     "react": "^18.3.1",
     "react-datepicker": "^7.3.0",
     "react-dom": "^18.3.1",
