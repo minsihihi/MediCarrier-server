@@ -15,20 +15,6 @@ const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-<<<<<<< HEAD
-      const response = await axios.post("https://minsi.pythonanywhere.com/api/login/", {
-        username,
-        password,
-      });
-  
-      // 로그인 성공 시 응답 데이터 확인
-      console.log("로그인 응답 데이터:", response.data);
-  
-      // 응답에서 access_token과 userId, nickname을 가져와 localStorage에 저장
-      if (response.data && response.data.data) {
-        const { access_token, id, nickname } = response.data.data; // 응답 데이터에서 필요 정보 추출
-  
-=======
       const response = await axios.post(
         "https://minsi.pythonanywhere.com/api/login/",
         {
@@ -44,40 +30,24 @@ const Login = () => {
       if (response.data && response.data.data) {
         const { access_token, id, nickname } = response.data.data; // 응답 데이터에서 필요 정보 추출
 
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
         if (access_token) {
           localStorage.setItem("token", access_token); // access 토큰 저장
           console.log("저장된 access 토큰:", localStorage.getItem("token")); // 디버깅용
         } else {
           console.error("응답 데이터에서 access 토큰을 찾을 수 없습니다.");
         }
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
         if (id) {
           localStorage.setItem("userId", id); // 사용자 ID를 로컬 스토리지에 저장
           console.log("저장된 사용자 ID:", localStorage.getItem("userId")); // 디버깅용
         } else {
           console.error("응답 데이터에서 사용자 ID를 찾을 수 없습니다.");
         }
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
         if (nickname) {
           localStorage.setItem("userName", nickname); // 사용자 이름을 로컬 스토리지에 저장
           console.log("저장된 사용자 이름:", localStorage.getItem("userName")); // 디버깅용
         } else {
           console.error("응답 데이터에서 사용자 이름을 찾을 수 없습니다.");
         }
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
         alert("로그인 성공");
         navigate("/home");
       } else {

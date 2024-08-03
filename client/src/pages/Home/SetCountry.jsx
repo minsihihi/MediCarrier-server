@@ -3,26 +3,6 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import useTripStore from "../../assets/tripStore";
 
-<<<<<<< HEAD
-const SERVICE_COUNTRIES = ["일본"];
-
-const SetCountry = () => {
-  const navigate = useNavigate();
-  const navigateToHome = () => {
-    navigate("/");
-  };
-  const navigateToSetDate = () => {
-    if (country) {
-      navigate("/medicarrier/register.trip.date");
-      setCountry(country); // destination을 Zustand 상태로 업데이트
-    } else {
-      alert("여행지를 설정해주세요.");
-    }
-  };
-
-  const { country, setCountry } = useTripStore();
-  const [filteredCountries, setFilteredCountries] = useState([]);
-=======
 const SERVICE_COUNTRIES = [
   "남아프리카 공화국",
   "알바니아",
@@ -116,7 +96,6 @@ const SetCountry = () => {
   const { country, setCountry } = useTripStore();
   const [filteredCountries, setFilteredCountries] = useState([]);
   const [activeCountry, setActiveCountry] = useState(null);
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
 
   const handleSearch = (event) => {
     const term = event.target.value;
@@ -134,10 +113,7 @@ const SetCountry = () => {
 
   const handleCountryClick = (country) => {
     setCountry(country);
-<<<<<<< HEAD
-=======
     setActiveCountry(country); // Set the active country
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
     setFilteredCountries([]);
   };
 
@@ -146,15 +122,9 @@ const SetCountry = () => {
       <Header>
         <button
           style={{ border: 0, backgroundColor: "transparent" }}
-<<<<<<< HEAD
-          onClick={navigateToHome}
-        >
-          <img src="/img/arrow-left.svg" alt="back" />
-=======
           onClick={() => navigate("/")}
         >
           <img src="/img/arrow-left.svg" alt="back-icon" />
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
         </button>
         내 여행
       </Header>
@@ -173,13 +143,9 @@ const SetCountry = () => {
             {filteredCountries.map((country) => (
               <CountryItem
                 key={country}
-<<<<<<< HEAD
-                onClick={() => handleCountryClick(country)}
-=======
                 onMouseDown={() => setActiveCountry(country)}
                 onMouseUp={() => handleCountryClick(country)}
                 isActive={activeCountry === country}
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
               >
                 {country}
               </CountryItem>
@@ -197,17 +163,6 @@ const SetCountry = () => {
           color: "#FFF",
           fontFamily: "Pretendard",
           fontSize: "20px",
-<<<<<<< HEAD
-          fontStyle: "normal",
-          fontWeight: "700",
-          lineHeight: "normal",
-          letterSpacing: "-0.5px",
-          position: "fixed",
-          top: "550px",
-          left: "293px",
-        }}
-        onClick={navigateToSetDate}
-=======
           fontWeight: "700",
           position: "fixed",
           top: "620px",
@@ -221,7 +176,6 @@ const SetCountry = () => {
             alert("여행지를 설정해주세요.");
           }
         }}
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
       >
         다음
       </button>
@@ -303,11 +257,7 @@ const CountrySearchBar = styled.div`
 const CountryList = styled.div`
   width: 393px;
   height: 44px;
-<<<<<<< HEAD
-  background: rgba(227, 230, 240, 0.63);
-=======
   /* background: rgba(227, 230, 240, 0.63); */
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
   color: var(--black, #000);
   font-family: Pretendard;
   font-size: 16px;
@@ -321,16 +271,11 @@ const CountryList = styled.div`
 const CountryItem = styled.div`
   padding: 12px 21px;
   cursor: pointer;
-<<<<<<< HEAD
 
-  &:hover {
-    background-color: #f0f0f0;
-=======
   background-color: ${(props) =>
     props.isActive ? "rgba(227, 230, 240, 0.63)" : "transparent"};
 
   &:hover {
     background-color: rgba(227, 230, 240, 0.63);
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
   }
 `;

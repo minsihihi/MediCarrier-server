@@ -769,8 +769,4 @@ const HomeContainer = styled.div`
   width: 100%;
   height: 100%;
   background: #fafafa;
-<<<<<<< HEAD
 `;
-=======
-`;
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da

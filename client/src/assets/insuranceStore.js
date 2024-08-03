@@ -68,8 +68,4 @@ const useInsuranceStore = create((set) => ({
 // };
 
 // export { onPost, onGet };
-<<<<<<< HEAD
 export default useInsuranceStore;
-=======
-export default useInsuranceStore;
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da

@@ -17,12 +17,7 @@ const useTripStore = create((set) => ({
 
 const onPost = async () => {
   // Zustand에서 상태 가져오기
-<<<<<<< HEAD
   const { country, startDate, endDate, insuranceType } = useTripStore.getState();
-=======
-  const { country, startDate, endDate, insuranceType } =
-    useTripStore.getState();
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
 
   // 로컬 스토리지에서 사용자 ID 가져오기
   const userId = localStorage.getItem("userId");

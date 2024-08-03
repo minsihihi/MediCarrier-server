@@ -5,10 +5,7 @@ import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
 import checkedIcon from "../../assets/icons/checked.svg";
 import uncheckedIcon from "../../assets/icons/unchecked.svg";
-<<<<<<< HEAD
-=======
 import useScriptStore from "../../assets/scriptStore";
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
 
 const PageContainer = styled.div`
   display: flex;
@@ -17,10 +14,6 @@ const PageContainer = styled.div`
   height: 100vh;
   background: #fafafa;
   overflow-y: auto;
-<<<<<<< HEAD
-
-=======
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
 `;
 
 const Container = styled.div`
@@ -121,10 +114,7 @@ function DocumentGuide() {
   const [error, setError] = useState(null);
   const [selectedDoc, setSelectedDoc] = useState([]);
   const navigate = useNavigate();
-<<<<<<< HEAD
-=======
   const { setDocuments: setStoreDocuments } = useScriptStore();
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
 
   useEffect(() => {
     const fetchLatestAssist = async () => {
@@ -156,15 +146,10 @@ function DocumentGuide() {
             ? documentStr.split(",").map((doc) => doc.trim())
             : [];
           setDocuments(documentList);
-<<<<<<< HEAD
-        } else {
-          setDocuments([]);
-=======
           setStoreDocuments(documentList); // 스토어에 documents 저장
         } else {
           setDocuments([]);
           setStoreDocuments([]); // 스토어에 빈 배열 저장
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
         }
       } catch (err) {
         setError(err);
@@ -175,11 +160,7 @@ function DocumentGuide() {
     };
 
     fetchLatestAssist();
-<<<<<<< HEAD
-  }, []);
-=======
   }, [setStoreDocuments]);
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
 
   const handleDocumentClick = (index) => {
     setSelectedDoc((prevSelectedDoc) =>
@@ -237,8 +218,4 @@ function DocumentGuide() {
   );
 }
 
-<<<<<<< HEAD
 export default DocumentGuide;
-=======
-export default DocumentGuide;
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da

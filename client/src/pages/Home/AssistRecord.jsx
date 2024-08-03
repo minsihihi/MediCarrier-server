@@ -1,22 +1,81 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import useScriptStore, { onGetScript } from "../../assets/scriptStore";
+import axios from "axios";
+
+// 최신 assist를 가져오는 비동기 함수
+const fetchLatestAssist = async (userId) => {
+  try {
+    const url = `https://minsi.pythonanywhere.com/medicarrier/assist?user=${userId}`;
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "오류:",
+      error.response ? error.response.data : error.message
+    );
+    return null;
+  }
+};
+
+const fetchScriptComponents = async (userId) => {
+  try {
+    const url = `https://minsi.pythonanywhere.com/medicarrier/script?user=${userId}`;
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "오류:",
+      error.response ? error.response.data : error.message
+    );
+    return null;
+  }
+};
 
 const AssistRecord = () => {
-  const { scriptComponents, transScriptComponents, documents } =
-    useScriptStore();
+  const [scriptComponents, setScriptComponents] = useState("");
+  const [transScriptComponents, setTransScriptComponents] = useState("");
+  const [documents, setDocuments] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchScriptData = async () => {
+    const fetchData = async () => {
       const userId = localStorage.getItem("userId");
       if (userId) {
-        await onGetScript();
+        // 최신 assist 데이터 가져오기
+        const assistData = await fetchLatestAssist(userId);
+        if (assistData && assistData.length > 0) {
+          const latestAssist = assistData[assistData.length - 1];
+          // document 필드를 배열로 변환
+          const documentsList = latestAssist.document
+            ? latestAssist.document.split(',').map(doc => doc.trim())
+            : [];
+          setDocuments(documentsList);
+        }
+
+        // 스크립트 데이터 가져오기
+        const scriptData = await fetchScriptComponents(userId);
+        if (scriptData && scriptData.length > 0) {
+          const latestScript = scriptData[scriptData.length - 1];
+          setScriptComponents(latestScript.original_script);
+          setTransScriptComponents(latestScript.translated_script);
+        }
       }
     };
 
-    fetchScriptData();
+    fetchData();
   }, []);
 
   const navigateToHome = () => {

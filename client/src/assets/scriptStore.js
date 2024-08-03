@@ -37,11 +37,7 @@ const onPostScript = async () => {
         "Content-Type": "application/json",
       },
     });
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
     console.log("성공:", response.data);
   } catch (error) {
     console.error(
@@ -72,7 +68,6 @@ const onGetScript = async () => {
         scriptComponents: latestScript.original_script,
         transScriptComponents: latestScript.translated_script,
         scriptDate: latestScript.created_at,
-        documents: latestScript.documents || [],
       });
     }
 
@@ -87,8 +82,4 @@ const onGetScript = async () => {
 };
 
 export default scriptStore;
-<<<<<<< HEAD
 export { onPostScript, onGetScript };
-=======
-export { onPostScript, onGetScript };
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da

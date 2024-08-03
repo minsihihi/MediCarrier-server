@@ -2,10 +2,7 @@ import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
-<<<<<<< HEAD
-=======
 import useScriptStore from "../../assets/scriptStore";
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
 
 const PageContainer = styled.div`
   display: flex;
@@ -90,18 +87,12 @@ function LocalScript() {
   const navigate = useNavigate();
   const location = useLocation();
   const { translatedScript, facility } = location.state || {};
-<<<<<<< HEAD
-
-
-  const handleNext = () => {
-=======
   const { setTransScriptComponents } = useScriptStore((state) => state);
 
   const handleNext = () => {
-    setTransScriptComponents(translatedScript);
-    console.log(translatedScript);
+    
+    
 
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
     if (facility === "병원") {
       navigate("/select-condition");
     } else {
@@ -119,13 +110,9 @@ function LocalScript() {
           스크립트를 확인해보세요!
         </Title>
         <Subtitle>번역된 스크립트는 다음과 같습니다:</Subtitle>
-<<<<<<< HEAD
-        <ScriptText>{translatedScript || "번역된 스크립트가 없습니다."}</ScriptText>
-=======
         <ScriptText>
           {translatedScript || "번역된 스크립트가 없습니다."}
         </ScriptText>
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
         <ButtonContainer>
           <Button onClick={() => navigate(-1)} primary={false}>
             이전
@@ -139,8 +126,4 @@ function LocalScript() {
   );
 }
 
-<<<<<<< HEAD
 export default LocalScript;
-=======
-export default LocalScript;
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da

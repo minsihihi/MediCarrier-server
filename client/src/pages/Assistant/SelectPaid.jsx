@@ -11,11 +11,6 @@ const PageContainer = styled.div`
   height: 100vh;
   background: #fafafa;
   overflow-y: auto;
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
 `;
 
 const Container = styled.div`

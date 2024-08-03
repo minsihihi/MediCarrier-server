@@ -446,8 +446,4 @@ const Next = styled.button`
   &:hover {
     background-color: #0056b3;
   }
-<<<<<<< HEAD
 `;
-=======
-`;
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
