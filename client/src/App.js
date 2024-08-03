@@ -28,6 +28,11 @@ import SelectClaim from "./pages/Assistant/SelectClaim";
 import InputSearch from "./pages/Search/InputSearch";
 import MapSearch from "./pages/Search/MapSearch";
 import NavBar from "./components/NavBar";
+import MediCard from "./pages/MediCard/MediCard";
+import MyPage from "./pages/MyPage/MyPage";
+import LocalPharmScript from "./pages/Assistant/LocalPharmScript"; // 새로 추가된 파일
+import SymptomPharmScript from "./pages/Assistant/SymptomPharmScript"; // 새로 추가된 파일
+import SymptomPharmForm from "./pages/Assistant/SymptomPharmForm"; // 새로 추가된 파일
 
 import "./App.css";
 
@@ -87,6 +92,13 @@ function AppContent() {
         <Route path="/document-guide" element={<DocumentGuide />} />
         <Route path="/select-paid" element={<SelectPaid />} />
         <Route path="/select-claim" element={<SelectClaim />} />
+        <Route path="/local-pharm-script" element={<LocalPharmScript />} />{" "}
+        <Route path="/symptom-pharm-script" element={<SymptomPharmScript />} />{" "}
+        <Route path="/symptom-pharm-form" element={<SymptomPharmForm />} />{" "}
+        {/* 메디카드 */}
+        <Route path="/medi-card" element={<MediCard />} />
+        {/* 마이페이지 */}
+        <Route path="/mypage" element={<MyPage />} />
         {/* 검색 */}
         <Route path="/search" element={<InputSearch />} />
         <Route path="/search.map" element={<MapSearch />} />

@@ -87,8 +87,6 @@ const Login = () => {
       <ToSignin onClick={navigateToSignup} style={{ cursor: "pointer" }}>
         회원가입
       </ToSignin>
-      <img src="../../img/login_line.svg" />
-      <img src="../../img/kakaotalk.svg" style={{ cursor: "pointer" }} />
     </LoginPage>
   );
 };
@@ -96,17 +94,16 @@ const Login = () => {
 export default Login;
 
 const LoginPage = styled.div`
-  /* background-color: #ffff; */
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 133px 20px;
+  margin: 163px 20px;
   img {
     margin-bottom: 20px;
   }
   form {
     input {
-      margin-bottom: 8px;
+      margin-bottom: 12px;
       height: 30px;
       width: 313px;
       padding: 15px 20px;

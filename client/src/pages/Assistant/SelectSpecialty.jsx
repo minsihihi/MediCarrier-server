@@ -33,7 +33,9 @@ function SelectSpecialty() {
 
   const handleNext = () => {
     if (selected) {
-      navigate("/map-hospital", { state: {facility, hospital_type: selected } });
+      navigate("/map-hospital", {
+        state: { facility, hospital_type: selected },
+      });
     }
   };
 
@@ -71,15 +73,15 @@ function SelectSpecialty() {
             {showMore ? "닫기 ↑" : "더보기 ↓"}
           </MoreButton>
         </SpecialtyContainer>
-        <ButtonContainer>
-          <Button onClick={() => navigate(-1)} primary={false}>
-            이전
-          </Button>
-          <Button onClick={handleNext} primary={true} disabled={!selected}>
-            다음
-          </Button>
-        </ButtonContainer>
       </Container>
+      <ButtonContainer>
+        <Button onClick={() => navigate(-1)} primary={false}>
+          이전
+        </Button>
+        <Button onClick={handleNext} primary={true} disabled={!selected}>
+          다음
+        </Button>
+      </ButtonContainer>
     </PageContainer>
   );
 }
@@ -88,12 +90,11 @@ export default SelectSpecialty;
 
 const PageContainer = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
   background: #fafafa;
   overflow-y: auto;
-
 `;
 
 const Container = styled.div`
@@ -101,24 +102,24 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   width: 393px;
-  height: 792px;
   margin: 0;
   background: #ffffff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding-bottom: 95px;
   position: relative;
+  flex: 1;
 `;
 
 const Title = styled.h1`
   font-family: Pretendard;
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   text-align: left;
   line-height: 1.5;
   align-self: flex-start;
   margin-left: 20px;
-  margin-top: 51px;
+  margin-top: 25px;
 `;
 
 const Subtitle = styled.p`
@@ -131,7 +132,7 @@ const Subtitle = styled.p`
   letter-spacing: -0.439px;
   margin-bottom: 40px;
   margin-top: 8px;
-  margin-left: 0px;
+  margin-left: 5px;
 `;
 
 const SpecialtyContainer = styled.div`
@@ -141,7 +142,7 @@ const SpecialtyContainer = styled.div`
   gap: 10px;
   margin-bottom: 20px;
   width: 90%;
-  margin-left: 20px;
+  margin-left: 10px;
   max-height: ${(props) => (props.expanded ? "auto" : "180px")}; /* 높이 조정 */
   overflow: hidden;
 `;
@@ -167,8 +168,9 @@ const ButtonContainer = styled.div`
   gap: 11px;
   width: 100%;
   padding: 0 20px;
-  margin-top: 20px;
-  margin-bottom: 25px;
+  position: absolute;
+  bottom: 65px;
+  margin-left: 15px;
 `;
 
 const Button = styled.button`

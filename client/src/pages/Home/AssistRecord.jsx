@@ -60,7 +60,7 @@ const AssistRecord = () => {
           const latestAssist = assistData[assistData.length - 1];
           // document 필드를 배열로 변환
           const documentsList = latestAssist.document
-            ? latestAssist.document.split(',').map(doc => doc.trim())
+            ? latestAssist.document.split(",").map((doc) => doc.trim())
             : [];
           setDocuments(documentsList);
         }

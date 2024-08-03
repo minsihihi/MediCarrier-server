@@ -57,17 +57,15 @@ const MapHospitalView = () => {
   };
 
   const handleNext = () => {
-    if (selected) {
-      // 선택된 병원 ID를 배열로 만듭니다.
-      const selectedHospitalIds = [selected]; // 선택된 병원의 ID를 배열로 생성합니다.
-      navigate("/symptom-form", {
-        state: {
-          facility,
-          hospital_type,
-          //recommended_hospitals : selectedHospitalIds
-        },
-      });
-    }
+    // 선택된 병원 ID를 배열로 만듭니다.
+    const selectedHospitalIds = selected ? [selected] : []; // 선택된 병원의 ID를 배열로 생성합니다.
+    navigate("/symptom-form", {
+      state: {
+        facility,
+        hospital_type,
+        //recommended_hospitals : selectedHospitalIds
+      },
+    });
   };
 
   const handleMoreInfo = (placeId) => {
@@ -147,7 +145,7 @@ const MapHospitalView = () => {
           <Button onClick={() => navigate(-1)} primary={false}>
             이전
           </Button>
-          <Button onClick={handleNext} primary={true} disabled={!selected}>
+          <Button onClick={handleNext} primary={true}>
             다음
           </Button>
         </ButtonContainer>
@@ -184,12 +182,12 @@ const Title = styled.h1`
   font-family: Pretendard;
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   text-align: left;
   line-height: 1.5;
   align-self: flex-start;
   margin-left: 20px;
-  margin-top: 51px;
+  margin-top: 25px;
 `;
 
 const Subtitle = styled.p`
@@ -216,7 +214,7 @@ const NearbyButton = styled.button`
   cursor: pointer;
   margin-left: auto;
   margin-right: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
 `;
 
 const ListContainer = styled.div`

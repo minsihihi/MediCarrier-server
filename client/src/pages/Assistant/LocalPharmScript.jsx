@@ -8,7 +8,7 @@ const PageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  height: 100vh;
+  height: 100%;
   background: #fafafa;
   overflow-y: auto;
 `;
@@ -29,12 +29,12 @@ const Title = styled.h1`
   font-size: 24px;
   font-family: Pretendard;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   text-align: left;
   line-height: 1.5;
   align-self: flex-start;
-  margin-left: 20px;
-  margin-top: 51px;
+  margin-left: 30px;
+  margin-top: 25px;
 `;
 
 const Subtitle = styled.p`
@@ -46,7 +46,7 @@ const Subtitle = styled.p`
   line-height: normal;
   letter-spacing: -0.439px;
   margin-bottom: 40px;
-  margin-left: 20px;
+  margin-left: 30px;
   align-self: flex-start;
 `;
 
@@ -55,7 +55,7 @@ const ScriptText = styled.p`
   font-family: Pretendard;
   font-size: 16px;
   line-height: 1.6;
-  margin-left: 20px;
+  margin-left: 40px;
   margin-right: 20px;
   flex-grow: 1;
 `;
@@ -66,8 +66,9 @@ const ButtonContainer = styled.div`
   gap: 11px;
   width: 100%;
   padding: 0 20px;
-  margin-top: 20px;
-  margin-bottom: 25px;
+  position: absolute;
+  bottom: 65px;
+  margin-left: 15px;
 `;
 
 const Button = styled.button`
@@ -86,21 +87,12 @@ const Button = styled.button`
 function LocalScript() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { translatedScript, facility } = location.state || {};
+  const { translatedScript } = location.state || {};
   const { setTransScriptComponents } = useScriptStore((state) => state);
 
   const handleNext = () => {
-<<<<<<< HEAD
-    
-    
-
-=======
->>>>>>> 6c38c222db40b7e866474d4660810b1926a505f1
-    if (facility === "병원") {
-      navigate("/select-condition");
-    } else {
-      navigate("/select-condition");
-    }
+    setTransScriptComponents(translatedScript);
+    navigate("/home");
   };
 
   return (
@@ -121,7 +113,7 @@ function LocalScript() {
             이전
           </Button>
           <Button onClick={handleNext} primary={true}>
-            다음
+            완료
           </Button>
         </ButtonContainer>
       </Container>

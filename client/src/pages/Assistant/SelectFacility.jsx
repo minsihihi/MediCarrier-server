@@ -4,10 +4,11 @@ import styled from "styled-components";
 import PharmacyIcon from "../../assets/icons/Pharmacy.svg";
 import HospitalIcon from "../../assets/icons/Hospital.svg";
 import ProgressIndicator from "../../components/ProgressIndicator";
-
+import useStore from "../../store/store";
 function SelectFacility() {
   const navigate = useNavigate();
   const [selected, setSelected] = useState(null);
+  const setFacility = useStore((state) => state.setFacility); // 상태 변경 함수
 
   const handleSelect = (facility) => {
     setSelected(facility);
@@ -17,9 +18,11 @@ function SelectFacility() {
     let facility = ""; // 변수 정의
     if (selected === "pharmacy") {
       facility = "약국"; // 변수 값 설정
+      setFacility(facility); // 상태 업데이트
       navigate("/map-pharmacy", { state: { facility } });
     } else if (selected === "hospital") {
       facility = "병원"; // 변수 값 설정
+      setFacility(facility); // 상태 업데이트
       navigate("/select-specialty", { state: { facility } });
     }
   };
@@ -68,7 +71,7 @@ const PageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  height: 100vh;
+  height: 100%;
   background: #fafafa;
   overflow-y: auto;
 `;
@@ -89,12 +92,12 @@ const Title = styled.h1`
   font-family: Pretendard;
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   text-align: left;
   line-height: 1.5;
   align-self: flex-start;
-  margin-left: 20px;
-  margin-top: 51px;
+  margin-left: 30px;
+  margin-top: 25px;
 `;
 
 const Subtitle = styled.p`
@@ -106,7 +109,8 @@ const Subtitle = styled.p`
   line-height: normal;
   letter-spacing: -0.439px;
   margin-bottom: 40px;
-  margin-left: 20px;
+  margin-top: 0px;
+  margin-left: 30px;
   align-self: flex-start;
 `;
 
@@ -114,7 +118,8 @@ const Options = styled.div`
   display: flex;
   justify-content: center;
   gap: 9px;
-  width: 100%;
+  width: 172px;
+  height: 205px;
   margin-bottom: 20px;
 `;
 
@@ -124,8 +129,6 @@ const Option = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 172px;
-  height: 205px;
   padding: 31px 48px;
   gap: 10px;
   border-radius: 10px;
@@ -153,5 +156,5 @@ const Button = styled.button`
   background: var(--mainblue, #4a7dff);
   border: none;
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
-  margin-top: 100px;
+  margin-top: 130px;
 `;

@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import ReactDOMServer from "react-dom/server";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
-import useScriptStore, { onPostScript } from "../../assets/scriptStore";
 import axios from "axios";
+import useScriptStore from "../../assets/scriptStore";
 
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  height: 100vh;
+  height: 100%;
   background: #fafafa;
   overflow-y: auto;
 `;
@@ -62,14 +63,19 @@ const ScriptText = styled.p`
   flex-grow: 1;
 `;
 
+const HighlightedText = styled.span`
+  color: #4a7dff;
+`;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   gap: 11px;
   width: 100%;
   padding: 0 20px;
-  margin-top: 20px;
-  margin-bottom: 25px;
+  position: absolute;
+  bottom: 60px;
+  margin-left: 15px;
 `;
 
 const Button = styled.button`
@@ -85,7 +91,7 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-function SymptomScript() {
+function SymptomPharmScript() {
   const navigate = useNavigate();
   const [translatedScript, setTranslatedScript] = useState("");
   const location = useLocation();
@@ -111,49 +117,44 @@ function SymptomScript() {
       : "증상이 없습니다";
 
   const scriptComponents = `
-      안녕하세요. 저는 한국인 관광객 입니다.
-      저는 ${symptom_start}부터 ${symptom_freq}으로 ${symptomsText}.
-      최근 앓았던 질병이나 현재 앓고 있는 만성 질환은 ${chronicDiseasesText}이고, 현재 복용하고 있는 약은 ${medicationsText} 입니다.
-      ${etc ? etc : ""}
-    `;
+    안녕하세요. 저는 한국인 관광객 입니다.
+    저는 ${symptom_start}부터 ${symptom_freq}으로 ${symptomsText}.
+    최근 앓았던 질병이나 현재 앓고 있는 만성 질환은 ${chronicDiseasesText}이고, 현재 복용하고 있는 약은 ${medicationsText} 입니다.
+    ${etc ? ` ${etc}` : ""}
+  `;
+  // Convert JSX to HTML string
+  //const scriptComponentsString = ReactDOMServer.renderToStaticMarkup(scriptComponents);
+
   const handleNext = async () => {
-    const scriptDate = new Date().toISOString();
-    setScriptComponents({ scriptComponents, scriptDate });
+    setScriptComponents(scriptComponents);
     try {
-      // 서버에 스크립트 전송
       const response = await axios.post(
         "https://minsi.pythonanywhere.com/medicarrier/script/",
-        { script: scriptComponents },
+        {
+          script: scriptComponents,
+        },
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,// 인증 토큰 추가
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // 인증 토큰 추가
           },
         }
       );
-      // 응답 상태 확인
+
       if (response.status !== 200) {
-        throw new Error(`스크립트 저장 실패: ${response.statusText}`);
+        throw new Error(`Failed to save script: ${response.statusText}`);
       }
 
-      // 응답 데이터에서 번역된 스크립트 가져오기
       const data = response.data;
-      console.log("응답 데이터:", data);
+      console.log("Script saved:", data);
 
-      if (data.translated_script) {
-        // 상태에서 translatedScript 가져오기 (이 부분은 필요 없을 수 있음)
-        // const { transScriptComponents } = useScriptStore.getState();
-
-        // 페이지 이동
-        navigate("/local-script", {
-          state: { translatedScript: data.translated_script },
-        });
-      } else {
-        console.error("응답 데이터에 번역된 스크립트가 없습니다.");
-      }
+      setTranslatedScript(data.translated_script);
+      navigate("/local-pharm-script", {
+        state: { translatedScript: data.translated_script },
+      });
     } catch (error) {
       console.error(
-        "스크립트 저장 오류:",
+        "Error saving script:",
         error.response ? error.response.data : error.message
       );
     }
@@ -183,4 +184,4 @@ function SymptomScript() {
   );
 }
 
-export default SymptomScript;
+export default SymptomPharmScript;
