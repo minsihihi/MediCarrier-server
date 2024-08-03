@@ -1,6 +1,7 @@
 # medicarrier/models.py
 from django.db import models
 from django.conf import settings
+from datetime import date
 
 
 class Trip(models.Model):   # 사용자당 하나만 생성되는 여행 모델
@@ -9,7 +10,7 @@ class Trip(models.Model):   # 사용자당 하나만 생성되는 여행 모델
     country = models.CharField(max_length=20)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    insuranceType = models.CharField(max_length=20, default="실속형")
+    insuranceType = models.CharField(max_length=20, default="없음")
 
     def __str__(self):
         return self.country
@@ -218,6 +219,7 @@ class Assist(models.Model):
     )
 
     document = models.TextField(null=True, blank=True)
+    created_at = models.DateField(default=date.today)
 
     def __str__(self):
         # user 모델의 nickname 속성을 포함하여 문자열 반환
@@ -233,7 +235,7 @@ class Hospital(models.Model):
     hospital_open = models.BooleanField()
     hospital_latitude = models.FloatField(default=0)  # 위도
     hospital_longitude = models.FloatField(default=0)  # 경도
-    
+
 
     def __str__(self):
         return self.hospital_name
@@ -251,17 +253,18 @@ class Pharmacy(models.Model):
 
     def __str__(self):
         return self.pharmacy_name
-    
+
 class Script(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     language = models.CharField(max_length=20)
     original_script = models.TextField(blank=True, null=True)
     translated_script = models.TextField(blank=True, null=True)
+    created_at = models.DateField(default=date.today)
 
     def __str__(self):
         return f"Script {self.user.username}"
-    
+
 
 
 

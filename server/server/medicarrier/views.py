@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, get_object_or_404
 from rest_framework import views
 from rest_framework import status
@@ -24,14 +23,14 @@ import math
 translator = Translator()
 
 # 검색뷰
+@csrf_exempt
 def search_hospitals(request):
     keyword = request.GET.get('keyword')
     lat = request.GET.get('lat')
     lng = request.GET.get('lng')
-    radius = request.GET.get('radius', 1000)  # 기본 반경 1000미터
 
     api_key = settings.GOOGLE_MAPS_API_KEY
-    url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius={radius}&type=hospital&keyword={keyword}&key={api_key}"
+    url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius=1000&type=hospital&keyword={keyword}&key={api_key}"
 
     response = requests.get(url)
     data = response.json()
@@ -75,7 +74,7 @@ class TranslateScriptView(APIView):
         original_script = data.get('script', '')
         trip = Trip.objects.get(user=user)
         dest_language = self.get_language_from_country(trip.country)
-        
+
 
         # 기본 스크립트 저장
         user = request.user
@@ -93,7 +92,7 @@ class TranslateScriptView(APIView):
 
         serializer = ScriptSerializer(script)
         return Response(serializer.data)
-    
+
     def get_language_from_country(self, country):
         # 나라에 기반한 언어 매핑 로직 (여기서는 간단한 예시)
         country_language_map = {
@@ -206,45 +205,71 @@ class TranslateScriptView(APIView):
         '남아프리카': 'zu'
     }
 
-        return country_language_map.get(country, 'en')  # 
-    
+        return country_language_map.get(country, 'en')  #
+
     def get(self, request, *args, **kwargs):
         user = request.user
         scripts = Script.objects.filter(user=user)
         serializer = ScriptSerializer(scripts, many=True)
         return Response(serializer.data)
- 
+
 class TranslateMediInfoView(APIView):
     def get(self, request, *args, **kwargs):
         user = request.user
-        
+
+
         # 사용자의 MediCard를 필터링하고 country가 '한국'인 것을 찾습니다.
         try:
             medicard = MediCard.objects.get(user=user, country='한국')
+            trip = Trip.objects.get(user=user)
+            travel_country = trip.country
+            medicard2 = MediCard.objects.get(user=user, country=travel_country)
         except MediCard.DoesNotExist:
             return Response({"error": "No MediCard found for this user with country '한국'."}, status=status.HTTP_404_NOT_FOUND)
-        
+
         # MediCard를 통해 MediInfo와 BasicInfo를 가져옵니다.
         try:
             medi_info = MediInfo.objects.get(medicard=medicard)
             basic_info = BasicInfo.objects.get(medicard=medicard)
         except MediInfo.DoesNotExist or BasicInfo.DoesNotExist:
             return Response({"error": "User information not found"}, status=status.HTTP_404_NOT_FOUND)
-        
+
         # 번역 함수 정의
-        def translate_text(text, lang):
-            # 여기에 실제 번역 API 호출을 구현합니다.
-            return text  # 예시로 원본 텍스트를 반환합니다.
+        def translate_text(text, dest_language):
+            try:
+                translation = translator.translate(text, dest=dest_language)
+                return translation.text
+            except Exception as e:
+                print(f"Translation error: {e}")
+                return text
 
         def translate_info(info, lang):
             translated_info = {}
             for field, value in info.items():
-                translated_info[field] = translate_text(value, lang)
+                # Skip translation for specific values
+                if field.lower() == "bloodtype":
+                    translated_info[field] = value
+                else:
+                    translated_info[field] = translate_text(value, lang)
             return translated_info
+
+        def translate_keys_and_values(info, lang):
+            translated_info = {}
+            for key, value in info.items():
+                translated_key = translate_text(key, lang)
+                # Skip translation for specific keys
+                if key.lower() in ["englishname", "bloodtype"]:
+                    translated_info[translated_key] = value
+                else:
+                    translated_value = translate_text(value, lang)
+                    translated_info[translated_key] = translated_value
+            return translated_info
+
 
         # 기본 정보와 의료 정보 번역
         english_lang = 'en'
-        travel_lang = medicard.language  # 사용자 여행 국가 언어
+        travel_lang = medicard2.language  # 사용자 여행 국가 언어
+
 
         medi_info_data = {
             "condition": medi_info.condition,
@@ -259,7 +284,7 @@ class TranslateMediInfoView(APIView):
             "name": basic_info.name,
             "sex": basic_info.sex,
             "nationality": basic_info.nationality,
-            "name_eng": basic_info.name_eng,
+            "englishname": basic_info.name_eng,
             "birthdate": str(basic_info.birthdate),
             "height": basic_info.height,
             "weight": basic_info.weight,
@@ -272,26 +297,29 @@ class TranslateMediInfoView(APIView):
         basic_info_english = translate_info(basic_info_data, english_lang)
 
         # 여행 국가 언어로 번역
-        medi_info_travel = translate_info(medi_info_data, travel_lang)
-        basic_info_travel = translate_info(basic_info_data, travel_lang)
+        medi_info_travel_combined = translate_keys_and_values(medi_info_data, travel_lang)
+        basic_info_travel_combined = translate_keys_and_values(basic_info_data, travel_lang)
+
+
 
         # 사용자에게 반환
         return Response({
             "medicard": {
-                "한국어": {
+                "한국": {
                     "medi_info": medi_info_data,
                     "basic_info": basic_info_data
                 },
-                "영어": {
+                "영국": {
                     "medi_info": medi_info_english,
                     "basic_info": basic_info_english
                 },
-                travel_lang: {
-                    "medi_info": medi_info_travel,
-                    "basic_info": basic_info_travel
+                travel_country: {
+                    "medi_info": medi_info_travel_combined,
+                    "basic_info": basic_info_travel_combined
                 }
             }
         })
+
 
 class AssistView(views.APIView):
     def post(self, request, format=None):
@@ -325,14 +353,41 @@ class TripListCreateAPIView(APIView):
         if Script.objects.filter(user=request.user).exists():
             Script.objects.filter(user=request.user).delete()
 
+        if Assist.objects.filter(user=request.user).exists():
+            Assist.objects.filter(user=request.user).delete()
+
         # 새로운 여행 등록
         serializer = TripSerializer(data=request.data)
         if serializer.is_valid():
             # 여행 등록 시 로그인된 사용자를 여행의 사용자로 설정
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-            
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request):
+        try:
+            trip = Trip.objects.get(user=request.user)  # 로그인된 사용자의 여행만 접근 가능
+        except Trip.DoesNotExist:
+            return Response({'error': 'Trip not found or you do not have permission to access this trip.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # 요청된 데이터를 로그에 출력하여 확인합니다.
+        print("Request data:", request.data)
+
+        # 부분 업데이트 허용
+        serializer = TripSerializer(trip, data=request.data, partial=True)
+        if serializer.is_valid():
+            try:
+                serializer.save()
+                return Response(serializer.data)
+            except Exception as e:
+                print(f"Error saving trip: {e}")
+                return Response({'error': 'Error saving trip'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            print("Serializer errors:", serializer.errors)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
@@ -351,7 +406,7 @@ class MediCardView(views.APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
+
 
 class AssistView(APIView):
     def post(self, request, format=None):
@@ -434,17 +489,15 @@ class AssistView(APIView):
                     documents.append('진단명/수술명/수술일자가 포함된 서류')
                 elif ins_req2 == '진단':
                     if disease_detail == '암':
-                        documents.extend(['진단서',
-                                         '조직검사결과지'])
+                        documents.extend(['진단서','조직검사결과지'])
                     elif disease_detail == '뇌질환':
-                        documents.extend(['진단서',
-                                         'CT, MRI등 방사선 판독결과지'])
+                        documents.extend(['진단서','CT, MRI등 방사선 판독결과지'])
                     elif disease_detail == '심질환':
                         documents.extend(['진단서',
-                                         '각종 검사결과지'])
+                                        '각종 검사결과지'])
                     elif disease_detail == '기타':
                         documents.extend(['진단서',
-                                         '진단사실 확인서류'])
+                                        '진단사실 확인서류'])
 
             # documents 리스트를 문자열로 변환하여 저장
             assist_instance.document = ', '.join(
@@ -471,26 +524,26 @@ def haversine(lat1, lon1, lat2, lon2):
 
     dlat = math.radians(lat2 - lat1)
     dlon = math.radians(lon2 - lon1)
-    
+
     a = math.sin(dlat / 2) ** 2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    
+
     distance_km = R * c
     distance_m = distance_km * 1000  # Convert kilometers to meters
     return distance_m
 
-
+@csrf_exempt
 def get_hospitals(request):
     lat = float(request.GET.get('lat'))
     lng = float(request.GET.get('lng'))
     api_key = settings.GOOGLE_MAPS_API_KEY
     keyword = request.GET.get('keyword', '')  # 기본값은 빈 문자열
-    
+
     # Google Places API 호출
     url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius=1000&type=hospital&key={api_key}&keyword={keyword}"
     response = requests.get(url)
     data = response.json()
-    
+
     if response.status_code == 200:
         hospitals = []
         for result in data.get('results', []):
@@ -499,7 +552,7 @@ def get_hospitals(request):
             if photos:
                 photo_reference = photos[0].get('photo_reference')
                 photo_url = f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={photo_reference}&key={api_key}"
-            
+
             # 병원 정보 가공
             hospitals.append({
                 "name": result.get("name"),
@@ -555,7 +608,7 @@ class CreateMediInfoView(APIView):
             medicard = MediCard.objects.get(user=request.user, country='한국')
         except MediCard.DoesNotExist:
             return Response({'error': 'No MediCard with country "한국" found for this user.'}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         # 데이터에 Medicard PK 설정
         request.data['medicard'] = medicard.pk
 
@@ -564,7 +617,7 @@ class CreateMediInfoView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     def put(self, request, *args, **kwargs):
         # 로그인된 사용자의 MediCard를 필터링합니다.
         try:
@@ -590,7 +643,7 @@ class CreateBasicInfoView(APIView):
             medicard = MediCard.objects.get(user=request.user, country='한국')
         except MediCard.DoesNotExist:
             return Response({'error': 'No MediCard with country "한국" found for this user.'}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         # 데이터에 Medicard PK 설정
         request.data['medicard'] = medicard.pk
 
@@ -599,7 +652,7 @@ class CreateBasicInfoView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 
     def put(self, request, *args, **kwargs):
         # 로그인된 사용자의 MediCard를 필터링합니다.
