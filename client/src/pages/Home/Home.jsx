@@ -49,10 +49,6 @@ function Home() {
         const token = localStorage.getItem("token");
         const userId = localStorage.getItem("userId");
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
         const response = await axios.get(
           "https://minsi.pythonanywhere.com/medicarrier/register.trip/",
           {
@@ -414,11 +410,7 @@ function Home() {
           <InsuranceModal onClose={() => setIsInsuranceModalOpen(false)} />
         )}
 
-<<<<<<< HEAD
-        {scriptComponents && (
-=======
         {scriptDate && (
->>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
           <>
             <AssistRecord>
               어시스트 이용 기록
