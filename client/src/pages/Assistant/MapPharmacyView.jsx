@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 import axios from 'axios';
+=======
+import axios from "axios";
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
 
@@ -28,12 +32,22 @@ const MapPharmacyView = () => {
       console.error("Geolocation not supported by this browser.");
     }
   }, []);
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
   useEffect(() => {
     if (location.lat && location.lng) {
       setLoading(true); // 로딩 시작
       axios
+<<<<<<< HEAD
         .get(`https://minsi.pythonanywhere.com/medicarrier/pharmacies/?lat=${location.lat}&lng=${location.lng}`)
+=======
+        .get(
+          `https://minsi.pythonanywhere.com/medicarrier/pharmacies/?lat=${location.lat}&lng=${location.lng}`
+        )
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
         .then((response) => {
           // 별점 순으로 정렬하여 상위 3개만 선택
           const sortedPharmacies = response.data.results
@@ -55,20 +69,39 @@ const MapPharmacyView = () => {
 
   const handleNext = () => {
     if (selected) {
+<<<<<<< HEAD
       const selectedPharmacy = pharmacies.find(pharmacy => pharmacy.place_id === selected);
+=======
+      const selectedPharmacy = pharmacies.find(
+        (pharmacy) => pharmacy.place_id === selected
+      );
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
       navigate("/symptom-form", { state: { selectedPharmacy } });
     }
   };
 
   const handleMoreInfo = (placeId) => {
+<<<<<<< HEAD
     window.open(`https://www.google.com/maps/place/?q=place_id:${placeId}`, '_blank');
+=======
+    window.open(
+      `https://www.google.com/maps/place/?q=place_id:${placeId}`,
+      "_blank"
+    );
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
   };
 
   const handleNearbySearch = () => {
     if (location.lat && location.lng) {
       setLoading(true);
       axios
+<<<<<<< HEAD
         .get(`https://minsi.pythonanywhere.com/medicarrier/pharmacies/?lat=${location.lat}&lng=${location.lng}`)
+=======
+        .get(
+          `https://minsi.pythonanywhere.com/medicarrier/pharmacies/?lat=${location.lat}&lng=${location.lng}`
+        )
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
         .then((response) => {
           const sortedPharmacies = response.data.results
             .sort((a, b) => b.rating - a.rating)
@@ -109,7 +142,14 @@ const MapPharmacyView = () => {
                 <InfoContainer>
                   <ImagePlaceholder>
                     {pharmacy.photo_url ? (
+<<<<<<< HEAD
                       <PlaceholderImage src={pharmacy.photo_url} alt={pharmacy.name} />
+=======
+                      <PlaceholderImage
+                        src={pharmacy.photo_url}
+                        alt={pharmacy.name}
+                      />
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
                     ) : (
                       <PlaceholderText>No Image</PlaceholderText>
                     )}
@@ -118,9 +158,17 @@ const MapPharmacyView = () => {
                     <DetailText>{pharmacy.distance.toFixed(0)}m</DetailText>
                     <PharmacyName>{pharmacy.name}</PharmacyName>
                     <DetailText>{pharmacy.address}</DetailText>
+<<<<<<< HEAD
                     <DetailText>⭐ {pharmacy.rating || '정보 없음'}</DetailText>
                   </InfoText>
                   <MoreButton onClick={() => handleMoreInfo(pharmacy.place_id)}>더보기</MoreButton>
+=======
+                    <DetailText>⭐ {pharmacy.rating || "정보 없음"}</DetailText>
+                  </InfoText>
+                  <MoreButton onClick={() => handleMoreInfo(pharmacy.place_id)}>
+                    더보기
+                  </MoreButton>
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
                 </InfoContainer>
               </ListItem>
             ))
@@ -221,10 +269,16 @@ const ListItem = styled.div`
   align-items: center;
   padding: 15px;
   margin: 10px 0; /* 가로 마진 제거 */
+<<<<<<< HEAD
   background:  "#F8F8F8";
   border-radius: 15px;
   cursor: pointer;
 
+=======
+  background: "#F8F8F8";
+  border-radius: 15px;
+  cursor: pointer;
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
 `;
 
 const InfoContainer = styled.div`
@@ -315,4 +369,8 @@ const LoadingText = styled.p`
   font-size: 16px;
   color: #aaa;
   margin-top: 20px;
+<<<<<<< HEAD
 `;
+=======
+`;
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da

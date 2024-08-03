@@ -25,7 +25,14 @@ import SelectInsuranceTypeW from "./pages/Assistant/SelectInsuranceTypeW";
 import DocumentGuide from "./pages/Assistant/DocumentGuide";
 import SelectPaid from "./pages/Assistant/SelectPaid";
 import SelectClaim from "./pages/Assistant/SelectClaim";
+<<<<<<< HEAD
 import NavBar from "./components/NavBar";
+=======
+import InputSearch from "./pages/Search/InputSearch";
+import MapSearch from "./pages/Search/MapSearch";
+import NavBar from "./components/NavBar";
+
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
 import "./App.css";
 
 function ScrollToTop() {
@@ -58,7 +65,11 @@ function AppContent() {
         <Route path="/register.trip" element={<SetCountry />} />
         <Route path="/register.trip.date" element={<SetDate />} />
         {/* 어시스트 이용 기록 */}
+<<<<<<< HEAD
         <Route path="/assist.record" element={<AssistRecord />} />
+=======
+        <Route path="/script" element={<AssistRecord />} />
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
         {/* 보험 알아보기 */}
         <Route path="/insurance.feature" element={<InsFeature />} />
         <Route path="/insurance.step" element={<InsStep />} />
@@ -84,6 +95,12 @@ function AppContent() {
         <Route path="/document-guide" element={<DocumentGuide />} />
         <Route path="/select-paid" element={<SelectPaid />} />
         <Route path="/select-claim" element={<SelectClaim />} />
+<<<<<<< HEAD
+=======
+        {/* 검색 */}
+        <Route path="/search" element={<InputSearch />} />
+        <Route path="/search.map" element={<MapSearch />} />
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
       </Routes>
       {!hideNavBarPaths.includes(location.pathname) && <NavBar />}
     </>

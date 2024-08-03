@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import useTripStore from "../../assets/tripStore";
 
+<<<<<<< HEAD
 const SERVICE_COUNTRIES = ["일본"];
 
 const SetCountry = () => {
@@ -21,6 +22,101 @@ const SetCountry = () => {
 
   const { country, setCountry } = useTripStore();
   const [filteredCountries, setFilteredCountries] = useState([]);
+=======
+const SERVICE_COUNTRIES = [
+  "남아프리카 공화국",
+  "알바니아",
+  "에티오피아",
+  "아랍 국가들",
+  "아르메니아",
+  "아제르바이잔",
+  "바스크",
+  "벨라루스",
+  "방글라데시",
+  "보스니아",
+  "불가리아",
+  "카탈로니아",
+  "필리핀",
+  "말라위",
+  "중국",
+  "대만",
+  "프랑스",
+  "크로아티아",
+  "체코",
+  "덴마크",
+  "네덜란드",
+  "영국",
+  "국제어",
+  "에스토니아",
+  "핀란드",
+  "스페인",
+  "조지아",
+  "독일",
+  "그리스",
+  "인도",
+  "아이티",
+  "니제르",
+  "하와이",
+  "이스라엘",
+  "헝가리",
+  "아이슬란드",
+  "나이지리아",
+  "인도네시아",
+  "아일랜드",
+  "이탈리아",
+  "일본",
+  "자바",
+  "카자흐스탄",
+  "캄보디아",
+  "한국",
+  "터키",
+  "키르기스스탄",
+  "라오스",
+  "로마",
+  "라트비아",
+  "리투아니아",
+  "룩셈부르크",
+  "북마케도니아",
+  "마다가스카르",
+  "말레이시아",
+  "몰타",
+  "뉴질랜드",
+  "몽골",
+  "미얀마",
+  "네팔",
+  "노르웨이",
+  "파키스탄",
+  "이란",
+  "폴란드",
+  "포르투갈",
+  "루마니아",
+  "러시아",
+  "사모아",
+  "스코틀랜드",
+  "세르비아",
+  "짐바브웨",
+  "스리랑카",
+  "슬로바키아",
+  "슬로베니아",
+  "소말리아",
+  "탄자니아",
+  "스웨덴",
+  "타지키스탄",
+  "태국",
+  "우크라이나",
+  "위구르",
+  "우즈베키스탄",
+  "베트남",
+  "웨일스",
+  "유대인",
+  "남아프리카",
+];
+const SetCountry = () => {
+  const navigate = useNavigate();
+  const { country, setCountry } = useTripStore();
+  const [filteredCountries, setFilteredCountries] = useState([]);
+  const [activeCountry, setActiveCountry] = useState(null);
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
 
   const handleSearch = (event) => {
     const term = event.target.value;
@@ -38,6 +134,10 @@ const SetCountry = () => {
 
   const handleCountryClick = (country) => {
     setCountry(country);
+<<<<<<< HEAD
+=======
+    setActiveCountry(country); // Set the active country
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
     setFilteredCountries([]);
   };
 
@@ -46,9 +146,15 @@ const SetCountry = () => {
       <Header>
         <button
           style={{ border: 0, backgroundColor: "transparent" }}
+<<<<<<< HEAD
           onClick={navigateToHome}
         >
           <img src="/img/arrow-left.svg" alt="back" />
+=======
+          onClick={() => navigate("/")}
+        >
+          <img src="/img/arrow-left.svg" alt="back-icon" />
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
         </button>
         내 여행
       </Header>
@@ -67,7 +173,13 @@ const SetCountry = () => {
             {filteredCountries.map((country) => (
               <CountryItem
                 key={country}
+<<<<<<< HEAD
                 onClick={() => handleCountryClick(country)}
+=======
+                onMouseDown={() => setActiveCountry(country)}
+                onMouseUp={() => handleCountryClick(country)}
+                isActive={activeCountry === country}
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
               >
                 {country}
               </CountryItem>
@@ -85,6 +197,7 @@ const SetCountry = () => {
           color: "#FFF",
           fontFamily: "Pretendard",
           fontSize: "20px",
+<<<<<<< HEAD
           fontStyle: "normal",
           fontWeight: "700",
           lineHeight: "normal",
@@ -94,6 +207,21 @@ const SetCountry = () => {
           left: "293px",
         }}
         onClick={navigateToSetDate}
+=======
+          fontWeight: "700",
+          position: "fixed",
+          top: "620px",
+          left: "293px",
+        }}
+        onClick={() => {
+          if (country) {
+            navigate("/medicarrier/register.trip.date");
+            setCountry(country);
+          } else {
+            alert("여행지를 설정해주세요.");
+          }
+        }}
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
       >
         다음
       </button>
@@ -175,7 +303,11 @@ const CountrySearchBar = styled.div`
 const CountryList = styled.div`
   width: 393px;
   height: 44px;
+<<<<<<< HEAD
   background: rgba(227, 230, 240, 0.63);
+=======
+  /* background: rgba(227, 230, 240, 0.63); */
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
   color: var(--black, #000);
   font-family: Pretendard;
   font-size: 16px;
@@ -189,8 +321,16 @@ const CountryList = styled.div`
 const CountryItem = styled.div`
   padding: 12px 21px;
   cursor: pointer;
+<<<<<<< HEAD
 
   &:hover {
     background-color: #f0f0f0;
+=======
+  background-color: ${(props) =>
+    props.isActive ? "rgba(227, 230, 240, 0.63)" : "transparent"};
+
+  &:hover {
+    background-color: rgba(227, 230, 240, 0.63);
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
   }
 `;

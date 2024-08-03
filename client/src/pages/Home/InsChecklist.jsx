@@ -78,13 +78,21 @@ function InsChecklist() {
     군복무중_사고: [{ name: "공무상병인증서", issuer: "군부대" }],
     의료사고_등_법원분쟁: [{ name: "법원 판결문", issuer: "법원" }],
     기타_상해사고: [{ name: "공공기관 사고사실확인서", issuer: "공공기관" }],
+<<<<<<< HEAD
     사고확인서류_발급불가: [
+=======
+    사고확인서류_발급_불가: [
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
       {
         name: "병원 초진차트 등 상해사고 증명서류 및 보험금청구서상 사고내용 기재",
         issuer: "의료기관",
       },
     ],
+<<<<<<< HEAD
     형사합의지원금: [
+=======
+    형사_합의_지원금: [
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
       { name: "공소장", issuer: "법원" },
       { name: "공탁서", issuer: "법원" },
       { name: "피해자 공탁금 출금 확인서 (미합의 시)", issuer: "법원" },
@@ -96,7 +104,11 @@ function InsChecklist() {
       { name: "피해자 공탁금 출금 확인서 (미합의 시)", issuer: "법원" },
       { name: "형사합의금이 입금된 내역", issuer: "금융기관" },
     ],
+<<<<<<< HEAD
     자동차사고_변호사선임비용: [
+=======
+    자동차_사고_변호사_선임_비용: [
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
       { name: "판결문", issuer: "법원" },
       { name: "구속영장", issuer: "법원" },
       { name: "공소장", issuer: "법원" },
@@ -112,6 +124,7 @@ function InsChecklist() {
         issuer: "경찰서",
       },
     ],
+<<<<<<< HEAD
     자동차보험할증지원금: [
       { name: "자동차보험 보험금지급결의서", issuer: "보험회사" },
     ],
@@ -120,6 +133,18 @@ function InsChecklist() {
       { name: "진단서", issuer: "의료기관" },
     ],
     자동차사고성형수술비: [{ name: "진단서 또는 소견서", issuer: "의료기관" }],
+=======
+    자동차_보험_할증지원금: [
+      { name: "자동차보험 보험금지급결의서", issuer: "보험회사" },
+    ],
+    자동차_부상_치료비: [
+      { name: "치료비 지급결의서", issuer: "보험회사" },
+      { name: "진단서", issuer: "의료기관" },
+    ],
+    자동차_사고_성형수술비: [
+      { name: "진단서 또는 소견서", issuer: "의료기관" },
+    ],
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
   };
 
   const getDocuments = () => {

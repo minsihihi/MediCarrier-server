@@ -11,8 +11,11 @@ const PageContainer = styled.div`
   height: 100vh;
   background: #fafafa;
   overflow-y: auto;
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
 `;
 
 const Container = styled.div`
@@ -101,11 +104,15 @@ const Button = styled.button`
   margin-top: 266px;
 `;
 
+<<<<<<< HEAD
 const hospitalFees = [
   "3만원 미만",
   "3만원 이상 ~ 10만원 미만",
   "10만원 이상"
 ];
+=======
+const hospitalFees = ["3만원 미만", "3만원 이상 ~ 10만원 미만", "10만원 이상"];
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
 
 function SelectPaid() {
   const navigate = useNavigate();
@@ -123,7 +130,11 @@ function SelectPaid() {
     ins_req1,
     ins_req2,
   } = location.state || {};
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
   const [selected, setSelected] = useState(null);
 
   const handleSelect = (fee) => {
@@ -182,13 +193,24 @@ function SelectPaid() {
               hospital_fee: selected,
               disease_detail: "암",
               document: "",
+<<<<<<< HEAD
             }
+=======
+            },
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
           });
         } else {
           console.error("Failed to save data:", response.statusText);
         }
       } catch (error) {
+<<<<<<< HEAD
         console.error("Error saving data:", error.response ? error.response.data : error.message);
+=======
+        console.error(
+          "Error saving data:",
+          error.response ? error.response.data : error.message
+        );
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
       }
     }
   };

@@ -1,5 +1,9 @@
 import React, { useState } from "react";
+<<<<<<< HEAD
 import { useNavigate, useLocation} from "react-router-dom";
+=======
+import { useNavigate, useLocation } from "react-router-dom";
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
 import styled from "styled-components";
 import ProgressIndicator from "../../components/ProgressIndicator";
 import axios from "axios";
@@ -11,7 +15,10 @@ const PageContainer = styled.div`
   height: 100vh;
   background: #fafafa;
   overflow-y: auto;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
 `;
 
 const Container = styled.div`
@@ -175,13 +182,24 @@ function SelectClaim() {
               hospital_fee: "3만원 미만",
               disease_detail: selected,
               document: "",
+<<<<<<< HEAD
             }
+=======
+            },
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
           });
         } else {
           console.error("Failed to save data:", response.statusText);
         }
       } catch (error) {
+<<<<<<< HEAD
         console.error("Error saving data:", error.response ? error.response.data : error.message);
+=======
+        console.error(
+          "Error saving data:",
+          error.response ? error.response.data : error.message
+        );
+>>>>>>> 6ad88bf29db11b3feaebe9a469ae621e031c47da
       }
     }
   };
