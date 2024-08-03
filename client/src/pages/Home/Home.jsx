@@ -6,6 +6,8 @@ import useInsuranceStore from "../../assets/insuranceStore";
 import InsuranceModal from "../../components/InsuranceModal";
 import ChecklistModal from "../../components/ChecklistModal";
 import useScriptStore, { onGetScript } from "../../assets/scriptStore";
+import { onGet } from "../../assets/tripStore";
+
 import axios from "axios";
 
 function Home() {
@@ -42,8 +44,11 @@ function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userId = localStorage.getItem("userId");
+        const data = await onGet();
+        setTripData(data);
         const token = localStorage.getItem("token");
+        const userId = localStorage.getItem("userId");
+
 
         const response = await axios.get(
           "https://minsi.pythonanywhere.com/medicarrier/register.trip/",

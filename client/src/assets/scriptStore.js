@@ -37,7 +37,7 @@ const onPostScript = async () => {
         "Content-Type": "application/json",
       },
     });
-
+    
     console.log("성공:", response.data);
   } catch (error) {
     console.error(
