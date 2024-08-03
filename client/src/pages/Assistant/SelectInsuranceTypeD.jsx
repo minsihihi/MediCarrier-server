@@ -164,7 +164,7 @@ function SelectInsuranceTypeD() {
         case "수술":
           try {
             // POST 요청 보내기
-            const response = await axios.post("https://jieun1234.pyhtonanywhere.com/medicarrier/assist/", 
+            const response = await axios.post("https://minsi.pythonanywhere.com/medicarrier/assist/", 
               { user: userId, ...stateToPass1 }, {
               headers: {
                 "Authorization": `Bearer ${localStorage.getItem("token")}`, 

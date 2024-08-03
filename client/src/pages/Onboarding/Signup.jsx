@@ -13,7 +13,7 @@ const Register = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.post("https://jieun1234.pyhtonanywhere.com/api/signup/", {
+      await axios.post("https://minsi.pythonanywhere.com/api/signup/", {
         username,
         password,
         nickname,

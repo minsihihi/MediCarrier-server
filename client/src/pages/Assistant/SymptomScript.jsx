@@ -124,7 +124,7 @@ function SymptomScript() {
 
   const handleNext = async () => {
     try {
-      const response = await axios.post("https://jieun1234.pyhtonanywhere.com/medicarrier/script/", {
+      const response = await axios.post("https://minsi.pythonanywhere.com/medicarrier/script/", {
         script: scriptComponents,
       }, {
         headers: {

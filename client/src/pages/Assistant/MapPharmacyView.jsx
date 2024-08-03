@@ -33,7 +33,7 @@ const MapPharmacyView = () => {
     if (location.lat && location.lng) {
       setLoading(true); // 로딩 시작
       axios
-        .get(`https://jieun1234.pyhtonanywhere.com/medicarrier/pharmacies/?lat=${location.lat}&lng=${location.lng}`)
+        .get(`https://minsi.pythonanywhere.com/medicarrier/pharmacies/?lat=${location.lat}&lng=${location.lng}`)
         .then((response) => {
           // 별점 순으로 정렬하여 상위 3개만 선택
           const sortedPharmacies = response.data.results
@@ -68,7 +68,7 @@ const MapPharmacyView = () => {
     if (location.lat && location.lng) {
       setLoading(true);
       axios
-        .get(`https://jieun1234.pyhtonanywhere.com/medicarrier/pharmacies/?lat=${location.lat}&lng=${location.lng}`)
+        .get(`https://minsi.pythonanywhere.com/medicarrier/pharmacies/?lat=${location.lat}&lng=${location.lng}`)
         .then((response) => {
           const sortedPharmacies = response.data.results
             .sort((a, b) => b.rating - a.rating)

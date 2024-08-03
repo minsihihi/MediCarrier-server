@@ -15,7 +15,7 @@ const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("https://jieun1234.pyhtonanywhere.com/api/login/", {
+      const response = await axios.post("https://minsi.pythonanywhere.com/api/login/", {
         username,
         password,
       });

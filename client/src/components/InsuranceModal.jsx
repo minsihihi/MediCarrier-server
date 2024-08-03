@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import useInsuranceStore from "../assets/insuranceStore";
+import useTripStore from "../assets/tripStore";
+import axios from "axios";
 
 function InsuranceModal({ onClose }) {
   const [step, setStep] = useState(1);
   const [answers, setAnswers] = useState({});
   const [showRecommendation, setShowRecommendation] = useState(false);
   const [clickedButtons, setClickedButtons] = useState({}); // 단계별 클릭된 버튼 상태
-  const { insuranceType, setInsuranceType } = useInsuranceStore();
+  const insuranceType = useTripStore((state) => state.insuranceType);
+  const setInsuranceType = useTripStore((state) => state.setInsuranceType);
   const [userName, setUserName] = useState("");
 
   useEffect(() => {
@@ -94,9 +97,20 @@ function InsuranceModal({ onClose }) {
 
   const renderButtons = () => {
     if (showRecommendation) {
-      return <Next onClick={onClose}>보험 가입하러 가기</Next>;
+      const handleClick = () => {
+        onClose();
+        updateInsuranceData();
+        window.open(
+          "https://www.directdb.co.kr/gnrl/prd/trvl/ovse/custInfoView.do?searchPdcCd=10543&pdcDvcd=g_ov_trvl"
+        ); // 외부 링크 열기
+      };
+      return <Next onClick={handleClick}>보험 가입하러 가기</Next>;
     } else if (step === 2) {
-      return <Next onClick={onClose}>완료</Next>;
+      const handleComplete = () => {
+        updateInsuranceData(); // 데이터 업데이트
+        onClose();
+      };
+      return <Next onClick={handleComplete}>완료</Next>;
     } else if (step >= 1 && step <= 6) {
       return (
         <Next onClick={step === 6 ? determineInsuranceType : handleNext}>
@@ -113,6 +127,31 @@ function InsuranceModal({ onClose }) {
       return "rgba(255, 249, 119, 0.4)"; // 클릭된 버튼 색상
     }
     return "#f8f8f8"; // 기본 색상
+  };
+
+  // API 호출 함수
+  const updateInsuranceData = async () => {
+    const userId = localStorage.getItem("userId");
+
+    try {
+      const response = await axios.put(
+        "https://minsi.pythonanywhere.com/medicarrier/register.trip/",
+        {
+          insuranceType: insuranceType,
+          user: userId,
+          // 기타 필요한 데이터들
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Response:", response.data);
+    } catch (error) {
+      console.error("Error updating insurance data:", error);
+    }
   };
 
   return (

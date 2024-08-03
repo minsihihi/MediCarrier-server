@@ -26,7 +26,7 @@ useEffect(() => {
 
 const searchHospitals = () => {
     if (location.lat && location.lng && keyword) {
-    axios.get(`https://jieun1234.pyhtonanywhere.com/search-hospitals/`, {
+    axios.get(`https://minsi.pythonanywhere.com/search/`, {
         params: {
         keyword: keyword,
         lat: location.lat,

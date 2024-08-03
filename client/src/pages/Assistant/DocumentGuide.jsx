@@ -119,7 +119,7 @@ function DocumentGuide() {
     const fetchLatestAssist = async () => {
       try {
         const response = await axios.get(
-          "https://jieun1234.pyhtonanywhere.com/medicarrier/assist/",
+          "https://minsi.pythonanywhere.com/medicarrier/assist/",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

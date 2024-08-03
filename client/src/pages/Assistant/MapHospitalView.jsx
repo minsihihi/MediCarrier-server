@@ -36,7 +36,7 @@ const MapHospitalView = () => {
     if (location.lat && location.lng && hospital_type) {
       setLoading(true); // 로딩 시작
       axios
-        .get(`https://jieun1234.pyhtonanywhere.com/medicarrier/hospitals/?lat=${location.lat}&lng=${location.lng}&keyword=${hospital_type}`)
+        .get(`https://minsi.pythonanywhere.com/medicarrier/hospitals/?lat=${location.lat}&lng=${location.lng}&keyword=${hospital_type}`)
         .then((response) => {
           // 병원을 별점순으로 정렬하고 상위 3개의 병원만 설정
           const sortedHospitals = response.data.results.sort((a, b) => b.rating - a.rating).slice(0, 3);
@@ -72,7 +72,7 @@ const MapHospitalView = () => {
     if (location.lat && location.lng) {
       setLoading(true);
       axios
-        .get(`https://jieun1234.pyhtonanywhere.com/medicarrier/hospitals/?lat=${location.lat}&lng=${location.lng}`)
+        .get(`https://minsi.pythonanywhere.com/medicarrier/hospitals/?lat=${location.lat}&lng=${location.lng}`)
         .then((response) => {
           setHospitals(response.data.results);
           setLoading(false);
