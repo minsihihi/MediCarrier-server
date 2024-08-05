@@ -258,7 +258,7 @@ class TranslateMediInfoView(APIView):
             for key, value in info.items():
                 translated_key = translate_text(key, lang)
                 # Skip translation for specific keys
-                if key.lower() in ["englishname", "bloodtype"]:
+                if key.lower() in ["english_name", "bloodtype"]:
                     translated_info[translated_key] = value
                 else:
                     translated_value = translate_text(value, lang)
@@ -284,7 +284,7 @@ class TranslateMediInfoView(APIView):
             "name": basic_info.name,
             "sex": basic_info.sex,
             "nationality": basic_info.nationality,
-            "englishname": basic_info.name_eng,
+            "english_name": basic_info.english_name,
             "birthdate": str(basic_info.birthdate),
             "height": basic_info.height,
             "weight": basic_info.weight,

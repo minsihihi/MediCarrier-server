@@ -90,12 +90,6 @@ function LocalScript() {
   const { setTransScriptComponents } = useScriptStore((state) => state);
 
   const handleNext = () => {
-<<<<<<< HEAD
-    
-    
-
-=======
->>>>>>> 6c38c222db40b7e866474d4660810b1926a505f1
     if (facility === "병원") {
       navigate("/select-condition");
     } else {

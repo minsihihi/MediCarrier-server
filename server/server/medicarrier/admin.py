@@ -25,7 +25,7 @@ class MediInfoAdmin(admin.ModelAdmin):
 
 @admin.register(BasicInfo)
 class BasicInfoAdmin(admin.ModelAdmin):
-    list_display = ('medicard', 'name', 'sex', 'nationality', 'name_eng', 'birthdate', 'height', 'weight', 'bloodtype', 'pregnant')
+    list_display = ('medicard', 'name', 'sex', 'nationality', 'english_name', 'birthdate', 'height', 'weight', 'bloodtype', 'pregnant')
     
 
 class AssistAdmin(admin.ModelAdmin):

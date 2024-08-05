@@ -55,7 +55,7 @@ class BasicInfo(models.Model):  # 메디카드당 하나만 생성되는 기본�
 
     sex = models.CharField(max_length=20, choices=SEX_CHOICES)
     nationality = models.CharField(max_length=20, default="국적")
-    name_eng = models.CharField(max_length=20, default="영문 이름")
+    english_name = models.CharField(max_length=20, default="영문 이름")
     birthdate = models.DateField()
     height = models.CharField(max_length=20, default="키")
     weight = models.CharField(max_length=20, default="몸무게")
