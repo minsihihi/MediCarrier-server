@@ -1,21 +1,33 @@
-import React, { useState } from "react";
-import axios from "axios"; // axios 불러오기
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import styled from "styled-components";
 
 const MediInfoModal = ({ selectedCountry, mediInfo, setMediInfo, onClose }) => {
-  const [formState, setFormState] = useState(mediInfo);
+  const [formState, setFormState] = useState(mediInfo || {});
+  const [errorMessages, setErrorMessages] = useState({});
+
+  const fieldLabels = {
+    condition: "몸 상태",
+    illness: "지병",
+    medicine: "현재 복용 약",
+    allergy: "알러지 유무",
+    diagnosis: "진료 기록",
+    surgery: "수술 기록"
+  };
+  
+
+  useEffect(() => {
+    setFormState(mediInfo || {});
+  }, [mediInfo]);
 
   const isSameValues = JSON.stringify(mediInfo) === JSON.stringify(formState);
 
-  const areAllValuesEmpty = (obj) => {
-    return Object.values(obj).every(
-      (value) => value === "" || value === null || value === undefined
-    );
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormState((prev) => ({ ...prev, [name]: value }));
+    setFormState((prev) => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleSave = async () => {
@@ -25,10 +37,37 @@ const MediInfoModal = ({ selectedCountry, mediInfo, setMediInfo, onClose }) => {
       return;
     }
 
+    const getUrl = "https://minsi.pythonanywhere.com/medicarrier/translate/";
+    const postUrl = "https://minsi.pythonanywhere.com/medicarrier/mediinfo/";
+    const putUrl = "https://minsi.pythonanywhere.com/medicarrier/mediinfo/";
+
+    let method = 'post';
+
     try {
-      const response = await axios({
-        method: areAllValuesEmpty(mediInfo) ? "post" : "put",
-        url: "https://minsi.pythonanywhere.com/medicarrier/mediinfo/",
+      try {
+        const response = await axios({
+          method: 'get',
+          url: getUrl,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.data && response.data.medicard["한국"] && response.data.medicard["한국"].medi_info) {
+          method = 'put';
+        }
+      } catch (getError) {
+        if (getError.response && (getError.response.status === 500 || getError.response.status === 404)) {
+          console.warn("GET request failed with status 500 or 404. Proceeding with POST request.");
+        } else {
+          throw getError;
+        }
+      }
+
+      const saveResponse = await axios({
+        method: method,
+        url: method === 'post' ? postUrl : putUrl,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -36,38 +75,29 @@ const MediInfoModal = ({ selectedCountry, mediInfo, setMediInfo, onClose }) => {
         data: formState,
       });
 
-      if (response.status !== 200 && response.status !== 201) {
-        throw new Error(
-          `Failed to save medical information: ${response.statusText}`
-        );
+      if (saveResponse.status !== 200 && saveResponse.status !== 201) {
+        throw new Error(`Failed to save medical information: ${saveResponse.statusText}`);
       }
 
       setMediInfo(formState);
       onClose();
+      // If method was 'put', reload the page
+    if (method === 'put') {
+      window.location.reload();
+    }
+    if(method === 'post') {
+      alert("의료 정보와 기본 정보를 모두 입력한 뒤 전체 의료 카드를 확인할 수 있습니다.");
+    }
     } catch (error) {
       console.error("Failed to save medical information", error);
     }
   };
 
-  function isNotEmpty(value) {
-    if (value === null || value === undefined) return false;
-    if (typeof value === "string" && value.trim() === "") return false;
-    if (Array.isArray(value) && value.length === 0) return false;
-    if (typeof value === "object" && Object.keys(value).length === 0)
-      return false;
-    return true;
-  }
-
-  function checkObjectValues(obj) {
-    for (let key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        if (!isNotEmpty(obj[key])) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
+  const areAllValuesEmpty = (obj) => {
+    return Object.values(obj).every(
+      (value) => value === "" || value === null || value === undefined
+    );
+  };
 
   return (
     <ModalOverlay>
@@ -75,87 +105,32 @@ const MediInfoModal = ({ selectedCountry, mediInfo, setMediInfo, onClose }) => {
         <ModalHeader>
           <ModalTitle>의료 정보 수정</ModalTitle>
           <SaveButton
-            disabled={
-              areAllValuesEmpty(mediInfo)
-                ? !checkObjectValues(formState)
-                : isSameValues
-            }
+            disabled={areAllValuesEmpty(formState) || isSameValues}
             onClick={isSameValues ? undefined : handleSave}
           >
             저장
           </SaveButton>
         </ModalHeader>
         <ModalBody>
-          <InputRow>
-            <InputLabel>
-              {selectedCountry === "한국"
-                ? "몸 상태"
-                : Object.keys(mediInfo)[0]}
-            </InputLabel>
-            <Input
-              name={Object.keys(mediInfo)[0]}
-              value={Object.values(formState)[0]}
-              onChange={handleChange}
-            />
-          </InputRow>
-          <InputRow>
-            <InputLabel>
-              {selectedCountry === "한국" ? "지병" : Object.keys(mediInfo)[1]}
-            </InputLabel>
-            <Input
-              name={Object.keys(mediInfo)[1]}
-              value={Object.values(formState)[1]}
-              onChange={handleChange}
-            />
-          </InputRow>
-          <InputRow>
-            <InputLabel>
-              {selectedCountry === "한국"
-                ? "현재 복용 약"
-                : Object.keys(mediInfo)[2]}
-            </InputLabel>
-            <Input
-              name={Object.keys(mediInfo)[2]}
-              value={Object.values(formState)[2]}
-              onChange={handleChange}
-            />
-          </InputRow>
-          <InputRow>
-            <InputLabel>
-              {selectedCountry === "한국"
-                ? "알러지 유무"
-                : Object.keys(mediInfo)[3]}
-            </InputLabel>
-            <Input
-              name={Object.keys(mediInfo)[3]}
-              value={Object.values(formState)[3]}
-              onChange={handleChange}
-            />
-          </InputRow>
-          <InputRow>
-            <InputLabel>
-              {selectedCountry === "한국"
-                ? "진료 기록"
-                : Object.keys(mediInfo)[4]}
-            </InputLabel>
-            <Input
-              name={Object.keys(mediInfo)[4]}
-              value={Object.values(formState)[4]}
-              onChange={handleChange}
-            />
-          </InputRow>
-          <InputRow>
-            <InputLabel>
-              {selectedCountry === "한국"
-                ? "수술 기록"
-                : Object.keys(mediInfo)[5]}
-            </InputLabel>
-            <Input
-              name={Object.keys(mediInfo)[5]}
-              value={Object.values(formState)[5]}
-              onChange={handleChange}
-            />
-          </InputRow>
+          {Object.keys(errorMessages).length > 0 && (
+            <ErrorMessages>
+              {Object.entries(errorMessages).map(([field, messages]) => (
+                <ErrorMessage key={field}>
+                  {messages.join(", ")}
+                </ErrorMessage>
+              ))}
+            </ErrorMessages>
+          )}
+          {["condition", "illness", "medicine", "allergy", "diagnosis", "surgery"].map((field) => (
+            <InputRow key={field}>
+              <InputLabel>{fieldLabels[field]}</InputLabel>
+              <Input
+                name={field}
+                value={formState[field] || ""}
+                onChange={handleChange}
+              />
+            </InputRow>
+          ))}
         </ModalBody>
       </ModalContent>
     </ModalOverlay>
@@ -164,6 +139,7 @@ const MediInfoModal = ({ selectedCountry, mediInfo, setMediInfo, onClose }) => {
 
 export default MediInfoModal;
 
+// Styled Components
 const ModalOverlay = styled.div`
   position: fixed;
   max-width: 393px;
@@ -235,7 +211,6 @@ const InputLabel = styled.label`
   color: #6f6f6f;
   font-family: "Pretendard";
   font-size: 14px;
-  font-style: normal;
   font-weight: 500;
   line-height: normal;
   flex: 1;
@@ -246,7 +221,6 @@ const Input = styled.input`
   text-align: right;
   font-family: "Pretendard";
   font-size: 14px;
-  font-style: normal;
   font-weight: 600;
   line-height: normal;
   flex: 2;
@@ -257,4 +231,13 @@ const Input = styled.input`
   &:focus {
     outline: none;
   }
+`;
+
+const ErrorMessages = styled.div`
+  color: red;
+  margin-bottom: 15px;
+`;
+
+const ErrorMessage = styled.div`
+  margin-bottom: 5px;
 `;

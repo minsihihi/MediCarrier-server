@@ -332,7 +332,7 @@ function Home() {
         <MyInsurance>
           내 보험
           <MyInsuranceBox onClick={handleInsuranceBox}>
-            {insuranceType ? (
+            {insuranceType.length > 2 ? (
               <>
                 <div>
                   <div

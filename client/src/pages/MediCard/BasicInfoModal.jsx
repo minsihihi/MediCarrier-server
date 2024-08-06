@@ -1,16 +1,20 @@
-// BasicInfoModal.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
+import MediInfoModal from "./MediInfoModal";
 
-const BasicInfoModal = ({
-  selectedCountry,
-  basicInfo,
-  setBasicInfo,
-  onClose,
-}) => {
-  const [formState, setFormState] = useState(basicInfo);
+const BasicInfoModal = ({ selectedCountry, basicInfo, setBasicInfo, onClose }) => {
+  const [formState, setFormState] = useState(basicInfo || {});
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSexDropdownOpen, setIsSexDropdownOpen] = useState(false);
+  const [isPregnantDropdownOpen, setIsPregnantDropdownOpen] = useState(false);
+  const [errorMessages, setErrorMessages] = useState({});
+
+
+  useEffect(() => {
+    setFormState(basicInfo || {});
+  }, [basicInfo]);
+
   const bloodTypes = [
     "RH+ A",
     "RH- A",
@@ -22,17 +26,25 @@ const BasicInfoModal = ({
     "RH- O",
   ];
 
+  const sexOptions = [
+    "남",
+    "여"
+  ];
+
+  const pregnantOptions = [
+    "임신중",
+    "임신 중 아님",
+    "가능성 있음"
+  ];
+
   const isSameValues = JSON.stringify(basicInfo) === JSON.stringify(formState);
-
-  const areAllValuesEmpty = (obj) => {
-    return Object.values(obj).every(
-      (value) => value === "" || value === null || value === undefined
-    );
-  };
-
+  const [isMediInfoModalOpen, setIsMediInfoModalOpen] = useState(false);
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormState((prev) => ({ ...prev, [name]: value }));
+    setFormState((prev) => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleSave = async () => {
@@ -41,32 +53,81 @@ const BasicInfoModal = ({
       console.error("No token found");
       return;
     }
-
-    const method = areAllValuesEmpty(basicInfo) ? "post" : "put";
-    const url = `https://minsi.pythonanywhere.com/medicarrier/basicinfo/`;
+  
     try {
-      const response = await axios({
+      const getUrl = "https://minsi.pythonanywhere.com/medicarrier/translate/";
+      const postUrl = "https://minsi.pythonanywhere.com/medicarrier/basicinfo/";
+      const putUrl = "https://minsi.pythonanywhere.com/medicarrier/basicinfo/";
+  
+      // Check if basic info exists with a GET request
+      let method = 'post'; // Default method is POST
+      try {
+        const response = await axios({
+          method: 'get',
+          url: getUrl,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        if (response.data && response.data.medicard["한국"] && response.data.medicard["한국"].basic_info) {
+          // Data exists, so use PUT method
+          method = 'put';
+        }
+      } catch (getError) {
+        if (getError.response && (getError.response.status === 500 || getError.response.status === 404)) {
+          console.warn("GET request failed with status 500 or 404. Proceeding with POST request.");
+        } else {
+          throw getError;
+        }
+      }
+  
+      // Send data using POST or PUT method
+      const saveResponse = await axios({
         method: method,
-        url: url,
+        url: method === 'post' ? postUrl : putUrl,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        data: formState,
+        data: {
+          name: formState.name || "",
+          sex: formState.sex,
+          nationality: formState.nationality || "",
+          english_name: formState.english_name || "",
+          birthdate: formState.birthdate,
+          height: formState.height || "",
+          weight: formState.weight || "",
+          bloodtype: formState.bloodtype,
+          pregnant: formState.pregnant
+        },
       });
-
-      if (response.status !== 200 && response.status !== 201) {
-        throw new Error(
-          `Failed to save basic information: ${response.statusText}`
-        );
+  
+      if (saveResponse.status !== 200 && saveResponse.status !== 201) {
+        throw new Error(`Failed to save basic information: ${saveResponse.statusText}`);
       }
-
+  
       setBasicInfo(formState);
       onClose();
+      
+      // If method was 'put', reload the page
+    if (method === 'put') {
+      window.location.reload();
+    }
+    if(method === 'post') {
+      alert("의료 정보와 기본 정보를 모두 입력한 뒤 새로 고침 하여 전체 의료 카드를 확인할 수 있습니다.");
+    }
+      
     } catch (error) {
       console.error("Failed to save basic information", error);
-      onClose();
     }
+  };
+
+  const areAllValuesEmpty = (obj) => {
+    return Object.values(obj).every(
+      (value) => value === "" || value === null || value === undefined
+    );
   };
 
   const handleBloodTypeSelect = (bloodtype) => {
@@ -74,25 +135,15 @@ const BasicInfoModal = ({
     setIsDropdownOpen(false);
   };
 
-  function isNotEmpty(value) {
-    if (value === null || value === undefined) return false;
-    if (typeof value === "string" && value.trim() === "") return false;
-    if (Array.isArray(value) && value.length === 0) return false;
-    if (typeof value === "object" && Object.keys(value).length === 0)
-      return false;
-    return true;
-  }
+  const handleSexSelect = (sex) => {
+    setFormState((prev) => ({ ...prev, sex }));
+    setIsSexDropdownOpen(false);
+  };
 
-  function checkObjectValues(obj) {
-    for (let key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        if (!isNotEmpty(obj[key])) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
+  const handlePregnantSelect = (status) => {
+    setFormState((prev) => ({ ...prev, pregnant: status }));
+    setIsPregnantDropdownOpen(false);
+  };
 
   return (
     <ModalOverlay>
@@ -102,7 +153,7 @@ const BasicInfoModal = ({
           <SaveButton
             disabled={
               areAllValuesEmpty(basicInfo)
-                ? !checkObjectValues(formState)
+                ? !Object.values(formState).some(val => val !== "")
                 : isSameValues
             }
             onClick={isSameValues ? undefined : handleSave}
@@ -111,96 +162,93 @@ const BasicInfoModal = ({
           </SaveButton>
         </ModalHeader>
         <ModalBody>
+          {Object.keys(errorMessages).length > 0 && (
+            <ErrorMessages>
+              {Object.entries(errorMessages).map(([field, messages]) => (
+                <ErrorMessage key={field}>
+                  {messages.join(", ")}
+                </ErrorMessage>
+              ))}
+            </ErrorMessages>
+          )}
           <InputRow>
-            <InputLabel>
-              {selectedCountry === "한국" ? "이름" : Object.keys(basicInfo)[0]}
-            </InputLabel>
+            <InputLabel>이름</InputLabel>
             <Input
-              name={Object.keys(basicInfo)[0]}
-              value={Object.values(formState)[0]}
+              name="name"
+              value={formState.name || ""}
               onChange={handleChange}
             />
           </InputRow>
           <InputRow>
-            <InputLabel>
-              {selectedCountry === "한국" ? "성별" : Object.keys(basicInfo)[1]}
-            </InputLabel>
-            <Select
-              name={Object.keys(basicInfo)[1]}
-              value={Object.values(formState)[1]}
-              onChange={handleChange}
-            >
-              <option value="남">남</option>
-              <option value="여">여</option>
-            </Select>
+            <InputLabel>성별</InputLabel>
+            <Dropdown>
+              <DropdownButton
+                onClick={() => setIsSexDropdownOpen(!isSexDropdownOpen)}
+              >
+                {formState.sex || "성별 선택"}
+              </DropdownButton>
+              {isSexDropdownOpen && (
+                <DropdownMenu>
+                  {sexOptions.map((sex) => (
+                    <DropdownItem
+                      key={sex}
+                      onClick={() => handleSexSelect(sex)}
+                    >
+                      {sex}
+                    </DropdownItem>
+                  ))}
+                </DropdownMenu>
+              )}
+            </Dropdown>
           </InputRow>
           <InputRow>
-            <InputLabel>
-              {selectedCountry === "한국" ? "국적" : Object.keys(basicInfo)[2]}
-            </InputLabel>
+            <InputLabel>국적</InputLabel>
             <Input
-              name={Object.keys(basicInfo)[2]}
-              value={Object.values(formState)[2]}
+              name="nationality"
+              value={formState.nationality || ""}
               onChange={handleChange}
             />
           </InputRow>
           <InputRow>
-            <InputLabel>
-              {selectedCountry === "한국"
-                ? "영어 이름"
-                : Object.keys(basicInfo)[3]}
-            </InputLabel>
+            <InputLabel>영어 이름</InputLabel>
             <Input
-              name={Object.keys(basicInfo)[3]}
-              value={Object.values(formState)[3]}
+              name="english_name"
+              value={formState.english_name}
               onChange={handleChange}
             />
           </InputRow>
           <InputRow>
-            <InputLabel>
-              {selectedCountry === "한국"
-                ? "생년월일"
-                : Object.keys(basicInfo)[4]}
-            </InputLabel>
+            <InputLabel>생년월일</InputLabel>
             <Input
-              name={Object.keys(basicInfo)[4]}
-              value={Object.values(formState)[4]}
+              type="date"
+              name="birthdate"
+              value={formState.birthdate || ""}
               onChange={handleChange}
             />
           </InputRow>
           <InputRow>
-            <InputLabel>
-              {selectedCountry === "한국" ? "신장" : Object.keys(basicInfo)[5]}
-            </InputLabel>
+            <InputLabel>신장</InputLabel>
             <Input
-              name={Object.keys(basicInfo)[5]}
-              value={Object.values(formState)[5]}
+              name="height"
+              value={formState.height || ""}
               onChange={handleChange}
             />
           </InputRow>
           <InputRow>
-            <InputLabel>
-              {selectedCountry === "한국"
-                ? "몸무게"
-                : Object.keys(basicInfo)[6]}
-            </InputLabel>
+            <InputLabel>몸무게</InputLabel>
             <Input
-              name={Object.keys(basicInfo)[6]}
-              value={Object.values(formState)[6]}
+              name="weight"
+              value={formState.weight || ""}
               onChange={handleChange}
             />
           </InputRow>
           <InputRow>
-            <InputLabel>
-              {selectedCountry === "한국"
-                ? "혈액형"
-                : Object.keys(basicInfo)[7]}
-            </InputLabel>
+            <InputLabel>혈액형</InputLabel>
             <Dropdown>
               <DropdownButton
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
-                {Object.values(formState)[7] || "혈액형 선택"}
+                {formState.bloodtype || "혈액형 선택"}
               </DropdownButton>
               {isDropdownOpen && (
                 <DropdownMenu>
@@ -217,29 +265,37 @@ const BasicInfoModal = ({
             </Dropdown>
           </InputRow>
           <InputRow>
-            <InputLabel>
-              {selectedCountry === "한국"
-                ? "임신여부"
-                : Object.keys(basicInfo)[8]}
-            </InputLabel>
-            <Select
-              name={Object.keys(basicInfo)[8]}
-              value={Object.values(formState)[8]}
-              onChange={handleChange}
-            >
-              <option value="임신 중">임신 중</option>
-              <option value="임신 중 아님">임신 중 아님</option>
-              <option value="가능성 있음">가능성 있음</option>
-            </Select>
+            <InputLabel>임신여부</InputLabel>
+            <Dropdown>
+              <DropdownButton
+                onClick={() => setIsPregnantDropdownOpen(!isPregnantDropdownOpen)}
+              >
+                {formState.pregnant || "임신여부 선택"}
+              </DropdownButton>
+              {isPregnantDropdownOpen && (
+                <DropdownMenu>
+                  {pregnantOptions.map((status) => (
+                    <DropdownItem
+                      key={status}
+                      onClick={() => handlePregnantSelect(status)}
+                    >
+                      {status}
+                    </DropdownItem>
+                  ))}
+                </DropdownMenu>
+              )}
+            </Dropdown>
           </InputRow>
         </ModalBody>
       </ModalContent>
     </ModalOverlay>
+    
   );
 };
 
 export default BasicInfoModal;
 
+// Styled Components
 const ModalOverlay = styled.div`
   position: fixed;
   max-width: 393px;
@@ -311,7 +367,6 @@ const InputLabel = styled.label`
   color: #6f6f6f;
   font-family: "Pretendard";
   font-size: 14px;
-  font-style: normal;
   font-weight: 500;
   line-height: normal;
   flex: 1;
@@ -322,25 +377,6 @@ const Input = styled.input`
   text-align: right;
   font-family: "Pretendard";
   font-size: 14px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  flex: 2;
-  padding: 5px;
-  border: none;
-  border-bottom: none;
-  border-radius: 5px;
-  &:focus {
-    outline: none;
-  }
-`;
-
-const Select = styled.select`
-  color: #000;
-  text-align: right;
-  font-family: "Pretendard";
-  font-size: 14px;
-  font-style: normal;
   font-weight: 600;
   line-height: normal;
   flex: 2;
@@ -395,4 +431,13 @@ const DropdownItem = styled.div`
   &:hover {
     background-color: #f0f0f0;
   }
+`;
+
+const ErrorMessages = styled.div`
+  color: red;
+  margin-bottom: 15px;
+`;
+
+const ErrorMessage = styled.div`
+  margin-bottom: 5px;
 `;

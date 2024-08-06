@@ -9,7 +9,7 @@ import styled, { ThemeProvider } from "styled-components";
 import BasicInfoModal from "./BasicInfoModal";
 import MediInfoModal from "./MediInfoModal";
 import { Pagination } from "swiper/modules";
-
+import "../../styles/Loader.css";
 /**
  * index signature
  * [x: string]: string
@@ -40,8 +40,8 @@ const MediCard = () => {
         (card) => card !== "한국" && card !== "영국"
       );
       return filteredCountry
-        ? CountryLanguageMap[filteredCountry]?.language || "일본어"
-        : "일본어";
+        ? CountryLanguageMap[filteredCountry]?.language || "현지어"
+        : "현지어";
     })(),
     "영어",
   ];
@@ -49,10 +49,10 @@ const MediCard = () => {
   const [selectedLanguage, setSelectedLanguage] = useState("한국어");
 
   useEffect(() => {
+    const token = localStorage.getItem("token"); 
     const getCardsInfo = async () => {
       try {
-        const token = localStorage.getItem("token");
-
+        // API 요청 보내기
         const card_res = await axios.get(
           "https://minsi.pythonanywhere.com/medicarrier/translate/",
           {
@@ -60,29 +60,31 @@ const MediCard = () => {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
-            params: default_basic_info,
           }
         );
-
-        if (Object.keys(card_res.data.medicard).length === 3) {
+    
+        // 응답 데이터 처리
+        const koreanMediCard = card_res.data.medicard["한국"];
+    
+        if (koreanMediCard && koreanMediCard.medi_info && koreanMediCard.basic_info) {
+          // 한국의 medi_info와 basic_info가 모두 존재하는 경우
+          setMediCard(card_res.data.medicard);
           setIsLoading(false);
-          return setMediCard(card_res.data.medicard);
         } else {
-          setIsLoading(false);
-          return setMediCard({
+          // 한국의 medi_info나 basic_info가 존재하지 않는 경우
+          setMediCard({
             ...mediCard,
             일본: {
               basic_info: default_basic_info,
               medi_info: default_medi_info,
             },
           });
+          setIsLoading(false);
+          setIsBasicInfoModalOpen(true); // 기본 정보 모달을 엽니다.
         }
       } catch (error) {
-        if (error.response.status === 404) {
-          setIsLoading(false);
-          setIsMediInfoModalOpen(true);
-          setIsBasicInfoModalOpen(true);
-        }
+        console.error("Failed to fetch data", error);
+        setIsLoading(false);
       }
     };
 
@@ -209,7 +211,12 @@ const MediCard = () => {
     },
   ];
 
-  if (isLoading) return <div>페이지 로딩중 ...</div>;
+  if (isLoading)
+    return (
+      <div className="loader">
+        <div className="justify-content-center jimu-primary-loading"></div>
+      </div>
+    );
 
   return (
     <Container>
