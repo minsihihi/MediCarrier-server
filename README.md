@@ -34,7 +34,6 @@
 |<div align="center">구현 기능</div>|<div align="center">구현 기능</div>|<div align="center">구현 기능</div>| <div align="center"> - 회원가입, 로그인<br> - 환자 증상 스크립트 생성 및 현지어 자동 번역 기능<br> - 환자 기본/의료 정보 생성 및 현지어/영어 자동 번역 기능<br> - 환자 위치 기반 주변 병원 추천 기능<br> - 환자 상황 기반 필요 보험 서류 리스트 자동 안내 기능<br> - 홈, 어시스트, 메디카드 기능 프론트엔드<->백엔드 연동 </div>|
 
 ### 기술 스택
-### 기술 스택
 | Front-end       | Back-end       | API     |
 |-----------------|-----------------|---------------|
 | <img src='https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB' alt='React Badge' width="100" /> <img src='https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white' alt='HTML5 Badge' width="100" /> <img src='https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white' alt='CSS3 Badge' width="100" /> <img src='https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E' alt='JavaScript Badge' width="100" /> | <img src='https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white' alt='Django Badge' width="100" /> <img src='https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54' alt='Python Badge' width="100" /> | Google Translate API, Google Maps API  |
