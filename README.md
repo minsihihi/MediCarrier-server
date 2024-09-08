@@ -31,7 +31,7 @@
 |    **남선우**   |    **서하은**   |    **박민서**   |    **황지은**   |
 |-----------------|-----------------|----------------|----------------|
 |<div align="center">Front-end</div>|<div align="center">Front-end</div>|<div align="center">Back-end</div>|<div align="center">Back-end</div>|
-|<div align="center">구현 기능</div>|<div align="center">구현 기능</div>|<div align="center">구현 기능</div>| <div align="center"> - 회원가입, 로그인 기능<br> - 환자 증상 스크립트 생성 및 현지어 자동 번역 기능<br> - 환자 기본/의료 정보 생성 및 현지어/영어 자동 번역 기능<br> - 환자 위치 기반 주변 병원 추천 기능<br> - 환자 상황 기반 필요 보험 서류 리스트 자동 안내 기능<br> - 홈, 어시스트, 메디카드 기능 프론트엔드<->백엔드 연동 </div>|
+|<div align="center">구현 기능</div>|<div align="center">구현 기능</div>|<div align="center">구현 기능</div>| <div align="center"> - 회원가입, 로그인 기능<br> - 환자 증상 스크립트 생성 및 현지어 자동 번역 기능<br> - 환자 기본/의료 정보 생성 및 현지어/영어 자동 번역 기능<br> - 환자 위치 기반 주변 병원 추천 기능<br> - 환자 상황 기반 필요 보험 서류 리스트 자동 안내 기능<br> - 홈, 어시스트, 메디카드 기능 client<->server 연동 </div>|
 
 ### 기술 스택
 | Front-end       | Back-end       | API     |
