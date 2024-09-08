@@ -6,7 +6,7 @@ from .models import *
 class TripAdmin(admin.ModelAdmin):
     list_display = ('user', 'country', 'start_date', 'end_date', 'insuranceType')
     search_fields = ('country', 'user__username')
-    
+
 admin.site.register(Hospital)
 admin.site.register(Pharmacy)
 admin.site.register(Script)
@@ -21,17 +21,17 @@ class MediCardAdmin(admin.ModelAdmin):
 @admin.register(MediInfo)
 class MediInfoAdmin(admin.ModelAdmin):
     list_display = ('medicard', 'condition', 'illness', 'medicine', 'allergy', 'diagnosis', 'surgery')
-    
+
 
 @admin.register(BasicInfo)
 class BasicInfoAdmin(admin.ModelAdmin):
     list_display = ('medicard', 'name', 'sex', 'nationality', 'english_name', 'birthdate', 'height', 'weight', 'bloodtype', 'pregnant')
-    
+
 
 class AssistAdmin(admin.ModelAdmin):
     list_display = ('id', 'facility', 'hospital_type', 'symptom_type', 'document')
     fields = ('user', 'facility', 'hospital_type', 'symptom_type', 'symptom_etc', 'symptom_start', 'symptom_freq', 'illness_etc', 'medicine_etc', 'etc', 'ins_req1', 'ins_req2', 'hospital_fee', 'disease_detail', 'document')
-    
+
     def save_model(self, request, obj, form, change):
         # 기본 문서 목록
         documents = [
@@ -124,7 +124,7 @@ class AssistAdmin(admin.ModelAdmin):
 
         # 문서 목록을 문자열로 변환하여 필드에 설정
         obj.document = ', '.join(documents)
-        
+
         # 모델 저장
         super().save_model(request, obj, form, change)
 

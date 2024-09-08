@@ -8,4 +8,3 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('medicarrier/', include('medicarrier.urls')),
 ]
-
